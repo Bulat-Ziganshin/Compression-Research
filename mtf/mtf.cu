@@ -10,6 +10,7 @@
 const int ALPHABET_SIZE = 256;
 const int WARP_SIZE = 32;
 
+const int NUM_WARPS = 8;
 const int BUFSIZE = 128*1024*1024;
 const int CHUNK = 4*1024;
 typedef unsigned char byte;
@@ -19,11 +20,15 @@ __global__ void mtf (const byte* inbuf, byte* outbuf, int n, int chunk)
 {
     const int idx = (blockIdx.x * blockDim.x + threadIdx.x) / WARP_SIZE;
     const int tid = (blockIdx.x * blockDim.x + threadIdx.x) % WARP_SIZE;
+    const int warp_id = threadIdx.x / WARP_SIZE;
+//printf("%d ", warp_id);
+
     inbuf  += idx*chunk;
     outbuf += idx*chunk;
 
 //    __shared__  byte in[128], out[128];
-    volatile __shared__  unsigned mtf[ALPHABET_SIZE];
+    volatile __shared__  unsigned mtf0 [ALPHABET_SIZE*NUM_WARPS];
+    auto mtf = mtf0 + ALPHABET_SIZE*warp_id;
     for (int i=0; i<ALPHABET_SIZE; i+=WARP_SIZE)
     {
         mtf[i+tid] = i+tid;
@@ -79,19 +84,19 @@ int main (int argc, char **argv)
     for (int inbytes; !!(inbytes = fread(inbuf,1,BUFSIZE,infile)); )
     {
         checkCudaErrors( cudaMemcpy (d_inbuf, inbuf, inbytes, cudaMemcpyHostToDevice));
- 	checkCudaErrors( cudaDeviceSynchronize());
-	checkCudaErrors( cudaEventRecord (start, nullptr));
+        checkCudaErrors( cudaDeviceSynchronize());
+        checkCudaErrors( cudaEventRecord (start, nullptr));
 
-	mtf <<<inbytes/CHUNK, 32>>> (d_inbuf, d_outbuf, inbytes, CHUNK);
-	checkCudaErrors( cudaEventRecord (stop, nullptr));
-	checkCudaErrors( cudaDeviceSynchronize());
+        mtf <<<(inbytes-1)/(CHUNK*NUM_WARPS)+1, 32*NUM_WARPS>>> (d_inbuf, d_outbuf, inbytes, CHUNK);
+        checkCudaErrors( cudaEventRecord (stop, nullptr));
+        checkCudaErrors( cudaDeviceSynchronize());
 
-	float start_stop;
-	checkCudaErrors( cudaEventElapsedTime (&start_stop, start, stop));
+        float start_stop;
+        checkCudaErrors( cudaEventElapsedTime (&start_stop, start, stop));
         duration += start_stop;
 
         checkCudaErrors( cudaMemcpy (outbuf, d_outbuf, inbytes, cudaMemcpyDeviceToHost));
- 	checkCudaErrors( cudaDeviceSynchronize());
+        checkCudaErrors( cudaDeviceSynchronize());
 
         auto ptr = outbuf;
         auto outbytes = outbuf+inbytes - ptr;
