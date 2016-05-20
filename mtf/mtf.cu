@@ -27,7 +27,7 @@ __global__ void mtf (const byte* inbuf, byte* outbuf, int n, int chunk)
     outbuf += idx*chunk;
 
 //    __shared__  byte in[128], out[128];
-    volatile __shared__  unsigned mtf0 [ALPHABET_SIZE*NUM_WARPS];
+    __shared__  unsigned mtf0 [ALPHABET_SIZE*NUM_WARPS];
     auto mtf = mtf0 + ALPHABET_SIZE*warp_id;
     for (int i=0; i<ALPHABET_SIZE; i+=WARP_SIZE)
     {
@@ -37,23 +37,40 @@ __global__ void mtf (const byte* inbuf, byte* outbuf, int n, int chunk)
 
     for (int i=0; i<chunk; i++)
     {
-        auto cur = inbuf[i];
-        auto old = mtf[tid];
-
-        int k;  unsigned n;
-        #pragma unroll
-        for (k=0; k<ALPHABET_SIZE; k+=WARP_SIZE)
+        #pragma unroll 1
+        for( ; ; i++)
         {
-            n = __ballot (cur==old);
-            if (n) break;
-            auto next = mtf[k+WARP_SIZE+tid];
-            mtf[k+tid+1] = old;
-            old = next;
+            if (i>=chunk) return;
+            auto cur = inbuf[i];
+            auto old = mtf[tid];
+            unsigned n = __ballot (cur==old);
+            if (n==0)  break;
+
+            int k = 0;
+            auto minbit = __ffs(n) - 1;
+            if (tid < minbit)  mtf[k+tid+1] = old;
+            outbuf[i] = k+minbit;
+            mtf[0] = cur;
         }
-        auto minbit = __ffs(n) - 1;
-        if (tid < minbit)  mtf[k+tid+1] = old;
-        if (tid==0)        outbuf[i] = k+minbit;
-        mtf[0] = cur;
+
+        {
+            auto cur = inbuf[i];
+            auto old = mtf[tid];
+            int k;  unsigned n;
+            #pragma unroll
+            for (k=0; k<ALPHABET_SIZE; k+=WARP_SIZE)
+            {
+                n = __ballot (cur==old);
+                if (n)  break;
+                auto next = mtf[k+WARP_SIZE+tid];
+                mtf[k+tid+1] = old;
+                old = next;
+            }
+            auto minbit = __ffs(n) - 1;
+            if (tid < minbit)  mtf[k+tid+1] = old;
+            outbuf[i] = k+minbit;
+            mtf[0] = cur;
+        }
     }
 }
 
