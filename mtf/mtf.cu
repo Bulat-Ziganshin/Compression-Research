@@ -11,50 +11,53 @@ const int ALPHABET_SIZE = 256;
 const int WARP_SIZE = 32;
 
 const int NUM_WARPS = 8;
-const int BUFSIZE = 128*1024*1024;
+const int BUFSIZE = 8*1024*1024;
 const int CHUNK = 4*1024;
 typedef unsigned char byte;
 
 
-__global__ void mtf (const byte* inbuf, byte* outbuf, int n, int chunk)
+__global__ void mtf (const byte* __restrict__ _inbuf,  byte* __restrict__ _outbuf,  int n,  int chunk)
 {
     const int idx = (blockIdx.x * blockDim.x + threadIdx.x) / WARP_SIZE;
     const int tid = (blockIdx.x * blockDim.x + threadIdx.x) % WARP_SIZE;
     const int warp_id = threadIdx.x / WARP_SIZE;
 //printf("%d ", warp_id);
 
-    inbuf  += idx*chunk;
-    outbuf += idx*chunk;
+    auto inbuf  = _inbuf + idx*CHUNK;
+    auto outbuf = _outbuf + idx*CHUNK;
 
 //    __shared__  byte in[128], out[128];
-    __shared__  unsigned mtf0 [ALPHABET_SIZE*NUM_WARPS];
+    volatile __shared__  unsigned mtf0 [ALPHABET_SIZE*NUM_WARPS];
     auto mtf = mtf0 + ALPHABET_SIZE*warp_id;
     for (int i=0; i<ALPHABET_SIZE; i+=WARP_SIZE)
     {
         mtf[i+tid] = i+tid;
     }
+    auto mtf_tid = & mtf[tid];
 
-
-    for (int i=0; i<chunk; i++)
+    auto p = inbuf;
+    for (int i=0; i<CHUNK; i++)
     {
-        #pragma unroll 1
+        auto next = *p++;
+        #pragma unroll 4
         for( ; ; i++)
         {
-            if (i>=chunk) return;
-            auto cur = inbuf[i];
-            auto old = mtf[tid];
+            if (i>=CHUNK) return;
+            auto cur = next;
+            auto old = mtf_tid[0];
+            next = *p++;
+
             unsigned n = __ballot (cur==old);
             if (n==0)  break;
-
-            int k = 0;
+            
             auto minbit = __ffs(n) - 1;
-            if (tid < minbit)  mtf[k+tid+1] = old;
-            outbuf[i] = k+minbit;
+            if (tid < minbit)  mtf_tid[1] = old;
+            outbuf[i] = minbit;
             mtf[0] = cur;
         }
 
         {
-            auto cur = inbuf[i];
+            auto cur = next;
             auto old = mtf[tid];
             int k;  unsigned n;
             #pragma unroll
