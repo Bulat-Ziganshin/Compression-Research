@@ -27,12 +27,14 @@ __global__ void mtf (const byte* __restrict__ inbuf,  byte* __restrict__ outbuf,
     outbuf += idx*chunk;
 
 //    __shared__  byte in[128], out[128];
-    volatile __shared__  unsigned mtf0 [ALPHABET_SIZE*NUM_WARPS];
+    __shared__  unsigned mtf0 [ALPHABET_SIZE*NUM_WARPS];
     auto mtf = mtf0 + ALPHABET_SIZE*warp_id;
     for (int i=0; i<ALPHABET_SIZE; i+=WARP_SIZE)
     {
         mtf[i+tid] = i+tid;
     }
+    __syncthreads();
+
 
     for (int i=0; ; i++)
     {    
@@ -51,6 +53,7 @@ __global__ void mtf (const byte* __restrict__ inbuf,  byte* __restrict__ outbuf,
             if (tid < minbit)  mtf[tid+1] = old;
             if (tid==0)        outbuf[i] = minbit;
             mtf[0] = cur;          
+            __syncthreads();
         }
         return;
         
@@ -74,6 +77,7 @@ __global__ void mtf (const byte* __restrict__ inbuf,  byte* __restrict__ outbuf,
             if (tid < minbit)  mtf[k+tid+1] = old;
             if (tid==0)        outbuf[i] = k+minbit;
             mtf[0] = cur;
+            __syncthreads();
         }
     }  
 }
