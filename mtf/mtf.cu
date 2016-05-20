@@ -47,8 +47,8 @@ __global__ void mtf (const byte* __restrict__ inbuf,  byte* __restrict__ outbuf,
             next = inbuf[i+1];
 
             n = __ballot (cur==old);
-            if (n==0)  goto go_deeper;
-
+            if (n==0)  goto deeper;
+    
             auto minbit = __ffs(n) - 1;
             if (tid < minbit)  mtf[tid+1] = old;
             if (tid==0)        outbuf[i] = minbit;
@@ -57,7 +57,7 @@ __global__ void mtf (const byte* __restrict__ inbuf,  byte* __restrict__ outbuf,
         }
         return;
         
-    go_deeper:
+    deeper:
         {
             auto cur = next;
             auto old = mtf[tid];
@@ -71,6 +71,7 @@ __global__ void mtf (const byte* __restrict__ inbuf,  byte* __restrict__ outbuf,
                 auto next = mtf[k+WARP_SIZE+tid];
                 mtf[k+tid+1] = old;
                 old = next;
+                __syncthreads();
             }
             
             auto minbit = __ffs(n) - 1;
