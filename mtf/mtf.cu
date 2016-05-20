@@ -34,28 +34,48 @@ __global__ void mtf (const byte* __restrict__ inbuf,  byte* __restrict__ outbuf,
         mtf[i+tid] = i+tid;
     }
 
-
-    for (int i=0; i<chunk; i++)
-    {
-        auto cur = inbuf[i];
-        auto old = mtf[tid];
-
-        int k;  unsigned n;
-        #pragma unroll
-        for (k=0; k<ALPHABET_SIZE; k+=WARP_SIZE)
+    for (int i=0; ; i++)
+    {    
+        auto next = inbuf[i];
+        #pragma unroll 4
+        for ( ; i<CHUNK-1; i++)
         {
+            auto cur = next;
+            auto old = mtf[tid];
+            next = inbuf[i+1];
+
             n = __ballot (cur==old);
-            if (n) break;
-            auto next = mtf[k+WARP_SIZE+tid];
-            mtf[k+tid+1] = old;
-            old = next;
+            if (n==0)  goto go_deeper;
+
+            auto minbit = __ffs(n) - 1;
+            if (tid < minbit)  mtf[tid+1] = old;
+            if (tid==0)        outbuf[i] = minbit;
+            mtf[0] = cur;          
         }
+        return;
         
-        auto minbit = __ffs(n) - 1;
-        if (tid < minbit)  mtf[k+tid+1] = old;
-        if (tid==0)        outbuf[i] = k+minbit;
-        mtf[0] = cur;
-    }
+    go_deeper:
+        {
+            auto cur = next;
+            auto old = mtf[tid];
+
+            int k;  unsigned n;
+            #pragma unroll
+            for (k=0; k<ALPHABET_SIZE; k+=WARP_SIZE)
+            {
+                n = __ballot (cur==old);
+                if (n) break;
+                auto next = mtf[k+WARP_SIZE+tid];
+                mtf[k+tid+1] = old;
+                old = next;
+            }
+            
+            auto minbit = __ffs(n) - 1;
+            if (tid < minbit)  mtf[k+tid+1] = old;
+            if (tid==0)        outbuf[i] = k+minbit;
+            mtf[0] = cur;
+        }
+    }  
 }
 
 
