@@ -11,20 +11,20 @@ const int ALPHABET_SIZE = 256;
 const int WARP_SIZE = 32;
 
 const int NUM_WARPS = 8;
-const int BUFSIZE = 8*1024*1024;
+const int BUFSIZE = 128*1024*1024;
 const int CHUNK = 4*1024;
 typedef unsigned char byte;
 
 
-__global__ void mtf (const byte* __restrict__ _inbuf,  byte* __restrict__ _outbuf,  int n,  int chunk)
+__global__ void mtf (const byte* __restrict__ inbuf,  byte* __restrict__ outbuf,  int n,  int chunk)
 {
     const int idx = (blockIdx.x * blockDim.x + threadIdx.x) / WARP_SIZE;
     const int tid = (blockIdx.x * blockDim.x + threadIdx.x) % WARP_SIZE;
     const int warp_id = threadIdx.x / WARP_SIZE;
 //printf("%d ", warp_id);
 
-    auto inbuf  = _inbuf + idx*CHUNK;
-    auto outbuf = _outbuf + idx*CHUNK;
+    inbuf  += idx*chunk;
+    outbuf += idx*chunk;
 
 //    __shared__  byte in[128], out[128];
     volatile __shared__  unsigned mtf0 [ALPHABET_SIZE*NUM_WARPS];
@@ -33,47 +33,28 @@ __global__ void mtf (const byte* __restrict__ _inbuf,  byte* __restrict__ _outbu
     {
         mtf[i+tid] = i+tid;
     }
-    auto mtf_tid = & mtf[tid];
 
-    auto p = inbuf;
-    for (int i=0; i<CHUNK; i++)
+
+    for (int i=0; i<chunk; i++)
     {
-        auto next = *p++;
-        #pragma unroll 4
-        for( ; ; i++)
-        {
-            if (i>=CHUNK) return;
-            auto cur = next;
-            auto old = mtf_tid[0];
-            next = *p++;
+        auto cur = inbuf[i];
+        auto old = mtf[tid];
 
-            unsigned n = __ballot (cur==old);
-            if (n==0)  break;
-            
-            auto minbit = __ffs(n) - 1;
-            if (tid < minbit)  mtf_tid[1] = old;
-            outbuf[i] = minbit;
-            mtf[0] = cur;
-        }
-
+        int k;  unsigned n;
+        #pragma unroll
+        for (k=0; k<ALPHABET_SIZE; k+=WARP_SIZE)
         {
-            auto cur = next;
-            auto old = mtf[tid];
-            int k;  unsigned n;
-            #pragma unroll
-            for (k=0; k<ALPHABET_SIZE; k+=WARP_SIZE)
-            {
-                n = __ballot (cur==old);
-                if (n)  break;
-                auto next = mtf[k+WARP_SIZE+tid];
-                mtf[k+tid+1] = old;
-                old = next;
-            }
-            auto minbit = __ffs(n) - 1;
-            if (tid < minbit)  mtf[k+tid+1] = old;
-            outbuf[i] = k+minbit;
-            mtf[0] = cur;
+            n = __ballot (cur==old);
+            if (n) break;
+            auto next = mtf[k+WARP_SIZE+tid];
+            mtf[k+tid+1] = old;
+            old = next;
         }
+        
+        auto minbit = __ffs(n) - 1;
+        if (tid < minbit)  mtf[k+tid+1] = old;
+        if (tid==0)        outbuf[i] = k+minbit;
+        mtf[0] = cur;
     }
 }
 
@@ -125,7 +106,7 @@ int main (int argc, char **argv)
         outsize += outbytes;
     }
 
-    printf("rle: %.0lf => %.0lf\n", insize, outsize);
+    // printf("rle: %.0lf => %.0lf\n", insize, outsize);
     printf("%.6lf ms\n", duration);
     printf("%.6lf MiB/s\n", ((1000.0f/duration) * insize) / (1 << 20));
     fclose(infile);
