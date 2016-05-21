@@ -19,8 +19,8 @@ const int CHUNK = 4*1024;
 #define SYNC_WARP __threadfence_block  /* alternatively, __syncthreads or, better, __threadfence_warp */
 
 
-template <int NUM_WARPS = 4,  typename MTF_WORD = unsigned,  int CHUNK = 4*1024>
-__global__ void mtf (const byte* __restrict__ inbuf,  byte* __restrict__ outbuf,  int n,  int chunk)
+template <int NUM_WARPS = 4,  int CHUNK = 4*1024,  typename MTF_WORD = unsigned>
+__global__ void mtf (const byte* __restrict__ inbuf,  byte* __restrict__ outbuf,  int inbytes,  int chunk)
 {
     const int idx = (blockIdx.x * blockDim.x + threadIdx.x) / WARP_SIZE;
     const int tid = (blockIdx.x * blockDim.x + threadIdx.x) % WARP_SIZE;
@@ -48,7 +48,7 @@ __global__ void mtf (const byte* __restrict__ inbuf,  byte* __restrict__ outbuf,
             auto old = mtf[tid];
             next = inbuf[i+1];
 
-            n = __ballot (cur==old);
+            unsigned n = __ballot (cur==old);
             if (n==0)  goto deeper;
 
             auto minbit = __ffs(n) - 1;
@@ -87,7 +87,89 @@ __global__ void mtf (const byte* __restrict__ inbuf,  byte* __restrict__ outbuf,
 
 
 
-template <int NUM_WARPS = 4,  typename MTF_WORD = unsigned,  int CHUNK = 4*1024>
+template <int NUM_WARPS = 4,  int CHUNK = 4*1024,  typename MTF_WORD = unsigned>
+__global__ void mtf_2symbols (const byte* __restrict__ inbuf,  byte* __restrict__ outbuf,  int inbytes,  int chunk)
+{
+    const int idx = (blockIdx.x * blockDim.x + threadIdx.x) / WARP_SIZE;
+    const int tid = (blockIdx.x * blockDim.x + threadIdx.x) % WARP_SIZE;
+    const int warp_id = threadIdx.x / WARP_SIZE;
+
+    inbuf  += idx*chunk;
+    outbuf += idx*chunk;
+
+    __shared__  MTF_WORD mtf0 [ALPHABET_SIZE*NUM_WARPS];
+    auto mtf = mtf0 + ALPHABET_SIZE*warp_id;
+    for (int i=0; i<ALPHABET_SIZE; i+=WARP_SIZE)
+    {
+        mtf[i+tid] = i+tid;
+    }
+    __syncthreads();
+
+
+    for (int i=0; ; i+=2)
+    {
+        auto next1 = inbuf[i];
+        auto next2 = inbuf[i+1];
+        #pragma unroll 8
+        for ( ; i<CHUNK-3; i+=2)
+        {
+            auto cur1 = next1;
+            auto cur2 = next2;
+            auto old = mtf[tid];
+            next1 = inbuf[i+2];
+            next2 = inbuf[i+3];
+
+            unsigned n1 = __ballot (cur1==old);
+            unsigned n2 = __ballot (cur2==old);
+            if (n1==0 || n2==0)  goto deeper;
+            
+            auto minbit1 = __ffs(n1) - 1;
+            if (tid < minbit1)  mtf[tid+1] = old;
+            if (tid==0)         outbuf[i] = minbit1;
+            mtf[0] = cur1;
+            __syncthreads();
+
+            if (cur1==cur2)  {outbuf[i+1] = 0; continue;}   // not required after RLE    
+            
+            auto minbit2 = __ffs(n2) - 1;
+            if (tid < minbit2)  mtf[tid+1] = mtf[tid];
+            if (tid==0)         outbuf[i+1] = minbit2<minbit1? minbit2+1 : minbit2;
+            mtf[0] = cur2;
+            __syncthreads();
+        }
+        return;
+
+    deeper:  continue;
+        #pragma unroll
+        for (int add=0; add<2; add++)
+        {
+            auto cur = inbuf[i+add];
+            auto old = mtf[tid];
+
+            int k;  unsigned n;
+            #pragma unroll
+            for (k=0; k<ALPHABET_SIZE; k+=WARP_SIZE)
+            {
+                n = __ballot (cur==old);
+                if (n) break;
+                auto next = mtf[k+WARP_SIZE+tid];
+                mtf[k+tid+1] = old;
+                old = next;
+                __syncthreads();
+            }
+
+            auto minbit = __ffs(n) - 1;
+            if (tid < minbit)  mtf[k+tid+1] = old;
+            if (tid==0)        outbuf[i+add] = k+minbit;
+            mtf[0] = cur;
+            __syncthreads();
+        }
+    }
+}
+
+
+
+template <int NUM_WARPS = 4,  int CHUNK = 4*1024,  typename MTF_WORD = unsigned>
 __global__ void mtf_2buffers (const byte* __restrict__ inbuf,  byte* __restrict__ outbuf,  int inbytes,  int chunk)
 {
     const int idx = (blockIdx.x * blockDim.x + threadIdx.x) / WARP_SIZE;
@@ -213,7 +295,7 @@ int main (int argc, char **argv)
 
     unsigned char* inbuf  = new unsigned char[BUFSIZE];
     unsigned char* outbuf = new unsigned char[BUFSIZE];
-    double insize = 0,  outsize = 0,  duration[2];
+    double insize = 0,  outsize = 0,  duration[3] = {0};
 
     FILE* infile  = fopen (argv[1], "rb");
     FILE* outfile = fopen (argv[2]? argv[2] : "nul", "wb");
@@ -234,8 +316,9 @@ int main (int argc, char **argv)
             return start_stop;
         };
 
-        duration[0]  +=  time_run ([&] {mtf <<<(inbytes-1)/(CHUNK*NUM_WARPS)+1, 32*NUM_WARPS>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
-        duration[1]  +=  time_run ([&] {mtf_2buffers <<<(inbytes-1)/(CHUNK*NUM_WARPS*2)+1, 32*NUM_WARPS>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
+        duration[0]  +=  time_run ([&] {mtf         <NUM_WARPS,CHUNK> <<<(inbytes-1)/(CHUNK*NUM_WARPS)+1, 32*NUM_WARPS>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
+        duration[1]  +=  time_run ([&] {mtf_2symbols<NUM_WARPS,CHUNK> <<<(inbytes-1)/(CHUNK*NUM_WARPS)+1, 32*NUM_WARPS>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
+        duration[2]  +=  time_run ([&] {mtf_2buffers<NUM_WARPS,CHUNK> <<<(inbytes-1)/(CHUNK*NUM_WARPS*2)+1, 32*NUM_WARPS>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
 
         checkCudaErrors( cudaMemcpy (outbuf, d_outbuf, inbytes, cudaMemcpyDeviceToHost));
         checkCudaErrors( cudaDeviceSynchronize());
@@ -248,9 +331,9 @@ int main (int argc, char **argv)
     }
 
     // printf("rle: %.0lf => %.0lf\n", insize, outsize);
-    char *mtf_name[] = {"scalar mtf", "2-chunk mtf"};
-    for (int i=0; i<2; i++)
-        printf("%-11s:  %.6lf ms, %.6lf MiB/s\n", mtf_name[i], duration[i], ((1000.0f/duration[i]) * insize) / (1 << 20));
+    char *mtf_name[] = {"scalar mtf", "2-symbol mtf", "2-buffer mtf"};
+    for (int i=0; i<3; i++)
+        printf("%-12s:  %.6lf ms, %.6lf MiB/s\n", mtf_name[i], duration[i], ((1000.0f/duration[i]) * insize) / (1 << 20));
     fclose(infile);
     fclose(outfile);
     cudaProfilerStop();
