@@ -21,13 +21,13 @@ const int CHUNK = 4*1024;
 
 
 template <int CHUNK>
-__global__ void mtf_thread (const byte* __restrict__ _inbuf,  byte* __restrict__ _outbuf,  int inbytes,  int chunk)
+__global__ void mtf_thread (const byte* inbuf,  byte* outbuf,  int inbytes,  int chunk)
 {
     const int idx = blockIdx.x * blockDim.x + threadIdx.x;
     const int tid = idx % WARP_SIZE;
 
-    const byte* __restrict__ inbuf  = _inbuf+idx*CHUNK;
-          byte* __restrict__ outbuf = _outbuf+idx*CHUNK;
+    inbuf  += idx*CHUNK;
+    outbuf += idx*CHUNK;
 
     volatile __shared__  byte mtf0 [ALPHABET_SIZE*WARP_SIZE];
     auto mtf = mtf0 + 4*tid;
@@ -38,9 +38,9 @@ __global__ void mtf_thread (const byte* __restrict__ _inbuf,  byte* __restrict__
     }
 
 
-    int i = 0,  k = 0;;
-    auto cur  = inbuf[i];
-    auto next = inbuf[i+1];
+    int i = 0,  k = 0;
+    auto cur  = *inbuf++;
+    auto next = *inbuf++;
     auto old  = mtf[0];
 
     for(;;)
@@ -53,11 +53,11 @@ __global__ void mtf_thread (const byte* __restrict__ _inbuf,  byte* __restrict__
             old = next;
         } else {
             mtf[0] = cur;
-            outbuf[i] = k;
+            *outbuf++ = k;
             if (++i >= CHUNK)  return;
             old = cur;
             cur = next;
-            next = inbuf[i+1];
+            next = *inbuf++;
             k = 0;
         }
     }
@@ -362,11 +362,9 @@ int main (int argc, char **argv)
             return start_stop;
         };
 
-/*
         duration[0]  +=  time_run ([&] {mtf         <NUM_WARPS,CHUNK> <<<(inbytes-1)/(CHUNK*NUM_WARPS)+1,   NUM_WARPS*WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
         duration[1]  +=  time_run ([&] {mtf_2symbols<NUM_WARPS,CHUNK> <<<(inbytes-1)/(CHUNK*NUM_WARPS)+1,   NUM_WARPS*WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
         duration[2]  +=  time_run ([&] {mtf_2buffers<NUM_WARPS,CHUNK> <<<(inbytes-1)/(CHUNK*NUM_WARPS*2)+1, NUM_WARPS*WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
-*/
         duration[3]  +=  time_run ([&] {mtf_thread  <CHUNK>           <<<(inbytes-1)/(CHUNK*WARP_SIZE)+1, WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
 
         checkCudaErrors( cudaMemcpy (outbuf, d_outbuf, inbytes, cudaMemcpyDeviceToHost));
