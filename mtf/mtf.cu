@@ -21,21 +21,21 @@ const int CHUNK = 4*1024;
 
 
 template <int CHUNK>
-__global__ void mtf_thread (const byte* __restrict__ inbuf,  byte* __restrict__ outbuf,  int inbytes,  int chunk)
+__global__ void mtf_thread (const byte* __restrict__ _inbuf,  byte* __restrict__ _outbuf,  int inbytes,  int chunk)
 {
     const int idx = blockIdx.x * blockDim.x + threadIdx.x;
     const int tid = idx % WARP_SIZE;
 
-    inbuf  += idx*chunk;
-    outbuf += idx*chunk;
+    const byte* __restrict__ inbuf  = _inbuf+idx*CHUNK;
+          byte* __restrict__ outbuf = _outbuf+idx*CHUNK;
 
     volatile __shared__  byte mtf0 [ALPHABET_SIZE*WARP_SIZE];
-    auto mtf = mtf0 + ALPHABET_SIZE*tid;
-    for (int i=0; i<ALPHABET_SIZE; i++)
+    auto mtf = mtf0 + 4*tid;
+    for (int k=0; k<ALPHABET_SIZE; k++)
     {
-        mtf[i] = i;
+        auto index = (k&252)*32+(k&3);
+        mtf[index] = k;
     }
-    __syncthreads();
 
 
     int i = 0,  k = 0;;
@@ -47,8 +47,9 @@ __global__ void mtf_thread (const byte* __restrict__ inbuf,  byte* __restrict__ 
     {
         if (cur != old) {
             k++;
-            auto next = mtf[k];
-            mtf[k] = old;
+            auto index = (k&252)*32+(k&3);
+            auto next = mtf[index];
+            mtf[index] = old;
             old = next;
         } else {
             mtf[0] = cur;
