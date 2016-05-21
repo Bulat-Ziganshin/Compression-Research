@@ -13,13 +13,13 @@ const int WARP_SIZE = 32;
 typedef unsigned char byte;
 
 // Parameters
-const int NUM_WARPS = 4;
+const int NUM_WARPS = 6;
 const int BUFSIZE = 128*1024*1024;
 const int CHUNK = 4*1024;
 #define SYNC_WARP __threadfence_block  /* alternatively, __syncthreads or, better, __threadfence_warp */
 
 
-template <int NUM_WARPS = 4,  int CHUNK = 4*1024,  typename MTF_WORD = unsigned>
+template <int NUM_WARPS,  int CHUNK,  typename MTF_WORD = unsigned>
 __global__ void mtf (const byte* __restrict__ inbuf,  byte* __restrict__ outbuf,  int inbytes,  int chunk)
 {
     const int idx = (blockIdx.x * blockDim.x + threadIdx.x) / WARP_SIZE;
@@ -42,7 +42,7 @@ __global__ void mtf (const byte* __restrict__ inbuf,  byte* __restrict__ outbuf,
     {
         auto next = inbuf[i];
         #pragma unroll 4
-        for ( ; i<CHUNK-1; i++)
+        for ( ; i<CHUNK; i++)
         {
             auto cur = next;
             auto old = mtf[tid];
@@ -87,7 +87,7 @@ __global__ void mtf (const byte* __restrict__ inbuf,  byte* __restrict__ outbuf,
 
 
 
-template <int NUM_WARPS = 4,  int CHUNK = 4*1024,  typename MTF_WORD = unsigned>
+template <int NUM_WARPS,  int CHUNK,  typename MTF_WORD = unsigned>
 __global__ void mtf_2symbols (const byte* __restrict__ inbuf,  byte* __restrict__ outbuf,  int inbytes,  int chunk)
 {
     const int idx = (blockIdx.x * blockDim.x + threadIdx.x) / WARP_SIZE;
@@ -111,7 +111,7 @@ __global__ void mtf_2symbols (const byte* __restrict__ inbuf,  byte* __restrict_
         auto next1 = inbuf[i];
         auto next2 = inbuf[i+1];
         #pragma unroll 8
-        for ( ; i<CHUNK-3; i+=2)
+        for ( ; i<CHUNK; i+=2)
         {
             auto cur1 = next1;
             auto cur2 = next2;
@@ -122,15 +122,15 @@ __global__ void mtf_2symbols (const byte* __restrict__ inbuf,  byte* __restrict_
             unsigned n1 = __ballot (cur1==old);
             unsigned n2 = __ballot (cur2==old);
             if (n1==0 || n2==0)  goto deeper;
-            
+
             auto minbit1 = __ffs(n1) - 1;
             if (tid < minbit1)  mtf[tid+1] = old;
             if (tid==0)         outbuf[i] = minbit1;
             mtf[0] = cur1;
             __syncthreads();
 
-            if (cur1==cur2)  {outbuf[i+1] = 0; continue;}   // not required after RLE    
-            
+            if (cur1==cur2)  {outbuf[i+1] = 0; continue;}   // not required after RLE
+
             auto minbit2 = __ffs(n2) - 1;
             if (tid < minbit2)  mtf[tid+1] = mtf[tid];
             if (tid==0)         outbuf[i+1] = minbit2<minbit1? minbit2+1 : minbit2;
@@ -139,7 +139,7 @@ __global__ void mtf_2symbols (const byte* __restrict__ inbuf,  byte* __restrict_
         }
         return;
 
-    deeper:  continue;
+    deeper:
         #pragma unroll
         for (int add=0; add<2; add++)
         {
@@ -148,7 +148,7 @@ __global__ void mtf_2symbols (const byte* __restrict__ inbuf,  byte* __restrict_
 
             int k;  unsigned n;
             #pragma unroll
-            for (k=0; k<ALPHABET_SIZE; k+=WARP_SIZE)
+            for (k=0; k<ALPHABET_SIZE-WARP_SIZE; k+=WARP_SIZE)     // It should be "k<ALPHABET_SIZE"
             {
                 n = __ballot (cur==old);
                 if (n) break;
@@ -169,7 +169,7 @@ __global__ void mtf_2symbols (const byte* __restrict__ inbuf,  byte* __restrict_
 
 
 
-template <int NUM_WARPS = 4,  int CHUNK = 4*1024,  typename MTF_WORD = unsigned>
+template <int NUM_WARPS,  int CHUNK,  typename MTF_WORD = unsigned>
 __global__ void mtf_2buffers (const byte* __restrict__ inbuf,  byte* __restrict__ outbuf,  int inbytes,  int chunk)
 {
     const int idx = (blockIdx.x * blockDim.x + threadIdx.x) / WARP_SIZE;
@@ -201,7 +201,7 @@ __global__ void mtf_2buffers (const byte* __restrict__ inbuf,  byte* __restrict_
         auto next1 = inbuf1[i];
         auto next2 = inbuf2[i];
         #pragma unroll 4
-        for ( ; i<CHUNK-1; i++)
+        for ( ; i<CHUNK; i++)
         {
             auto cur1 = next1;
             auto old1 = mtf1[tid];
@@ -286,8 +286,8 @@ int main (int argc, char **argv)
 
     unsigned char* d_inbuf;
     unsigned char* d_outbuf;
-    checkCudaErrors( cudaMalloc((void**)(&d_inbuf),  BUFSIZE));
-    checkCudaErrors( cudaMalloc((void**)(&d_outbuf), BUFSIZE));
+    checkCudaErrors( cudaMalloc((void**)(&d_inbuf),  BUFSIZE+CHUNK));
+    checkCudaErrors( cudaMalloc((void**)(&d_outbuf), BUFSIZE+CHUNK));
 
     cudaEvent_t start, stop;
     checkCudaErrors( cudaEventCreate(&start));
