@@ -65,6 +65,65 @@ __global__ void mtf_thread (const byte* inbuf,  byte* outbuf,  int inbytes,  int
 
 
 
+template <int CHUNK>
+__global__ void mtf_thread_by4 (const byte* inbuf,  byte* outbuf,  int inbytes,  int chunk)
+{
+    const int idx = blockIdx.x * blockDim.x + threadIdx.x;
+    const int tid = idx % WARP_SIZE;
+
+    inbuf  += idx*CHUNK;
+    outbuf += idx*CHUNK;
+
+    volatile __shared__  unsigned mtf0 [ALPHABET_SIZE*WARP_SIZE/4];
+    auto mtf = mtf0 + tid;
+    for (int k=0; k<ALPHABET_SIZE; k++)
+    {
+        auto index = (k&252)*32+(k&3);
+        ((byte*)mtf)[index] = k;
+    }
+
+
+    int i = 0,  k = 0;
+    auto cur  = *inbuf++;
+    auto next = *inbuf++;
+    auto mtf_k = mtf;
+    auto old  = *mtf_k;
+    unsigned sym = cur;
+
+    for(;;)
+    {
+        auto old1 = old&255, old2 = (old>>8)&255, old3 = (old>>16)&255, old4 = (old>>24);
+        int x = cur==old1? 0 :
+                cur==old2? 1 :
+                cur==old3? 2 :
+                cur==old4? 3 : -1;
+        if (x < 0) {
+            *mtf_k = (old<<8) + sym;
+            sym = old4;
+            k+=4;  mtf_k += 32;
+if (k>=256) {printf("!"); return;}
+            old = *mtf_k;
+        } else {
+            *outbuf++ = k+x;
+            if (++i >= CHUNK)  return;
+
+            if (x >= 3)   ((byte*)mtf_k)[3] = old3;
+            if (x >= 2)   ((byte*)mtf_k)[2] = old2;
+            if (x >= 1)   ((byte*)mtf_k)[1] = old1;
+                          ((byte*)mtf_k)[0] = sym;
+
+            mtf_k = (unsigned*)mtf;
+            old  = *mtf_k;
+
+            cur = next;
+            next = *inbuf++;
+            k = 0;
+        }
+    }
+}
+
+
+
 template <int NUM_WARPS,  int CHUNK,  typename MTF_WORD = unsigned>
 __global__ void mtf (const byte* __restrict__ inbuf,  byte* __restrict__ outbuf,  int inbytes,  int chunk)
 {
@@ -323,6 +382,7 @@ __global__ void mtf_2buffers (const byte* __restrict__ inbuf,  byte* __restrict_
 }
 
 
+
 int main (int argc, char **argv)
 {
     if (argc < 2) {
@@ -362,10 +422,11 @@ int main (int argc, char **argv)
             return start_stop;
         };
 
-        duration[0]  +=  time_run ([&] {mtf         <NUM_WARPS,CHUNK> <<<(inbytes-1)/(CHUNK*NUM_WARPS)+1,   NUM_WARPS*WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
-        duration[1]  +=  time_run ([&] {mtf_2symbols<NUM_WARPS,CHUNK> <<<(inbytes-1)/(CHUNK*NUM_WARPS)+1,   NUM_WARPS*WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
-        duration[2]  +=  time_run ([&] {mtf_2buffers<NUM_WARPS,CHUNK> <<<(inbytes-1)/(CHUNK*NUM_WARPS*2)+1, NUM_WARPS*WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
-        duration[3]  +=  time_run ([&] {mtf_thread  <CHUNK>           <<<(inbytes-1)/(CHUNK*WARP_SIZE)+1, WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
+        duration[0]  +=  time_run ([&] {mtf           <NUM_WARPS,CHUNK> <<<(inbytes-1)/(CHUNK*NUM_WARPS)+1,   NUM_WARPS*WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
+        duration[1]  +=  time_run ([&] {mtf_2symbols  <NUM_WARPS,CHUNK> <<<(inbytes-1)/(CHUNK*NUM_WARPS)+1,   NUM_WARPS*WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
+        duration[2]  +=  time_run ([&] {mtf_2buffers  <NUM_WARPS,CHUNK> <<<(inbytes-1)/(CHUNK*NUM_WARPS*2)+1, NUM_WARPS*WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
+        duration[3]  +=  time_run ([&] {mtf_thread    <CHUNK>           <<<(inbytes-1)/(CHUNK*WARP_SIZE)+1,             WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
+        duration[4]  +=  time_run ([&] {mtf_thread_by4<CHUNK>           <<<(inbytes-1)/(CHUNK*WARP_SIZE)+1,             WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
 
         checkCudaErrors( cudaMemcpy (outbuf, d_outbuf, inbytes, cudaMemcpyDeviceToHost));
         checkCudaErrors( cudaDeviceSynchronize());
@@ -378,7 +439,7 @@ int main (int argc, char **argv)
     }
 
     // printf("rle: %.0lf => %.0lf\n", insize, outsize);
-    char *mtf_name[] = {"scalar mtf", "2-symbol mtf", "2-buffer mtf", "thread mtf"};
+    char *mtf_name[] = {"scalar mtf", "2-symbol mtf", "2-buffer mtf", "thread mtf", "thread-by4 mtf"};
     for (int i=0; i<5; i++)
         if (duration[i])
             printf("%-12s:  %.6lf ms, %.6lf MiB/s\n", mtf_name[i], duration[i], ((1000.0f/duration[i]) * insize) / (1 << 20));
