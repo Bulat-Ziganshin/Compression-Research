@@ -93,32 +93,33 @@ __global__ void mtf_thread_by4 (const byte* inbuf,  byte* outbuf,  int inbytes, 
     for(;;)
     {
         auto old1 = old&255, old2 = (old>>8)&255, old3 = (old>>16)&255, old4 = (old>>24);
-        int x = cur==old1? 0 :
-                cur==old2? 1 :
-                cur==old3? 2 :
-                cur==old4? 3 : -1;
-        if (x < 0) {
-            *mtf_k = (old<<8) + sym;
-            sym = old4;
-            k+=4;  mtf_k += 32;
-if (k>=256) {printf("!"); return;}
-            old = *mtf_k;
-        } else {
-            *outbuf++ = k+x;
-            if (++i >= CHUNK)  return;
+        ((byte*)mtf_k)[0] = sym;
+        if (cur!=old1) {
+            ((byte*)mtf_k)[1] = old1;
+            k++;
+            if (cur!=old2) {
+                ((byte*)mtf_k)[2] = old2;
+                k++;
+                if (cur!=old3) {
+                    ((byte*)mtf_k)[3] = old3;
+                    k++;
+                    if (cur!=old4) {
+                        sym = old4;
+                        k++;  mtf_k += 32;    //if (k>=256) {printf("!"); return;}            
+                        old = *mtf_k;
+                        continue;
+        }}}}                
+        //*mtf_k = (old<<8) + sym;
 
-            if (x >= 3)   ((byte*)mtf_k)[3] = old3;
-            if (x >= 2)   ((byte*)mtf_k)[2] = old2;
-            if (x >= 1)   ((byte*)mtf_k)[1] = old1;
-                          ((byte*)mtf_k)[0] = sym;
+        *outbuf++ = k;
+        if (++i >= CHUNK)  return;
 
-            mtf_k = (unsigned*)mtf;
-            old  = *mtf_k;
+        mtf_k = (unsigned*)mtf;
+        old  = *mtf_k;
 
-            cur = next;
-            next = *inbuf++;
-            k = 0;
-        }
+        sym = cur = next;
+        next = *inbuf++;
+        k = 0;
     }
 }
 
