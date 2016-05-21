@@ -415,10 +415,10 @@ int main (int argc, char **argv)
         };
 
         duration[0]  +=  time_run ([&] {mtf           <NUM_WARPS,CHUNK> <<<(inbytes-1)/(CHUNK*NUM_WARPS)+1,   NUM_WARPS*WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
-        duration[1]  +=  time_run ([&] {mtf_2symbols  <NUM_WARPS,CHUNK> <<<(inbytes-1)/(CHUNK*NUM_WARPS)+1,   NUM_WARPS*WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
-        duration[2]  +=  time_run ([&] {mtf_2buffers  <NUM_WARPS,CHUNK> <<<(inbytes-1)/(CHUNK*NUM_WARPS*2)+1, NUM_WARPS*WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
-        duration[3]  +=  time_run ([&] {mtf_thread    <CHUNK>           <<<(inbytes-1)/(CHUNK*WARP_SIZE)+1,             WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
-        duration[4]  +=  time_run ([&] {mtf_thread_by4<CHUNK>           <<<(inbytes-1)/(CHUNK*WARP_SIZE)+1,             WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
+        duration[1]  +=  time_run ([&] {mtf_thread    <CHUNK>           <<<(inbytes-1)/(CHUNK*WARP_SIZE)+1,             WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
+        duration[2]  +=  time_run ([&] {mtf_thread_by4<CHUNK>           <<<(inbytes-1)/(CHUNK*WARP_SIZE)+1,             WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
+        duration[3]  +=  time_run ([&] {mtf_2symbols  <NUM_WARPS,CHUNK> <<<(inbytes-1)/(CHUNK*NUM_WARPS)+1,   NUM_WARPS*WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
+        duration[4]  +=  time_run ([&] {mtf_2buffers  <NUM_WARPS,CHUNK> <<<(inbytes-1)/(CHUNK*NUM_WARPS*2)+1, NUM_WARPS*WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
 
         checkCudaErrors( cudaMemcpy (outbuf, d_outbuf, inbytes, cudaMemcpyDeviceToHost));
         checkCudaErrors( cudaDeviceSynchronize());
@@ -431,10 +431,10 @@ int main (int argc, char **argv)
     }
 
     // printf("rle: %.0lf => %.0lf\n", insize, outsize);
-    char *mtf_name[] = {"scalar mtf", "2-symbol mtf", "2-buffer mtf", "thread mtf", "thread-by4 mtf"};
+    char *mtf_name[] = {"scalar mtf", "thread mtf", "thread-by4 mtf", "2-symbol mtf", "2-buffer mtf"};
     for (int i=0; i<5; i++)
         if (duration[i])
-            printf("%-12s:  %.6lf ms, %.6lf MiB/s\n", mtf_name[i], duration[i], ((1000.0f/duration[i]) * insize) / (1 << 20));
+            printf("%-14s:  %.6lf ms,  %.6lf MiB/s\n", mtf_name[i], duration[i], ((1000.0f/duration[i]) * insize) / (1 << 20));
     fclose(infile);
     fclose(outfile);
     cudaProfilerStop();
