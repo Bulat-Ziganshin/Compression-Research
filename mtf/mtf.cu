@@ -103,7 +103,7 @@ __global__ void mtf_2symbols (const byte* __restrict__ inbuf,  byte* __restrict_
     {
         mtf[i+tid] = i+tid;
     }
-    __syncthreads();
+    SYNC_WARP();
 
 
     for (int i=0; ; i+=2)
@@ -127,15 +127,15 @@ __global__ void mtf_2symbols (const byte* __restrict__ inbuf,  byte* __restrict_
             if (tid < minbit1)  mtf[tid+1] = old;
             if (tid==0)         outbuf[i] = minbit1;
             mtf[0] = cur1;
-            __syncthreads();
-
-            if (cur1==cur2)  {outbuf[i+1] = 0; continue;}   // not required after RLE
+            SYNC_WARP();
 
             auto minbit2 = __ffs(n2) - 1;
+            if (minbit2 < minbit1)  minbit2++;     // the second symbol was shifted one more position down by the first one
+            if (cur1==cur2)         minbit2 = 0;   // not required after RLE
             if (tid < minbit2)  mtf[tid+1] = mtf[tid];
-            if (tid==0)         outbuf[i+1] = minbit2<minbit1? minbit2+1 : minbit2;
+            if (tid==0)         outbuf[i+1] = minbit2;
             mtf[0] = cur2;
-            __syncthreads();
+            SYNC_WARP();
         }
         return;
 
@@ -148,21 +148,21 @@ __global__ void mtf_2symbols (const byte* __restrict__ inbuf,  byte* __restrict_
 
             int k;  unsigned n;
             #pragma unroll
-            for (k=0; k<ALPHABET_SIZE-WARP_SIZE; k+=WARP_SIZE)     // It should be "k<ALPHABET_SIZE"
+            for (k=0; k<ALPHABET_SIZE; k+=WARP_SIZE)
             {
                 n = __ballot (cur==old);
                 if (n) break;
                 auto next = mtf[k+WARP_SIZE+tid];
                 mtf[k+tid+1] = old;
                 old = next;
-                __syncthreads();
+                SYNC_WARP();
             }
 
             auto minbit = __ffs(n) - 1;
             if (tid < minbit)  mtf[k+tid+1] = old;
             if (tid==0)        outbuf[i+add] = k+minbit;
             mtf[0] = cur;
-            __syncthreads();
+            SYNC_WARP();
         }
     }
 }
