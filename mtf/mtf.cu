@@ -38,24 +38,28 @@ __global__ void mtf_thread (const byte* __restrict__ inbuf,  byte* __restrict__ 
     __syncthreads();
 
 
-    auto next = inbuf[0];
-    for (int i=0; i<CHUNK; i++)
-    {
-        auto cur = next;
-        auto old = mtf[0];
-        next = inbuf[i+1];
-        int k;
-        for (k=0; k<ALPHABET_SIZE; k++)
-        {
-            if (cur == old)  break;
-            auto next = mtf[k+1];
-            mtf[k+1] = old;
-            old = next;
-        }
-        mtf[0] = cur;
-        outbuf[i] = k;
-    }
+    int i = 0,  k = 0;;
+    auto cur  = inbuf[i];
+    auto next = inbuf[i+1];
+    auto old  = mtf[0];
 
+    for(;;)
+    {
+        if (cur != old) {
+            k++;
+            auto next = mtf[k];
+            mtf[k] = old;
+            old = next;
+        } else {
+            mtf[0] = cur;
+            outbuf[i] = k;
+            if (++i >= CHUNK)  return;
+            old = cur;
+            cur = next;
+            next = inbuf[i+1];
+            k = 0;
+        }
+    }
 }
 
 
