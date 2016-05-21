@@ -74,12 +74,12 @@ __global__ void mtf_thread_by4 (const byte* inbuf,  byte* outbuf,  int inbytes, 
     inbuf  += idx*CHUNK;
     outbuf += idx*CHUNK;
 
-    volatile __shared__  unsigned mtf0 [ALPHABET_SIZE*WARP_SIZE/4];
-    auto mtf = mtf0 + tid;
+    volatile __shared__  byte mtf0 [ALPHABET_SIZE*WARP_SIZE];
+    auto mtf = mtf0 + tid*4;
     for (int k=0; k<ALPHABET_SIZE; k++)
     {
         auto index = (k&252)*32+(k&3);
-        ((byte*)mtf)[index] = k;
+        mtf[index] = k;
     }
 
 
@@ -87,26 +87,26 @@ __global__ void mtf_thread_by4 (const byte* inbuf,  byte* outbuf,  int inbytes, 
     auto cur  = *inbuf++;
     auto next = *inbuf++;
     auto mtf_k = mtf;
-    auto old  = *mtf_k;
-    unsigned sym = cur;
+    auto old3 = cur;
 
     for(;;)
     {
-        auto old1 = old&255, old2 = (old>>8)&255, old3 = (old>>16)&255, old4 = (old>>24);
-        ((byte*)mtf_k)[0] = sym;
-        if (cur!=old1) {
-            ((byte*)mtf_k)[1] = old1;
+        auto old0 = mtf_k[0];
+        mtf_k[0] = old3;
+        if (cur!=old0) {
+            auto old1 = mtf_k[1];
+            mtf_k[1] = old0;
             k++;
-            if (cur!=old2) {
-                ((byte*)mtf_k)[2] = old2;
+            if (cur!=old1) {
+                auto old2 = mtf_k[2];
+                mtf_k[2] = old1;
                 k++;
-                if (cur!=old3) {
-                    ((byte*)mtf_k)[3] = old3;
+                if (cur!=old2) {
+                    old3 = mtf_k[3];
+                    mtf_k[3] = old2;
                     k++;
-                    if (cur!=old4) {
-                        sym = old4;
-                        k++;  mtf_k += 32;    //if (k>=256) {printf("!"); return;}            
-                        old = *mtf_k;
+                    if (cur!=old3) {
+                        k++;  mtf_k += 128;
                         continue;
         }}}}                
         //*mtf_k = (old<<8) + sym;
@@ -114,10 +114,9 @@ __global__ void mtf_thread_by4 (const byte* inbuf,  byte* outbuf,  int inbytes, 
         *outbuf++ = k;
         if (++i >= CHUNK)  return;
 
-        mtf_k = (unsigned*)mtf;
-        old  = *mtf_k;
+        mtf_k = mtf;
 
-        sym = cur = next;
+        old3 = cur = next;
         next = *inbuf++;
         k = 0;
     }
