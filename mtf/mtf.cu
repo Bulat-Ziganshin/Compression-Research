@@ -9,6 +9,7 @@ using namespace std::chrono;
 #include <cuda_profiler_api.h >
 #include <cuda.h>
 
+#include "wall_clock_timer.h"  // StartTimer() and GetTimer()
 #include "cuda_common.h"       // my own helper functions
 #include "sais.c"              // OpenBWT implementation
 
@@ -444,11 +445,10 @@ int main (int argc, char **argv)
             memcpy (inbuf, outbuf, inbytes);
         }
 
-        high_resolution_clock::time_point t1 = high_resolution_clock::now();
-        unsigned char MTFTable[ALPHABET_SIZE];
-        auto ptr = qlfc (inbuf, outbuf, inbytes, MTFTable);
-        high_resolution_clock::time_point t2 = high_resolution_clock::now();
-        duration[0] = duration_cast<nanoseconds>( t2 - t1 ).count() / 1000000;
+        StartTimer();
+            unsigned char MTFTable[ALPHABET_SIZE];
+            auto ptr = qlfc (inbuf, outbuf, inbytes, MTFTable);
+        duration[0] += GetTimer();
         outsize += outbuf+inbytes - ptr;
         int num = 1;
 
