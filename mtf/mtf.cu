@@ -26,7 +26,7 @@ const int CHUNK = 4*1024;
 
 
 
-template <int CHUNK>
+template <int CHUNK, int MTF_SYMBOLS = ALPHABET_SIZE>
 __global__ void mtf_thread (const byte* inbuf,  byte* outbuf,  int inbytes,  int chunk)
 {
     const int idx = blockIdx.x * blockDim.x + threadIdx.x;
@@ -37,9 +37,9 @@ __global__ void mtf_thread (const byte* inbuf,  byte* outbuf,  int inbytes,  int
     auto cur  = *inbuf++;
     auto next = *inbuf++;
 
-    volatile __shared__  byte mtf0 [ALPHABET_SIZE*WARP_SIZE];
+    volatile __shared__  byte mtf0 [MTF_SYMBOLS*WARP_SIZE];
     auto mtf = mtf0 + 4*tid;
-    for (int k=0; k<ALPHABET_SIZE; k++)
+    for (int k=0; k<MTF_SYMBOLS; k++)
     {
         auto index = (k&252)*32+(k&3);
         mtf[index] = k;
@@ -51,7 +51,7 @@ __global__ void mtf_thread (const byte* inbuf,  byte* outbuf,  int inbytes,  int
 
     for(;;)
     {
-        if (cur != old) {
+        if (cur != old  &&  !(MTF_SYMBOLS < ALPHABET_SIZE  &&  k >= MTF_SYMBOLS-1)) {
             k++;
             auto index = (k&252)*32+(k&3);
             auto next = mtf[index];
@@ -71,7 +71,7 @@ __global__ void mtf_thread (const byte* inbuf,  byte* outbuf,  int inbytes,  int
 
 
 
-template <int CHUNK>
+template <int CHUNK, int MTF_SYMBOLS = ALPHABET_SIZE>
 __global__ void mtf_thread_by4 (const byte* inbuf,  byte* outbuf,  int inbytes,  int chunk)
 {
     const int idx = blockIdx.x * blockDim.x + threadIdx.x;
@@ -82,9 +82,9 @@ __global__ void mtf_thread_by4 (const byte* inbuf,  byte* outbuf,  int inbytes, 
     auto cur  = *inbuf++;
     auto next = *inbuf++;
 
-    volatile __shared__  byte mtf0 [ALPHABET_SIZE*WARP_SIZE];
+    volatile __shared__  byte mtf0 [MTF_SYMBOLS*WARP_SIZE];
     auto mtf = mtf0 + tid*4;
-    for (int k=0; k<ALPHABET_SIZE; k+=4)
+    for (int k=0; k<MTF_SYMBOLS; k+=4)
     {
         *(unsigned*)(mtf+k*32)  =  k + ((k+1)<<8) + ((k+2)<<16) + ((k+3)<<24);
     }
@@ -106,7 +106,8 @@ __global__ void mtf_thread_by4 (const byte* inbuf,  byte* outbuf,  int inbytes, 
             k++;
         }
         mtf_k += 128;
-        continue;
+        if (!(MTF_SYMBOLS < ALPHABET_SIZE  &&  k >= MTF_SYMBOLS-1))
+            continue;
 
 found:
         *outbuf++ = k;
@@ -401,7 +402,7 @@ int main (int argc, char **argv)
 
     unsigned char* inbuf  = new unsigned char[BUFSIZE];
     unsigned char* outbuf = new unsigned char[BUFSIZE];
-    double insize = 0,  outsize = 0,  duration[10] = {0};
+    double insize = 0,  outsize = 0,  duration[100] = {0};  char *mtf_name[100] = {"cpu (1 thread)"};
 
     FILE* infile  = fopen (argv[1], "rb");
     FILE* outfile = fopen (argv[2]? argv[3] : "nul", "wb");
@@ -413,7 +414,7 @@ int main (int argc, char **argv)
         printf ("Can't open outfile %s\n", argv[3]);
         return 1;
     }
-    int save_n  =  argc==4? atoi(argv[2]) : 0;
+    int save_num  =  argc==4? atoi(argv[2]) : 0;
     DisplayCudaDevice();
 
 
@@ -425,17 +426,19 @@ int main (int argc, char **argv)
         high_resolution_clock::time_point t2 = high_resolution_clock::now();
         duration[0] = duration_cast<nanoseconds>( t2 - t1 ).count() / 1000000;
         outsize += outbuf+inbytes - ptr;
+        int num = 1;
 
         checkCudaErrors( cudaMemcpy (d_inbuf, inbuf, inbytes, cudaMemcpyHostToDevice));
         checkCudaErrors( cudaDeviceSynchronize());
 
-        auto time_run = [&] (int i, std::function<void(void)> f) {
+        auto time_run = [&] (char *name, std::function<void(void)> f) {
+            mtf_name[num] = name;
             checkCudaErrors( cudaEventRecord (start, nullptr));
             f();
             checkCudaErrors( cudaEventRecord (stop, nullptr));
             checkCudaErrors( cudaDeviceSynchronize());
 
-            if (i == save_n) {
+            if (num == save_num) {
                 checkCudaErrors( cudaMemcpy (outbuf, d_outbuf, inbytes, cudaMemcpyDeviceToHost));
                 checkCudaErrors( cudaDeviceSynchronize());
                 ptr = outbuf;
@@ -443,14 +446,23 @@ int main (int argc, char **argv)
 
             float start_stop;
             checkCudaErrors( cudaEventElapsedTime (&start_stop, start, stop));
-            duration[i] += start_stop;
+            duration[num] += start_stop;
+            num++;
         };
 
-        time_run (1, [&] {mtf_thread    <CHUNK>           <<<(inbytes-1)/(CHUNK*WARP_SIZE)+1,             WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
-        time_run (2, [&] {mtf_thread_by4<CHUNK>           <<<(inbytes-1)/(CHUNK*WARP_SIZE)+1,             WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
-        time_run (3, [&] {mtf_scalar    <NUM_WARPS,CHUNK> <<<(inbytes-1)/(CHUNK*NUM_WARPS)+1,   NUM_WARPS*WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
-        time_run (4, [&] {mtf_2symbols  <NUM_WARPS,CHUNK> <<<(inbytes-1)/(CHUNK*NUM_WARPS)+1,   NUM_WARPS*WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
-        time_run (5, [&] {mtf_2buffers  <NUM_WARPS,CHUNK> <<<(inbytes-1)/(CHUNK*NUM_WARPS*2)+1, NUM_WARPS*WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
+        time_run ("mtf_scalar        ", [&] {mtf_scalar    <NUM_WARPS,CHUNK> <<<(inbytes-1)/(CHUNK*NUM_WARPS)+1,   NUM_WARPS*WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
+        time_run ("mtf_2symbols      ", [&] {mtf_2symbols  <NUM_WARPS,CHUNK> <<<(inbytes-1)/(CHUNK*NUM_WARPS)+1,   NUM_WARPS*WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
+        time_run ("mtf_2buffers      ", [&] {mtf_2buffers  <NUM_WARPS,CHUNK> <<<(inbytes-1)/(CHUNK*NUM_WARPS*2)+1, NUM_WARPS*WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
+        time_run ("mtf_thread        ", [&] {mtf_thread    <CHUNK>           <<<(inbytes-1)/(CHUNK*WARP_SIZE)+1,             WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
+        time_run ("mtf_thread_by4    ", [&] {mtf_thread_by4<CHUNK>           <<<(inbytes-1)/(CHUNK*WARP_SIZE)+1,             WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
+        time_run ("mtf_thread<8>     ", [&] {mtf_thread    <CHUNK,8>         <<<(inbytes-1)/(CHUNK*WARP_SIZE)+1,             WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
+        time_run ("mtf_thread<16>    ", [&] {mtf_thread    <CHUNK,16>        <<<(inbytes-1)/(CHUNK*WARP_SIZE)+1,             WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
+        time_run ("mtf_thread<32>    ", [&] {mtf_thread    <CHUNK,32>        <<<(inbytes-1)/(CHUNK*WARP_SIZE)+1,             WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
+        time_run ("mtf_thread<64>    ", [&] {mtf_thread    <CHUNK,64>        <<<(inbytes-1)/(CHUNK*WARP_SIZE)+1,             WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
+        time_run ("mtf_thread_by4<8> ", [&] {mtf_thread_by4<CHUNK,8>         <<<(inbytes-1)/(CHUNK*WARP_SIZE)+1,             WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
+        time_run ("mtf_thread_by4<16>", [&] {mtf_thread_by4<CHUNK,16>        <<<(inbytes-1)/(CHUNK*WARP_SIZE)+1,             WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
+        time_run ("mtf_thread_by4<32>", [&] {mtf_thread_by4<CHUNK,32>        <<<(inbytes-1)/(CHUNK*WARP_SIZE)+1,             WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
+        time_run ("mtf_thread_by4<64>", [&] {mtf_thread_by4<CHUNK,64>        <<<(inbytes-1)/(CHUNK*WARP_SIZE)+1,             WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
 
         auto outbytes = outbuf+inbytes - ptr;
         fwrite (ptr, 1, outbytes, outfile);
@@ -459,10 +471,9 @@ int main (int argc, char **argv)
     }
 
     printf("rle: %.0lf => %.0lf (%.2lf%%)\n", insize, outsize, outsize*100.0/insize);
-    char *mtf_name[] = {"cpu (1 thread)", "thread mtf", "thread-by4 mtf", "scalar mtf", "2-symbol mtf", "2-buffer mtf"};
     for (int i=0; i<sizeof(duration)/sizeof(*duration); i++)
         if (duration[i])
-            printf("[%d] %-14s:  %.6lf ms,  %.6lf MiB/s\n", i, mtf_name[i], duration[i], ((1000/duration[i]) * insize) / (1 << 20));
+            printf("[%2d] %-*s:  %.6lf ms,  %.6lf MiB/s\n", i, strlen(mtf_name[2]), mtf_name[i], duration[i], ((1000/duration[i]) * insize) / (1 << 20));
     fclose(infile);
     fclose(outfile);
     cudaProfilerStop();

@@ -1,47 +1,92 @@
+
 C:\!FreeArc\public\Compression-Research\mtf>for %a in (00 e8.ST6 e8 100m 100m.tor) do mtf z:\%a
 
 C:\!FreeArc\public\Compression-Research\mtf>mtf z:\00
-rle: 100000000 => 1
-[0] cpu (1 thread):  41.000000 ms,  2326.034918 MiB/s
-[1] thread mtf    :  127.521729 ms,  747.852407 MiB/s
-[2] thread-by4 mtf:  131.160355 ms,  727.105625 MiB/s
-[3] scalar mtf    :  176.039520 ms,  541.738761 MiB/s
-[4] 2-symbol mtf  :  178.951782 ms,  532.922503 MiB/s
-[5] 2-buffer mtf  :  134.081894 ms,  711.262564 MiB/s
+GeForce GTX 560 Ti, SM 2.1, 1.0 GB VRAM.  8 SM * 48 alu * 1800 MHz = 691 GIOPS
+rle: 100000000 => 1 (0.00%)
+[ 0] cpu (1 thread)    :  40.000000 ms,  2384.185791 MiB/s
+[ 1] mtf_scalar        :  175.990784 ms,  541.888783 MiB/s
+[ 2] mtf_2symbols      :  178.884644 ms,  533.122518 MiB/s
+[ 3] mtf_2buffers      :  134.087173 ms,  711.234559 MiB/s
+[ 4] mtf_thread        :  130.706757 ms,  729.628935 MiB/s
+[ 5] mtf_thread_by4    :  126.825729 ms,  751.956501 MiB/s
+[ 6] mtf_thread<8>     :  153.967422 ms,  619.400066 MiB/s
+[ 7] mtf_thread<16>    :  154.993988 ms,  615.297618 MiB/s
+[ 8] mtf_thread<32>    :  154.895355 ms,  615.689421 MiB/s
+[ 9] mtf_thread<64>    :  153.985214 ms,  619.328499 MiB/s
+[10] mtf_thread_by4<8> :  154.219681 ms,  618.386909 MiB/s
+[11] mtf_thread_by4<16>:  155.381531 ms,  613.762982 MiB/s
+[12] mtf_thread_by4<32>:  151.116516 ms,  631.085431 MiB/s
+[13] mtf_thread_by4<64>:  154.526108 ms,  617.160640 MiB/s
 
 C:\!FreeArc\public\Compression-Research\mtf>mtf z:\e8.ST6
-rle: 100000000 => 40470315
-[0] cpu (1 thread):  587.000000 ms,  162.465812 MiB/s
-[1] thread mtf    :  207.871674 ms,  458.780314 MiB/s
-[2] thread-by4 mtf:  173.594086 ms,  549.370281 MiB/s
-[3] scalar mtf    :  180.846146 ms,  527.340139 MiB/s
-[4] 2-symbol mtf  :  215.026016 ms,  443.515782 MiB/s
-[5] 2-buffer mtf  :  153.082428 ms,  622.980919 MiB/s
+GeForce GTX 560 Ti, SM 2.1, 1.0 GB VRAM.  8 SM * 48 alu * 1800 MHz = 691 GIOPS
+rle: 100000000 => 40470315 (40.47%)
+[ 0] cpu (1 thread)    :  585.000000 ms,  163.021251 MiB/s
+[ 1] mtf_scalar        :  180.652161 ms,  527.906399 MiB/s
+[ 2] mtf_2symbols      :  215.229019 ms,  443.097460 MiB/s
+[ 3] mtf_2buffers      :  153.102692 ms,  622.898465 MiB/s
+[ 4] mtf_thread        :  208.202087 ms,  458.052236 MiB/s
+[ 5] mtf_thread_by4    :  173.956772 ms,  548.224887 MiB/s
+[ 6] mtf_thread<8>     :  127.398979 ms,  748.572965 MiB/s
+[ 7] mtf_thread<16>    :  137.631943 ms,  692.916410 MiB/s
+[ 8] mtf_thread<32>    :  147.325241 ms,  647.325814 MiB/s
+[ 9] mtf_thread<64>    :  154.489319 ms,  617.307606 MiB/s
+[10] mtf_thread_by4<8> :  148.854340 ms,  640.676193 MiB/s
+[11] mtf_thread_by4<16>:  152.187546 ms,  626.644126 MiB/s
+[12] mtf_thread_by4<32>:  155.482010 ms,  613.366342 MiB/s
+[13] mtf_thread_by4<64>:  143.644028 ms,  663.915049 MiB/s
 
 C:\!FreeArc\public\Compression-Research\mtf>mtf z:\e8
-rle: 100000000 => 94493693
-[0] cpu (1 thread):  1350.000000 ms,  70.642542 MiB/s
-[1] thread mtf    :  402.824402 ms,  236.746908 MiB/s
-[2] thread-by4 mtf:  281.478088 ms,  338.809433 MiB/s
-[3] scalar mtf    :  202.657318 ms,  470.584692 MiB/s
-[4] 2-symbol mtf  :  380.630707 ms,  250.551072 MiB/s
-[5] 2-buffer mtf  :  189.424606 ms,  503.458518 MiB/s
+GeForce GTX 560 Ti, SM 2.1, 1.0 GB VRAM.  8 SM * 48 alu * 1800 MHz = 691 GIOPS
+rle: 100000000 => 94493693 (94.49%)
+[ 0] cpu (1 thread)    :  1371.000000 ms,  69.560490 MiB/s
+[ 1] mtf_scalar        :  202.352859 ms,  471.292730 MiB/s
+[ 2] mtf_2symbols      :  381.163391 ms,  250.200921 MiB/s
+[ 3] mtf_2buffers      :  189.628967 ms,  502.915947 MiB/s
+[ 4] mtf_thread        :  402.575043 ms,  236.893552 MiB/s
+[ 5] mtf_thread_by4    :  281.927917 ms,  338.268847 MiB/s
+[ 6] mtf_thread<8>     :  182.851654 ms,  521.556297 MiB/s
+[ 7] mtf_thread<16>    :  225.342590 ms,  423.210861 MiB/s
+[ 8] mtf_thread<32>    :  267.187378 ms,  356.930901 MiB/s
+[ 9] mtf_thread<64>    :  291.688263 ms,  326.949843 MiB/s
+[10] mtf_thread_by4<8> :  170.628250 ms,  558.919356 MiB/s
+[11] mtf_thread_by4<16>:  216.599655 ms,  440.293553 MiB/s
+[12] mtf_thread_by4<32>:  250.256256 ms,  381.079111 MiB/s
+[13] mtf_thread_by4<64>:  227.347168 ms,  419.479303 MiB/s
 
 C:\!FreeArc\public\Compression-Research\mtf>mtf z:\100m
-rle: 100000000 => 83025264
-[0] cpu (1 thread):  1768.000000 ms,  53.940855 MiB/s
-[1] thread mtf    :  803.023865 ms,  118.760395 MiB/s
-[2] thread-by4 mtf:  489.326477 ms,  194.895302 MiB/s
-[3] scalar mtf    :  286.288239 ms,  333.116834 MiB/s
-[4] 2-symbol mtf  :  518.407715 ms,  183.962215 MiB/s
-[5] 2-buffer mtf  :  265.455231 ms,  359.259945 MiB/s
+GeForce GTX 560 Ti, SM 2.1, 1.0 GB VRAM.  8 SM * 48 alu * 1800 MHz = 691 GIOPS
+rle: 100000000 => 83025264 (83.03%)
+[ 0] cpu (1 thread)    :  1787.000000 ms,  53.367337 MiB/s
+[ 1] mtf_scalar        :  286.523987 ms,  332.842750 MiB/s
+[ 2] mtf_2symbols      :  517.768921 ms,  184.189177 MiB/s
+[ 3] mtf_2buffers      :  265.273926 ms,  359.505486 MiB/s
+[ 4] mtf_thread        :  801.509644 ms,  118.984759 MiB/s
+[ 5] mtf_thread_by4    :  489.914825 ms,  194.661249 MiB/s
+[ 6] mtf_thread<8>     :  172.685989 ms,  552.259231 MiB/s
+[ 7] mtf_thread<16>    :  230.254562 ms,  414.182593 MiB/s
+[ 8] mtf_thread<32>    :  315.935394 ms,  301.857384 MiB/s
+[ 9] mtf_thread<64>    :  420.896759 ms,  226.581530 MiB/s
+[10] mtf_thread_by4<8> :  162.193542 ms,  587.985380 MiB/s
+[11] mtf_thread_by4<16>:  202.241760 ms,  471.551630 MiB/s
+[12] mtf_thread_by4<32>:  264.209412 ms,  360.953953 MiB/s
+[13] mtf_thread_by4<64>:  310.232269 ms,  307.406550 MiB/s
 
 C:\!FreeArc\public\Compression-Research\mtf>mtf z:\100m.tor
-rle: 27920815 => 27811947
-[0] cpu (1 thread):  1322.000000 ms,  20.141728 MiB/s
-[1] thread mtf    :  513.319458 ms,  51.872891 MiB/s
-[2] thread-by4 mtf:  291.439117 ms,  91.365100 MiB/s
-[3] scalar mtf    :  164.982590 ms,  161.394994 MiB/s
-[4] 2-symbol mtf  :  234.242599 ms,  113.674303 MiB/s
-[5] 2-buffer mtf  :  126.052063 ms,  211.241003 MiB/s
-
+GeForce GTX 560 Ti, SM 2.1, 1.0 GB VRAM.  8 SM * 48 alu * 1800 MHz = 691 GIOPS
+rle: 27920815 => 27811947 (99.61%)
+[ 0] cpu (1 thread)    :  1328.000000 ms,  20.050726 MiB/s
+[ 1] mtf_scalar        :  166.431335 ms,  159.990089 MiB/s
+[ 2] mtf_2symbols      :  235.155289 ms,  113.233108 MiB/s
+[ 3] mtf_2buffers      :  125.953506 ms,  211.406295 MiB/s
+[ 4] mtf_thread        :  512.939636 ms,  51.911302 MiB/s
+[ 5] mtf_thread_by4    :  290.883698 ms,  91.539555 MiB/s
+[ 6] mtf_thread<8>     :  71.929794 ms,  370.185462 MiB/s
+[ 7] mtf_thread<16>    :  94.595970 ms,  281.485185 MiB/s
+[ 8] mtf_thread<32>    :  143.387878 ms,  185.701640 MiB/s
+[ 9] mtf_thread<64>    :  220.990143 ms,  120.491185 MiB/s
+[10] mtf_thread_by4<8> :  64.872765 ms,  410.455209 MiB/s
+[11] mtf_thread_by4<16>:  73.785599 ms,  360.874813 MiB/s
+[12] mtf_thread_by4<32>:  96.009697 ms,  277.340363 MiB/s
+[13] mtf_thread_by4<64>:  143.410553 ms,  185.672279 MiB/s
