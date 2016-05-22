@@ -390,6 +390,20 @@ __global__ void mtf_2buffers (const byte* __restrict__ inbuf,  byte* __restrict_
 
 
 
+// In-place RLE transformation (run lengths are dropped!)
+int rle (byte* buf, int size)
+{
+    int c = -1, run=0;
+    auto out = buf;
+    for (size_t i = 0; i < size; i++)
+    {
+        buf[i]==c?  run++  :  (run=1, c = *out++ = buf[i]);
+    }
+    return out-buf;
+}
+
+
+
 int main (int argc, char **argv)
 {
     bool apply_bwt = true;
@@ -398,10 +412,18 @@ int main (int argc, char **argv)
         argv++, argc--;
     }
 
+    bool apply_rle = true;
+    if (argv[1] && strcmp(argv[1],"-norle")==0) {
+        apply_rle = false;
+        argv++, argc--;
+    }
+
     if (!(argc==2 || argc==4)) {
         printf ("Usage: mtf [options] infile [N outfile]\n"
                 "  N is the number of function those output will be saved\n"
-                "  -nobwt   skip BWT transformation\n");
+                "  -nobwt   skip BWT transformation\n"
+                "  -norle   skip RLE transformation\n"
+                );
         return 0;
     }
 
@@ -448,9 +470,13 @@ int main (int argc, char **argv)
         StartTimer();
             unsigned char MTFTable[ALPHABET_SIZE];
             auto ptr = qlfc (inbuf, outbuf, inbytes, MTFTable);
+            auto outbytes = outbuf+inbytes - ptr;
         duration[0] += GetTimer();
-        outsize += outbuf+inbytes - ptr;
         int num = 1;
+
+        insize += inbytes;
+        if (apply_rle)
+            inbytes = rle(inbuf,inbytes);
 
         checkCudaErrors( cudaMemcpy (d_inbuf, inbuf, inbytes, cudaMemcpyHostToDevice));
         checkCudaErrors( cudaDeviceSynchronize());
@@ -466,6 +492,7 @@ int main (int argc, char **argv)
                 checkCudaErrors( cudaMemcpy (outbuf, d_outbuf, inbytes, cudaMemcpyDeviceToHost));
                 checkCudaErrors( cudaDeviceSynchronize());
                 ptr = outbuf;
+                outbytes = inbytes;
             }
 
             float start_stop;
@@ -492,10 +519,8 @@ int main (int argc, char **argv)
         time_run ("mtf_thread_by4<32>", [&] {mtf_thread_by4<CHUNK,NUM_THREADS,32>  <<<(inbytes-1)/(CHUNK*NUM_THREADS)+1,         NUM_THREADS>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
         time_run ("mtf_thread_by4<64>", [&] {mtf_thread_by4<CHUNK,NUM_THREADS,64>  <<<(inbytes-1)/(CHUNK*NUM_THREADS)+1,         NUM_THREADS>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
 
-        auto outbytes = outbuf+inbytes - ptr;
         fwrite (ptr, 1, outbytes, outfile);
-        insize  += inbytes;
-        //outsize += outbytes;
+        outsize += outbytes;
     }
 
     printf("rle: %.0lf => %.0lf (%.2lf%%)\n", insize, outsize, outsize*100.0/insize);

@@ -1,8 +1,82 @@
-
 C:\!FreeArc\public\Compression-Research\mtf>for %a in (00 e8 100m 100m.tor) do mtf z:\%a
+GeForce GTX 560 Ti, SM 2.1, 1.0 GB VRAM.  8 SM * 48 alu * 1800 MHz = 691 GIOPS
+
+
+============ With RLE ====================================================================================
 
 C:\!FreeArc\public\Compression-Research\mtf>mtf z:\00
-GeForce GTX 560 Ti, SM 2.1, 1.0 GB VRAM.  8 SM * 48 alu * 1800 MHz = 691 GIOPS
+rle: 100000000 => 1 (0.00%)
+[ 0] cpu (1 thread)    :  42.694669 ms,  2233.708204 MiB/s
+[ 1] mtf_scalar        :  1.058784 ms,  90072.603022 MiB/s
+[ 2] mtf_2symbols      :  0.928608 ms,  102699.343116 MiB/s
+[ 3] mtf_2buffers      :  1.480864 ms,  64399.856131 MiB/s
+[ 4] mtf_thread        :  0.733120 ms,  130084.336114 MiB/s
+[ 5] mtf_thread_by4    :  0.816256 ms,  116835.200226 MiB/s
+[ 6] mtf_thread<8>     :  0.749984 ms,  127159.283852 MiB/s
+[ 7] mtf_thread<16>    :  0.750080 ms,  127143.015391 MiB/s
+[ 8] mtf_thread<32>    :  0.750176 ms,  127126.740991 MiB/s
+[ 9] mtf_thread<64>    :  0.750336 ms,  127099.636344 MiB/s
+[10] mtf_thread_by4<8> :  0.841600 ms,  113316.815047 MiB/s
+[11] mtf_thread_by4<16>:  0.859808 ms,  110917.121687 MiB/s
+[12] mtf_thread_by4<32>:  0.859712 ms,  110929.510259 MiB/s
+[13] mtf_thread_by4<64>:  0.860064 ms,  110884.106704 MiB/s
+
+C:\!FreeArc\public\Compression-Research\mtf>mtf z:\e8
+rle: 100000000 => 36661038 (36.66%)
+[ 0] cpu (1 thread)    :  530.903324 ms,  179.632387 MiB/s
+[ 1] mtf_scalar        :  69.525917 ms,  1371.681751 MiB/s
+[ 2] mtf_2symbols      :  91.466339 ms,  1042.650581 MiB/s
+[ 3] mtf_2buffers      :  62.212543 ms,  1532.929314 MiB/s    <=============
+[ 4] mtf_thread        :  113.860130 ms,  837.584073 MiB/s
+[ 5] mtf_thread_by4    :  85.438499 ms,  1116.211453 MiB/s
+[ 6] mtf_thread<8>     :  70.502014 ms,  1352.690881 MiB/s
+[ 7] mtf_thread<16>    :  73.925186 ms,  1290.053317 MiB/s
+[ 8] mtf_thread<32>    :  81.720383 ms,  1166.996880 MiB/s
+[ 9] mtf_thread<64>    :  88.517471 ms,  1077.385405 MiB/s
+[10] mtf_thread_by4<8> :  72.304222 ms,  1318.974589 MiB/s
+[11] mtf_thread_by4<16>:  74.307938 ms,  1283.408404 MiB/s
+[12] mtf_thread_by4<32>:  77.321793 ms,  1233.383609 MiB/s
+[13] mtf_thread_by4<64>:  79.998688 ms,  1192.112450 MiB/s
+
+C:\!FreeArc\public\Compression-Research\mtf>mtf z:\100m
+rle: 100000000 => 34089988 (34.09%)
+[ 0] cpu (1 thread)    :  915.657544 ms,  104.151855 MiB/s
+[ 1] mtf_scalar        :  114.904610 ms,  829.970459 MiB/s
+[ 2] mtf_2symbols      :  199.690048 ms,  477.577288 MiB/s
+[ 3] mtf_2buffers      :  100.403999 ms,  949.836981 MiB/s
+[ 4] mtf_thread        :  375.765961 ms,  253.794760 MiB/s
+[ 5] mtf_thread_by4    :  223.620453 ms,  426.470076 MiB/s
+[ 6] mtf_thread<8>     :  71.136322 ms,  1340.629216 MiB/s
+[ 7] mtf_thread<16>    :  92.540512 ms,  1030.547913 MiB/s
+[ 8] mtf_thread<32>    :  130.159271 ms,  732.697953 MiB/s
+[ 9] mtf_thread<64>    :  185.509415 ms,  514.084052 MiB/s
+[10] mtf_thread_by4<8> :  67.998367 ms,  1402.495904 MiB/s
+[11] mtf_thread_by4<16>:  80.736671 ms,  1181.215796 MiB/s
+[12] mtf_thread_by4<32>:  104.005630 ms,  916.944892 MiB/s
+[13] mtf_thread_by4<64>:  138.737534 ms,  687.394602 MiB/s
+
+C:\!FreeArc\public\Compression-Research\mtf>mtf z:\100m.tor
+rle: 27920815 => 27811097 (99.61%)
+[ 0] cpu (1 thread)    :  1296.435122 ms,  20.538910 MiB/s
+[ 1] mtf_scalar        :  169.335770 ms,  157.245951 MiB/s
+[ 2] mtf_2symbols      :  233.314713 ms,  114.126383 MiB/s
+[ 3] mtf_2buffers      :  125.840996 ms,  211.595307 MiB/s
+[ 4] mtf_thread        :  512.054993 ms,  52.000985 MiB/s
+[ 5] mtf_thread_by4    :  290.484314 ms,  91.665411 MiB/s
+[ 6] mtf_thread<8>     :  70.892929 ms,  375.599718 MiB/s
+[ 7] mtf_thread<16>    :  96.786819 ms,  275.113536 MiB/s
+[ 8] mtf_thread<32>    :  146.455231 ms,  181.812312 MiB/s
+[ 9] mtf_thread<64>    :  221.480316 ms,  120.224518 MiB/s
+[10] mtf_thread_by4<8> :  62.023842 ms,  429.308527 MiB/s
+[11] mtf_thread_by4<16>:  71.741951 ms,  371.154726 MiB/s
+[12] mtf_thread_by4<32>:  95.816353 ms,  277.899997 MiB/s
+[13] mtf_thread_by4<64>:  147.306335 ms,  180.761839 MiB/s
+
+
+
+============ Without RLE =================================================================================
+
+C:\!FreeArc\public\Compression-Research\mtf>mtf z:\00
 rle: 100000000 => 1 (0.00%)
 [ 0] cpu (1 thread)    :  39.000000 ms,  2445.318760 MiB/s
 [ 1] mtf_scalar        :  175.660065 ms,  542.909009 MiB/s
@@ -20,7 +94,6 @@ rle: 100000000 => 1 (0.00%)
 [13] mtf_thread_by4<64>:  153.433762 ms,  621.554413 MiB/s
 
 C:\!FreeArc\public\Compression-Research\mtf>mtf z:\e8
-GeForce GTX 560 Ti, SM 2.1, 1.0 GB VRAM.  8 SM * 48 alu * 1800 MHz = 691 GIOPS
 rle: 100000000 => 36661038 (36.66%)
 [ 0] cpu (1 thread)    :  535.000000 ms,  178.256882 MiB/s
 [ 1] mtf_scalar        :  183.354599 ms,  520.125659 MiB/s
@@ -38,7 +111,6 @@ rle: 100000000 => 36661038 (36.66%)
 [13] mtf_thread_by4<64>:  156.177505 ms,  610.634876 MiB/s
 
 C:\!FreeArc\public\Compression-Research\mtf>mtf z:\100m
-GeForce GTX 560 Ti, SM 2.1, 1.0 GB VRAM.  8 SM * 48 alu * 1800 MHz = 691 GIOPS
 rle: 100000000 => 34089988 (34.09%)
 [ 0] cpu (1 thread)    :  923.000000 ms,  103.323328 MiB/s
 [ 1] mtf_scalar        :  234.472061 ms,  406.732602 MiB/s
@@ -56,7 +128,6 @@ rle: 100000000 => 34089988 (34.09%)
 [13] mtf_thread_by4<64>:  234.074341 ms,  407.423690 MiB/s
 
 C:\!FreeArc\public\Compression-Research\mtf>mtf z:\100m.tor
-GeForce GTX 560 Ti, SM 2.1, 1.0 GB VRAM.  8 SM * 48 alu * 1800 MHz = 691 GIOPS
 rle: 27920815 => 27811097 (99.61%)
 [ 0] cpu (1 thread)    :  1332.000000 ms,  19.990514 MiB/s
 [ 1] mtf_scalar        :  169.189636 ms,  157.381768 MiB/s
