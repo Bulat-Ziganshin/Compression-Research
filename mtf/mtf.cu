@@ -26,23 +26,23 @@ const int CHUNK = 4*1024;
 
 
 
-template <int CHUNK, int MTF_SYMBOLS = ALPHABET_SIZE>
+template <int CHUNK,  int NUM_THREADS = WARP_SIZE,  int MTF_SYMBOLS = ALPHABET_SIZE>
 __global__ void mtf_thread (const byte* inbuf,  byte* outbuf,  int inbytes,  int chunk)
 {
     const int idx = blockIdx.x * blockDim.x + threadIdx.x;
-    const int tid = idx % WARP_SIZE;
+    const int tid = threadIdx.x;
 
+    if (idx*CHUNK >= inbytes)  return;
     inbuf  += idx*CHUNK;
     outbuf += idx*CHUNK;
     auto cur  = *inbuf++;
     auto next = *inbuf++;
 
-    volatile __shared__  byte mtf0 [MTF_SYMBOLS*WARP_SIZE];
+    volatile __shared__  byte mtf0 [MTF_SYMBOLS*NUM_THREADS];
     auto mtf = mtf0 + 4*tid;
-    for (int k=0; k<MTF_SYMBOLS; k++)
+    for (int k=0; k<MTF_SYMBOLS; k+=4)
     {
-        auto index = (k&252)*32+(k&3);
-        mtf[index] = k;
+        *(unsigned*)(mtf+k*NUM_THREADS)  =  k + ((k+1)<<8) + ((k+2)<<16) + ((k+3)<<24);
     }
 
 
@@ -53,7 +53,7 @@ __global__ void mtf_thread (const byte* inbuf,  byte* outbuf,  int inbytes,  int
     {
         if (cur != old  &&  !(MTF_SYMBOLS < ALPHABET_SIZE  &&  k >= MTF_SYMBOLS-1)) {
             k++;
-            auto index = (k&252)*32+(k&3);
+            auto index = (k&252)*NUM_THREADS+(k&3);
             auto next = mtf[index];
             mtf[index] = old;
             old = next;
@@ -71,22 +71,23 @@ __global__ void mtf_thread (const byte* inbuf,  byte* outbuf,  int inbytes,  int
 
 
 
-template <int CHUNK, int MTF_SYMBOLS = ALPHABET_SIZE>
+template <int CHUNK,  int NUM_THREADS = WARP_SIZE,  int MTF_SYMBOLS = ALPHABET_SIZE>
 __global__ void mtf_thread_by4 (const byte* inbuf,  byte* outbuf,  int inbytes,  int chunk)
 {
     const int idx = blockIdx.x * blockDim.x + threadIdx.x;
-    const int tid = idx % WARP_SIZE;
+    const int tid = threadIdx.x;
 
+    if (idx*CHUNK >= inbytes)  return;
     inbuf  += idx*CHUNK;
     outbuf += idx*CHUNK;
     auto cur  = *inbuf++;
     auto next = *inbuf++;
 
-    volatile __shared__  byte mtf0 [MTF_SYMBOLS*WARP_SIZE];
-    auto mtf = mtf0 + tid*4;
+    volatile __shared__  byte mtf0 [MTF_SYMBOLS*NUM_THREADS];
+    auto mtf = mtf0 + 4*tid;
     for (int k=0; k<MTF_SYMBOLS; k+=4)
     {
-        *(unsigned*)(mtf+k*32)  =  k + ((k+1)<<8) + ((k+2)<<16) + ((k+3)<<24);
+        *(unsigned*)(mtf+k*NUM_THREADS)  =  k + ((k+1)<<8) + ((k+2)<<16) + ((k+3)<<24);
     }
 
 
@@ -105,8 +106,8 @@ __global__ void mtf_thread_by4 (const byte* inbuf,  byte* outbuf,  int inbytes, 
             if (cur==old)  goto found;
             k++;
         }
-        mtf_k += 128;
-        if (!(MTF_SYMBOLS < ALPHABET_SIZE  &&  k >= MTF_SYMBOLS-1))
+        mtf_k += 4*NUM_THREADS;
+        if (MTF_SYMBOLS == ALPHABET_SIZE  ||  k < MTF_SYMBOLS)
             continue;
 
 found:
@@ -130,6 +131,7 @@ __global__ void mtf_scalar (const byte* __restrict__ inbuf,  byte* __restrict__ 
     const int tid = (blockIdx.x * blockDim.x + threadIdx.x) % WARP_SIZE;
     const int warp_id = threadIdx.x / WARP_SIZE;
 
+    if (idx*CHUNK >= inbytes)  return;
     inbuf  += idx*chunk;
     outbuf += idx*chunk;
 
@@ -200,6 +202,7 @@ __global__ void mtf_2symbols (const byte* __restrict__ inbuf,  byte* __restrict_
     const int tid = (blockIdx.x * blockDim.x + threadIdx.x) % WARP_SIZE;
     const int warp_id = threadIdx.x / WARP_SIZE;
 
+    if (idx*CHUNK >= inbytes)  return;
     inbuf  += idx*chunk;
     outbuf += idx*chunk;
 
@@ -283,6 +286,7 @@ __global__ void mtf_2buffers (const byte* __restrict__ inbuf,  byte* __restrict_
     const int warp_id = threadIdx.x / WARP_SIZE;
 //printf("%d ", warp_id);
 
+    if (idx*CHUNK*2 >= inbytes)  return;
     inbuf  += idx*chunk*2;
     outbuf += idx*chunk*2;
 
@@ -393,8 +397,8 @@ int main (int argc, char **argv)
 
     unsigned char* d_inbuf;
     unsigned char* d_outbuf;
-    checkCudaErrors( cudaMalloc((void**)(&d_inbuf),  BUFSIZE+CHUNK));
-    checkCudaErrors( cudaMalloc((void**)(&d_outbuf), BUFSIZE+CHUNK));
+    checkCudaErrors( cudaMalloc((void**)(&d_inbuf),  BUFSIZE+CHUNK*2));  // up to CHUNK*2 extra bytes may be processed
+    checkCudaErrors( cudaMalloc((void**)(&d_outbuf), BUFSIZE+CHUNK*2));
 
     cudaEvent_t start, stop;
     checkCudaErrors( cudaEventCreate(&start));
@@ -450,19 +454,23 @@ int main (int argc, char **argv)
             num++;
         };
 
-        time_run ("mtf_scalar        ", [&] {mtf_scalar    <NUM_WARPS,CHUNK> <<<(inbytes-1)/(CHUNK*NUM_WARPS)+1,   NUM_WARPS*WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
-        time_run ("mtf_2symbols      ", [&] {mtf_2symbols  <NUM_WARPS,CHUNK> <<<(inbytes-1)/(CHUNK*NUM_WARPS)+1,   NUM_WARPS*WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
-        time_run ("mtf_2buffers      ", [&] {mtf_2buffers  <NUM_WARPS,CHUNK> <<<(inbytes-1)/(CHUNK*NUM_WARPS*2)+1, NUM_WARPS*WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
-        time_run ("mtf_thread        ", [&] {mtf_thread    <CHUNK>           <<<(inbytes-1)/(CHUNK*WARP_SIZE)+1,             WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
-        time_run ("mtf_thread_by4    ", [&] {mtf_thread_by4<CHUNK>           <<<(inbytes-1)/(CHUNK*WARP_SIZE)+1,             WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
-        time_run ("mtf_thread<8>     ", [&] {mtf_thread    <CHUNK,8>         <<<(inbytes-1)/(CHUNK*WARP_SIZE)+1,             WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
-        time_run ("mtf_thread<16>    ", [&] {mtf_thread    <CHUNK,16>        <<<(inbytes-1)/(CHUNK*WARP_SIZE)+1,             WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
-        time_run ("mtf_thread<32>    ", [&] {mtf_thread    <CHUNK,32>        <<<(inbytes-1)/(CHUNK*WARP_SIZE)+1,             WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
-        time_run ("mtf_thread<64>    ", [&] {mtf_thread    <CHUNK,64>        <<<(inbytes-1)/(CHUNK*WARP_SIZE)+1,             WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
-        time_run ("mtf_thread_by4<8> ", [&] {mtf_thread_by4<CHUNK,8>         <<<(inbytes-1)/(CHUNK*WARP_SIZE)+1,             WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
-        time_run ("mtf_thread_by4<16>", [&] {mtf_thread_by4<CHUNK,16>        <<<(inbytes-1)/(CHUNK*WARP_SIZE)+1,             WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
-        time_run ("mtf_thread_by4<32>", [&] {mtf_thread_by4<CHUNK,32>        <<<(inbytes-1)/(CHUNK*WARP_SIZE)+1,             WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
-        time_run ("mtf_thread_by4<64>", [&] {mtf_thread_by4<CHUNK,64>        <<<(inbytes-1)/(CHUNK*WARP_SIZE)+1,             WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
+        time_run ("mtf_scalar        ", [&] {mtf_scalar    <NUM_WARPS,CHUNK>       <<<(inbytes-1)/(CHUNK*NUM_WARPS)+1,   NUM_WARPS*WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
+        time_run ("mtf_2symbols      ", [&] {mtf_2symbols  <NUM_WARPS,CHUNK>       <<<(inbytes-1)/(CHUNK*NUM_WARPS)+1,   NUM_WARPS*WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
+        time_run ("mtf_2buffers      ", [&] {mtf_2buffers  <NUM_WARPS,CHUNK>       <<<(inbytes-1)/(CHUNK*NUM_WARPS*2)+1, NUM_WARPS*WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
+
+        time_run ("mtf_thread        ", [&] {mtf_thread    <CHUNK>                 <<<(inbytes-1)/(CHUNK*WARP_SIZE)+1,             WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
+        time_run ("mtf_thread_by4    ", [&] {mtf_thread_by4<CHUNK>                 <<<(inbytes-1)/(CHUNK*WARP_SIZE)+1,             WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
+
+        const int NUM_THREADS = 1*WARP_SIZE;
+        time_run ("mtf_thread<8>     ", [&] {mtf_thread    <CHUNK,NUM_THREADS,8>   <<<(inbytes-1)/(CHUNK*NUM_THREADS)+1,         NUM_THREADS>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
+        time_run ("mtf_thread<16>    ", [&] {mtf_thread    <CHUNK,NUM_THREADS,16>  <<<(inbytes-1)/(CHUNK*NUM_THREADS)+1,         NUM_THREADS>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
+        time_run ("mtf_thread<32>    ", [&] {mtf_thread    <CHUNK,NUM_THREADS,32>  <<<(inbytes-1)/(CHUNK*NUM_THREADS)+1,         NUM_THREADS>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
+        time_run ("mtf_thread<64>    ", [&] {mtf_thread    <CHUNK,NUM_THREADS,64>  <<<(inbytes-1)/(CHUNK*NUM_THREADS)+1,         NUM_THREADS>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
+
+        time_run ("mtf_thread_by4<8> ", [&] {mtf_thread_by4<CHUNK,NUM_THREADS,8>   <<<(inbytes-1)/(CHUNK*NUM_THREADS)+1,         NUM_THREADS>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
+        time_run ("mtf_thread_by4<16>", [&] {mtf_thread_by4<CHUNK,NUM_THREADS,16>  <<<(inbytes-1)/(CHUNK*NUM_THREADS)+1,         NUM_THREADS>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
+        time_run ("mtf_thread_by4<32>", [&] {mtf_thread_by4<CHUNK,NUM_THREADS,32>  <<<(inbytes-1)/(CHUNK*NUM_THREADS)+1,         NUM_THREADS>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
+        time_run ("mtf_thread_by4<64>", [&] {mtf_thread_by4<CHUNK,NUM_THREADS,64>  <<<(inbytes-1)/(CHUNK*NUM_THREADS)+1,         NUM_THREADS>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
 
         auto outbytes = outbuf+inbytes - ptr;
         fwrite (ptr, 1, outbytes, outfile);
