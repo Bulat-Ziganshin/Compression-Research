@@ -122,7 +122,7 @@ found:
 
 
 template <int NUM_WARPS,  int CHUNK,  typename MTF_WORD = unsigned>
-__global__ void mtf (const byte* __restrict__ inbuf,  byte* __restrict__ outbuf,  int inbytes,  int chunk)
+__global__ void mtf_scalar (const byte* __restrict__ inbuf,  byte* __restrict__ outbuf,  int inbytes,  int chunk)
 {
     const int idx = (blockIdx.x * blockDim.x + threadIdx.x) / WARP_SIZE;
     const int tid = (blockIdx.x * blockDim.x + threadIdx.x) % WARP_SIZE;
@@ -163,7 +163,7 @@ __global__ void mtf (const byte* __restrict__ inbuf,  byte* __restrict__ outbuf,
 
     deeper:
         {
-            auto cur = next;
+            auto cur = inbuf[i];
             auto old = mtf[tid];
 
             int k;  unsigned n;
@@ -441,9 +441,9 @@ int main (int argc, char **argv)
             duration[i] += start_stop;
         };
 
-        time_run (1, [&] {mtf           <NUM_WARPS,CHUNK> <<<(inbytes-1)/(CHUNK*NUM_WARPS)+1,   NUM_WARPS*WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
-        time_run (2, [&] {mtf_thread    <CHUNK>           <<<(inbytes-1)/(CHUNK*WARP_SIZE)+1,             WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
-        time_run (3, [&] {mtf_thread_by4<CHUNK>           <<<(inbytes-1)/(CHUNK*WARP_SIZE)+1,             WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
+        time_run (1, [&] {mtf_thread    <CHUNK>           <<<(inbytes-1)/(CHUNK*WARP_SIZE)+1,             WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
+        time_run (2, [&] {mtf_thread_by4<CHUNK>           <<<(inbytes-1)/(CHUNK*WARP_SIZE)+1,             WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
+        time_run (3, [&] {mtf_scalar    <NUM_WARPS,CHUNK> <<<(inbytes-1)/(CHUNK*NUM_WARPS)+1,   NUM_WARPS*WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
         time_run (4, [&] {mtf_2symbols  <NUM_WARPS,CHUNK> <<<(inbytes-1)/(CHUNK*NUM_WARPS)+1,   NUM_WARPS*WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
         time_run (5, [&] {mtf_2buffers  <NUM_WARPS,CHUNK> <<<(inbytes-1)/(CHUNK*NUM_WARPS*2)+1, NUM_WARPS*WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
 
@@ -454,7 +454,7 @@ int main (int argc, char **argv)
     }
 
     printf("rle: %.0lf => %.0lf\n", insize, outsize);
-    char *mtf_name[] = {"cpu (1 thread)", "scalar mtf", "thread mtf", "thread-by4 mtf", "2-symbol mtf", "2-buffer mtf"};
+    char *mtf_name[] = {"cpu (1 thread)", "thread mtf", "thread-by4 mtf", "scalar mtf", "2-symbol mtf", "2-buffer mtf"};
     for (int i=0; i<sizeof(duration)/sizeof(*duration); i++)
         if (duration[i])
             printf("%-14s:  %.6lf ms,  %.6lf MiB/s\n", mtf_name[i], duration[i], ((1000/duration[i]) * insize) / (1 << 20));
