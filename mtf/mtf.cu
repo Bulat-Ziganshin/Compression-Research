@@ -402,6 +402,14 @@ int main (int argc, char **argv)
 
     FILE* infile  = fopen (argv[1], "rb");
     FILE* outfile = fopen (argv[2]? argv[2] : "nul", "wb");
+    if (!infile) {
+        printf ("Can't open infile %s\n", argv[1]);
+        return 1;
+    }
+    if (!outfile) {
+        printf ("Can't open outfile %s\n", argv[2]);
+        return 1;
+    }
 
     for (int inbytes; !!(inbytes = fread(inbuf,1,BUFSIZE,infile)); )
     {
@@ -419,7 +427,6 @@ int main (int argc, char **argv)
             return start_stop;
         };
 
-
         duration[1]  +=  time_run ([&] {mtf           <NUM_WARPS,CHUNK> <<<(inbytes-1)/(CHUNK*NUM_WARPS)+1,   NUM_WARPS*WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
         duration[2]  +=  time_run ([&] {mtf_thread    <CHUNK>           <<<(inbytes-1)/(CHUNK*WARP_SIZE)+1,             WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
         duration[3]  +=  time_run ([&] {mtf_thread_by4<CHUNK>           <<<(inbytes-1)/(CHUNK*WARP_SIZE)+1,             WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
@@ -434,7 +441,6 @@ int main (int argc, char **argv)
         auto ptr = qlfc (inbuf, outbuf, inbytes, MTFTable);
         high_resolution_clock::time_point t2 = high_resolution_clock::now();
         duration[0] = duration_cast<nanoseconds>( t2 - t1 ).count() / 1000000;
-//        duration[0] = t2 - t1;
 
         //auto ptr = outbuf;
         auto outbytes = outbuf+inbytes - ptr;
@@ -443,7 +449,7 @@ int main (int argc, char **argv)
         outsize += outbytes;
     }
 
-    // printf("rle: %.0lf => %.0lf\n", insize, outsize);
+    printf("rle: %.0lf => %.0lf\n", insize, outsize);
     char *mtf_name[] = {"cpu (1 thread)", "scalar mtf", "thread mtf", "thread-by4 mtf", "2-symbol mtf", "2-buffer mtf"};
     for (int i=0; i<sizeof(duration)/sizeof(*duration); i++)
         if (duration[i])
