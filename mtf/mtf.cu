@@ -382,8 +382,8 @@ __global__ void mtf_2buffers (const byte* __restrict__ inbuf,  byte* __restrict_
 
 int main (int argc, char **argv)
 {
-    if (argc < 2) {
-        printf ("Usage: mtf infile [outfile]\n");
+    if (!(argc==2 || argc==4)) {
+        printf ("Usage: mtf infile [N outfile]\n  N is the number of function those output will be saved\n");
         return 0;
     }
 
@@ -401,48 +401,52 @@ int main (int argc, char **argv)
     double insize = 0,  outsize = 0,  duration[10] = {0};
 
     FILE* infile  = fopen (argv[1], "rb");
-    FILE* outfile = fopen (argv[2]? argv[2] : "nul", "wb");
+    FILE* outfile = fopen (argv[2]? argv[3] : "nul", "wb");
     if (!infile) {
         printf ("Can't open infile %s\n", argv[1]);
         return 1;
     }
     if (!outfile) {
-        printf ("Can't open outfile %s\n", argv[2]);
+        printf ("Can't open outfile %s\n", argv[3]);
         return 1;
     }
+    int save_n  =  argc==4? atoi(argv[2]) : 0;    
+
 
     for (int inbytes; !!(inbytes = fread(inbuf,1,BUFSIZE,infile)); )
     {
-        checkCudaErrors( cudaMemcpy (d_inbuf, inbuf, inbytes, cudaMemcpyHostToDevice));
-        checkCudaErrors( cudaDeviceSynchronize());
-
-        auto time_run = [&] (std::function<void(void)> f) {
-            checkCudaErrors( cudaEventRecord (start, nullptr));
-            f();
-            checkCudaErrors( cudaEventRecord (stop, nullptr));
-            checkCudaErrors( cudaDeviceSynchronize());
-
-            float start_stop;
-            checkCudaErrors( cudaEventElapsedTime (&start_stop, start, stop));
-            return start_stop;
-        };
-
-        duration[1]  +=  time_run ([&] {mtf           <NUM_WARPS,CHUNK> <<<(inbytes-1)/(CHUNK*NUM_WARPS)+1,   NUM_WARPS*WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
-        duration[2]  +=  time_run ([&] {mtf_thread    <CHUNK>           <<<(inbytes-1)/(CHUNK*WARP_SIZE)+1,             WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
-        duration[3]  +=  time_run ([&] {mtf_thread_by4<CHUNK>           <<<(inbytes-1)/(CHUNK*WARP_SIZE)+1,             WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
-        duration[4]  +=  time_run ([&] {mtf_2symbols  <NUM_WARPS,CHUNK> <<<(inbytes-1)/(CHUNK*NUM_WARPS)+1,   NUM_WARPS*WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
-        duration[5]  +=  time_run ([&] {mtf_2buffers  <NUM_WARPS,CHUNK> <<<(inbytes-1)/(CHUNK*NUM_WARPS*2)+1, NUM_WARPS*WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
-
-        checkCudaErrors( cudaMemcpy (outbuf, d_outbuf, inbytes, cudaMemcpyDeviceToHost));
-        checkCudaErrors( cudaDeviceSynchronize());
-
         high_resolution_clock::time_point t1 = high_resolution_clock::now();
         unsigned char MTFTable[ALPHABET_SIZE];
         auto ptr = qlfc (inbuf, outbuf, inbytes, MTFTable);
         high_resolution_clock::time_point t2 = high_resolution_clock::now();
         duration[0] = duration_cast<nanoseconds>( t2 - t1 ).count() / 1000000;
 
-        //auto ptr = outbuf;
+        checkCudaErrors( cudaMemcpy (d_inbuf, inbuf, inbytes, cudaMemcpyHostToDevice));
+        checkCudaErrors( cudaDeviceSynchronize());
+
+        auto time_run = [&] (int i, std::function<void(void)> f) {
+            checkCudaErrors( cudaEventRecord (start, nullptr));
+            f();
+            checkCudaErrors( cudaEventRecord (stop, nullptr));
+            checkCudaErrors( cudaDeviceSynchronize());
+
+            if (i == save_n) {   
+                checkCudaErrors( cudaMemcpy (outbuf, d_outbuf, inbytes, cudaMemcpyDeviceToHost));
+                checkCudaErrors( cudaDeviceSynchronize());
+                ptr = outbuf;
+            }
+
+            float start_stop;
+            checkCudaErrors( cudaEventElapsedTime (&start_stop, start, stop));
+            duration[i] += start_stop;
+        };
+
+        time_run (1, [&] {mtf           <NUM_WARPS,CHUNK> <<<(inbytes-1)/(CHUNK*NUM_WARPS)+1,   NUM_WARPS*WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
+        time_run (2, [&] {mtf_thread    <CHUNK>           <<<(inbytes-1)/(CHUNK*WARP_SIZE)+1,             WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
+        time_run (3, [&] {mtf_thread_by4<CHUNK>           <<<(inbytes-1)/(CHUNK*WARP_SIZE)+1,             WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
+        time_run (4, [&] {mtf_2symbols  <NUM_WARPS,CHUNK> <<<(inbytes-1)/(CHUNK*NUM_WARPS)+1,   NUM_WARPS*WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
+        time_run (5, [&] {mtf_2buffers  <NUM_WARPS,CHUNK> <<<(inbytes-1)/(CHUNK*NUM_WARPS*2)+1, NUM_WARPS*WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
+
         auto outbytes = outbuf+inbytes - ptr;
         fwrite (ptr, 1, outbytes, outfile);
         insize  += inbytes;
