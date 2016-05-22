@@ -10,6 +10,7 @@ using namespace std::chrono;
 #include <cuda.h>
 
 #include "cuda_common.h"       // my own helper functions
+#include "sais.c"              // OpenBWT implementation
 
 const int ALPHABET_SIZE = 256;
 const int WARP_SIZE = 32;
@@ -390,8 +391,16 @@ __global__ void mtf_2buffers (const byte* __restrict__ inbuf,  byte* __restrict_
 
 int main (int argc, char **argv)
 {
+    bool apply_bwt = true;
+    if (argv[1] && strcmp(argv[1],"-nobwt")==0) {
+        apply_bwt = false;
+        argv++, argc--;
+    }
+
     if (!(argc==2 || argc==4)) {
-        printf ("Usage: mtf infile [N outfile]\n  N is the number of function those output will be saved\n");
+        printf ("Usage: mtf [options] infile [N outfile]\n"
+                "  N is the number of function those output will be saved\n"
+                "  -nobwt   skip BWT transformation\n");
         return 0;
     }
 
@@ -406,6 +415,8 @@ int main (int argc, char **argv)
 
     unsigned char* inbuf  = new unsigned char[BUFSIZE];
     unsigned char* outbuf = new unsigned char[BUFSIZE];
+    int*      bwt_tempbuf = new int          [BUFSIZE];
+
     double insize = 0,  outsize = 0,  duration[100] = {0};  char *mtf_name[100] = {"cpu (1 thread)"};
 
     FILE* infile  = fopen (argv[1], "rb");
@@ -424,6 +435,15 @@ int main (int argc, char **argv)
 
     for (int inbytes; !!(inbytes = fread(inbuf,1,BUFSIZE,infile)); )
     {
+        if (apply_bwt) {
+            auto bwt_errcode  =  sais_bwt (inbuf, outbuf, bwt_tempbuf, inbytes);
+            if (bwt_errcode < 0) {
+                printf ("BWT failed with errcode %d\n", bwt_errcode);
+                return 2;
+            }
+            memcpy (inbuf, outbuf, inbytes);
+        }
+
         high_resolution_clock::time_point t1 = high_resolution_clock::now();
         unsigned char MTFTable[ALPHABET_SIZE];
         auto ptr = qlfc (inbuf, outbuf, inbytes, MTFTable);
