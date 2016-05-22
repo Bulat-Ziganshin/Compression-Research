@@ -143,15 +143,16 @@ __global__ void mtf_scalar (const byte* __restrict__ inbuf,  byte* __restrict__ 
     for (int i=0; ; i++)
     {
         auto next = inbuf[i];
+
         #pragma unroll 4
         for ( ; i<CHUNK; i++)
         {
             auto cur = next;
             auto old = mtf[tid];
-            next = inbuf[i+1];
 
             unsigned n = __ballot (cur==old);
             if (n==0)  goto deeper;
+            next = inbuf[i+1];
 
             auto minbit = __ffs(n) - 1;
             if (tid < minbit)  mtf[tid+1] = old;
@@ -163,18 +164,19 @@ __global__ void mtf_scalar (const byte* __restrict__ inbuf,  byte* __restrict__ 
 
     deeper:
         {
-            auto cur = inbuf[i];
+            auto cur = next;
             auto old = mtf[tid];
 
             int k;  unsigned n;
             #pragma unroll
-            for (k=0; k<ALPHABET_SIZE; k+=WARP_SIZE)
+            for (k=WARP_SIZE; k<ALPHABET_SIZE; k+=WARP_SIZE)
             {
+                auto next = mtf[k+tid];
+                mtf[k+tid+1-WARP_SIZE] = old;
+                old = next;
+
                 n = __ballot (cur==old);
                 if (n) break;
-                auto next = mtf[k+WARP_SIZE+tid];
-                mtf[k+tid+1] = old;
-                old = next;
                 __syncthreads();
             }
 

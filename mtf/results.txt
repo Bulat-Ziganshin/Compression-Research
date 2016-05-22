@@ -2,45 +2,46 @@ C:\!FreeArc\public\Compression-Research\mtf>for %a in (00 e8.ST6 e8 100m 100m.to
 
 C:\!FreeArc\public\Compression-Research\mtf>mtf z:\00
 rle: 100000000 => 1
-cpu (1 thread):  42.000000 ms,  2270.653134 MiB/s
-thread mtf    :  125.705154 ms,  758.659675 MiB/s
-thread-by4 mtf:  128.587677 ms,  741.652963 MiB/s
-scalar mtf    :  175.245178 ms,  544.194326 MiB/s
-2-symbol mtf  :  178.725540 ms,  533.597110 MiB/s
-2-buffer mtf  :  134.002304 ms,  711.685014 MiB/s
+[0] cpu (1 thread):  41.000000 ms,  2326.034918 MiB/s
+[1] thread mtf    :  127.521729 ms,  747.852407 MiB/s
+[2] thread-by4 mtf:  131.160355 ms,  727.105625 MiB/s
+[3] scalar mtf    :  176.039520 ms,  541.738761 MiB/s
+[4] 2-symbol mtf  :  178.951782 ms,  532.922503 MiB/s
+[5] 2-buffer mtf  :  134.081894 ms,  711.262564 MiB/s
 
-C:\!FreeArc\public\Compression-Research\mtf>mtf z:\e8.ST6            <<<< ***************
+C:\!FreeArc\public\Compression-Research\mtf>mtf z:\e8.ST6
 rle: 100000000 => 40470315
-cpu (1 thread):  586.000000 ms,  162.743057 MiB/s
-thread mtf    :  208.434937 ms,  457.540532 MiB/s
-thread-by4 mtf:  173.797913 ms,  548.725990 MiB/s
-scalar mtf    :  185.291168 ms,  514.689570 MiB/s
-2-symbol mtf  :  214.920029 ms,  443.734501 MiB/s
-2-buffer mtf  :  153.082855 ms,  622.979180 MiB/s                    <<<< ***************
+[0] cpu (1 thread):  587.000000 ms,  162.465812 MiB/s
+[1] thread mtf    :  207.871674 ms,  458.780314 MiB/s
+[2] thread-by4 mtf:  173.594086 ms,  549.370281 MiB/s
+[3] scalar mtf    :  180.846146 ms,  527.340139 MiB/s
+[4] 2-symbol mtf  :  215.026016 ms,  443.515782 MiB/s
+[5] 2-buffer mtf  :  153.082428 ms,  622.980919 MiB/s
 
 C:\!FreeArc\public\Compression-Research\mtf>mtf z:\e8
 rle: 100000000 => 94493693
-cpu (1 thread):  1351.000000 ms,  70.590253 MiB/s
-thread mtf    :  402.572449 ms,  236.895078 MiB/s
-thread-by4 mtf:  281.406677 ms,  338.895411 MiB/s
-scalar mtf    :  215.800537 ms,  441.923977 MiB/s
-2-symbol mtf  :  380.795135 ms,  250.442883 MiB/s
-2-buffer mtf  :  189.600250 ms,  502.992119 MiB/s
+[0] cpu (1 thread):  1350.000000 ms,  70.642542 MiB/s
+[1] thread mtf    :  402.824402 ms,  236.746908 MiB/s
+[2] thread-by4 mtf:  281.478088 ms,  338.809433 MiB/s
+[3] scalar mtf    :  202.657318 ms,  470.584692 MiB/s
+[4] 2-symbol mtf  :  380.630707 ms,  250.551072 MiB/s
+[5] 2-buffer mtf  :  189.424606 ms,  503.458518 MiB/s
 
 C:\!FreeArc\public\Compression-Research\mtf>mtf z:\100m
 rle: 100000000 => 83025264
-cpu (1 thread):  1768.000000 ms,  53.940855 MiB/s
-thread mtf    :  802.216248 ms,  118.879955 MiB/s
-thread-by4 mtf:  489.796600 ms,  194.708235 MiB/s
-scalar mtf    :  326.249939 ms,  292.314021 MiB/s
-2-symbol mtf  :  518.598267 ms,  183.894621 MiB/s
-2-buffer mtf  :  265.698181 ms,  358.931443 MiB/s
+[0] cpu (1 thread):  1768.000000 ms,  53.940855 MiB/s
+[1] thread mtf    :  803.023865 ms,  118.760395 MiB/s
+[2] thread-by4 mtf:  489.326477 ms,  194.895302 MiB/s
+[3] scalar mtf    :  286.288239 ms,  333.116834 MiB/s
+[4] 2-symbol mtf  :  518.407715 ms,  183.962215 MiB/s
+[5] 2-buffer mtf  :  265.455231 ms,  359.259945 MiB/s
 
 C:\!FreeArc\public\Compression-Research\mtf>mtf z:\100m.tor
 rle: 27920815 => 27811947
-cpu (1 thread):  1322.000000 ms,  20.141728 MiB/s
-thread mtf    :  513.900635 ms,  51.814227 MiB/s
-thread-by4 mtf:  290.981445 ms,  91.508804 MiB/s
-scalar mtf    :  201.194916 ms,  132.346109 MiB/s
-2-symbol mtf  :  235.178650 ms,  113.221860 MiB/s
-2-buffer mtf  :  125.700157 ms,  211.832386 MiB/s
+[0] cpu (1 thread):  1322.000000 ms,  20.141728 MiB/s
+[1] thread mtf    :  513.319458 ms,  51.872891 MiB/s
+[2] thread-by4 mtf:  291.439117 ms,  91.365100 MiB/s
+[3] scalar mtf    :  164.982590 ms,  161.394994 MiB/s
+[4] 2-symbol mtf  :  234.242599 ms,  113.674303 MiB/s
+[5] 2-buffer mtf  :  126.052063 ms,  211.241003 MiB/s
+
