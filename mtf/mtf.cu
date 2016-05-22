@@ -9,6 +9,7 @@ using namespace std::chrono;
 #include <cuda_profiler_api.h >
 #include <cuda.h>
 
+#include "cuda_common.h"       // my own helper functions
 
 const int ALPHABET_SIZE = 256;
 const int WARP_SIZE = 32;
@@ -92,7 +93,7 @@ __global__ void mtf_thread_by4 (const byte* inbuf,  byte* outbuf,  int inbytes, 
     int i = 0,  k = 0;
     auto mtf_k = mtf;
     auto old = cur;
- 
+
     for(;;)
     {
         #pragma unroll
@@ -106,7 +107,7 @@ __global__ void mtf_thread_by4 (const byte* inbuf,  byte* outbuf,  int inbytes, 
         }
         mtf_k += 128;
         continue;
-             
+
 found:
         *outbuf++ = k;
         if (++i >= CHUNK)  return;
@@ -412,7 +413,8 @@ int main (int argc, char **argv)
         printf ("Can't open outfile %s\n", argv[3]);
         return 1;
     }
-    int save_n  =  argc==4? atoi(argv[2]) : 0;    
+    int save_n  =  argc==4? atoi(argv[2]) : 0;
+    DisplayCudaDevice();
 
 
     for (int inbytes; !!(inbytes = fread(inbuf,1,BUFSIZE,infile)); )
@@ -422,6 +424,7 @@ int main (int argc, char **argv)
         auto ptr = qlfc (inbuf, outbuf, inbytes, MTFTable);
         high_resolution_clock::time_point t2 = high_resolution_clock::now();
         duration[0] = duration_cast<nanoseconds>( t2 - t1 ).count() / 1000000;
+        outsize += outbuf+inbytes - ptr;
 
         checkCudaErrors( cudaMemcpy (d_inbuf, inbuf, inbytes, cudaMemcpyHostToDevice));
         checkCudaErrors( cudaDeviceSynchronize());
@@ -432,7 +435,7 @@ int main (int argc, char **argv)
             checkCudaErrors( cudaEventRecord (stop, nullptr));
             checkCudaErrors( cudaDeviceSynchronize());
 
-            if (i == save_n) {   
+            if (i == save_n) {
                 checkCudaErrors( cudaMemcpy (outbuf, d_outbuf, inbytes, cudaMemcpyDeviceToHost));
                 checkCudaErrors( cudaDeviceSynchronize());
                 ptr = outbuf;
@@ -452,14 +455,14 @@ int main (int argc, char **argv)
         auto outbytes = outbuf+inbytes - ptr;
         fwrite (ptr, 1, outbytes, outfile);
         insize  += inbytes;
-        outsize += outbytes;
+        //outsize += outbytes;
     }
 
-    printf("rle: %.0lf => %.0lf\n", insize, outsize);
+    printf("rle: %.0lf => %.0lf (%.2lf%%)\n", insize, outsize, outsize*100.0/insize);
     char *mtf_name[] = {"cpu (1 thread)", "thread mtf", "thread-by4 mtf", "scalar mtf", "2-symbol mtf", "2-buffer mtf"};
     for (int i=0; i<sizeof(duration)/sizeof(*duration); i++)
         if (duration[i])
-            printf("%-14s:  %.6lf ms,  %.6lf MiB/s\n", mtf_name[i], duration[i], ((1000/duration[i]) * insize) / (1 << 20));
+            printf("[%d] %-14s:  %.6lf ms,  %.6lf MiB/s\n", i, mtf_name[i], duration[i], ((1000/duration[i]) * insize) / (1 << 20));
     fclose(infile);
     fclose(outfile);
     cudaProfilerStop();
