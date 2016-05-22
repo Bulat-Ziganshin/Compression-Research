@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <vector>
 #include <functional>
+#include <chrono>
+using namespace std::chrono;
 
 #include <helper_functions.h>  // helper for shared functions common to CUDA Samples
 #include <helper_cuda.h>       // helper functions for CUDA error checking and initialization
@@ -11,6 +13,9 @@
 const int ALPHABET_SIZE = 256;
 const int WARP_SIZE = 32;
 typedef unsigned char byte;
+
+#include "qlfc-cpu.cpp"
+
 
 // Parameters
 const int NUM_WARPS = 6;
@@ -393,7 +398,7 @@ int main (int argc, char **argv)
 
     unsigned char* inbuf  = new unsigned char[BUFSIZE];
     unsigned char* outbuf = new unsigned char[BUFSIZE];
-    double insize = 0,  outsize = 0,  duration[5] = {0};
+    double insize = 0,  outsize = 0,  duration[10] = {0};
 
     FILE* infile  = fopen (argv[1], "rb");
     FILE* outfile = fopen (argv[2]? argv[2] : "nul", "wb");
@@ -414,16 +419,24 @@ int main (int argc, char **argv)
             return start_stop;
         };
 
-        duration[0]  +=  time_run ([&] {mtf           <NUM_WARPS,CHUNK> <<<(inbytes-1)/(CHUNK*NUM_WARPS)+1,   NUM_WARPS*WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
-        duration[1]  +=  time_run ([&] {mtf_thread    <CHUNK>           <<<(inbytes-1)/(CHUNK*WARP_SIZE)+1,             WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
-        duration[2]  +=  time_run ([&] {mtf_thread_by4<CHUNK>           <<<(inbytes-1)/(CHUNK*WARP_SIZE)+1,             WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
-        duration[3]  +=  time_run ([&] {mtf_2symbols  <NUM_WARPS,CHUNK> <<<(inbytes-1)/(CHUNK*NUM_WARPS)+1,   NUM_WARPS*WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
-        duration[4]  +=  time_run ([&] {mtf_2buffers  <NUM_WARPS,CHUNK> <<<(inbytes-1)/(CHUNK*NUM_WARPS*2)+1, NUM_WARPS*WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
+
+        duration[1]  +=  time_run ([&] {mtf           <NUM_WARPS,CHUNK> <<<(inbytes-1)/(CHUNK*NUM_WARPS)+1,   NUM_WARPS*WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
+        duration[2]  +=  time_run ([&] {mtf_thread    <CHUNK>           <<<(inbytes-1)/(CHUNK*WARP_SIZE)+1,             WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
+        duration[3]  +=  time_run ([&] {mtf_thread_by4<CHUNK>           <<<(inbytes-1)/(CHUNK*WARP_SIZE)+1,             WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
+        duration[4]  +=  time_run ([&] {mtf_2symbols  <NUM_WARPS,CHUNK> <<<(inbytes-1)/(CHUNK*NUM_WARPS)+1,   NUM_WARPS*WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
+        duration[5]  +=  time_run ([&] {mtf_2buffers  <NUM_WARPS,CHUNK> <<<(inbytes-1)/(CHUNK*NUM_WARPS*2)+1, NUM_WARPS*WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
 
         checkCudaErrors( cudaMemcpy (outbuf, d_outbuf, inbytes, cudaMemcpyDeviceToHost));
         checkCudaErrors( cudaDeviceSynchronize());
 
-        auto ptr = outbuf;
+        high_resolution_clock::time_point t1 = high_resolution_clock::now();
+        unsigned char MTFTable[ALPHABET_SIZE];
+        auto ptr = qlfc (inbuf, outbuf, inbytes, MTFTable);
+        high_resolution_clock::time_point t2 = high_resolution_clock::now();
+        duration[0] = duration_cast<nanoseconds>( t2 - t1 ).count() / 1000000;
+//        duration[0] = t2 - t1;
+
+        //auto ptr = outbuf;
         auto outbytes = outbuf+inbytes - ptr;
         fwrite (ptr, 1, outbytes, outfile);
         insize  += inbytes;
@@ -431,10 +444,10 @@ int main (int argc, char **argv)
     }
 
     // printf("rle: %.0lf => %.0lf\n", insize, outsize);
-    char *mtf_name[] = {"scalar mtf", "thread mtf", "thread-by4 mtf", "2-symbol mtf", "2-buffer mtf"};
-    for (int i=0; i<5; i++)
+    char *mtf_name[] = {"cpu (1 thread)", "scalar mtf", "thread mtf", "thread-by4 mtf", "2-symbol mtf", "2-buffer mtf"};
+    for (int i=0; i<sizeof(duration)/sizeof(*duration); i++)
         if (duration[i])
-            printf("%-14s:  %.6lf ms,  %.6lf MiB/s\n", mtf_name[i], duration[i], ((1000.0f/duration[i]) * insize) / (1 << 20));
+            printf("%-14s:  %.6lf ms,  %.6lf MiB/s\n", mtf_name[i], duration[i], ((1000/duration[i]) * insize) / (1 << 20));
     fclose(infile);
     fclose(outfile);
     cudaProfilerStop();
