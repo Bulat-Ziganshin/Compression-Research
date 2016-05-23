@@ -1,87 +1,104 @@
-for %a in (e8 100m 100m.tor e9 1g) do mtf z:\%a
+for %a in (00 e8 100m 100m.tor e9 1g) do mtf z:\%a
 GeForce GTX 560 Ti, SM 2.1, 1.0 GB VRAM.  8 SM * 48 alu * 1800 MHz = 691 GIOPS
+
+C:\!FreeArc\public\Compression-Research\mtf>mtf -nogpu z:\00
+rle: 100000000 => 1 (0.00%)
+[ 0] cpu (1 thread)    :  2361 /    0 MiB/s,  40.400 ms
+[ 1] mtf_scalar        : 90105 /    0 MiB/s,  1.058 ms
+[ 2] mtf_2symbols      : 103319 /    0 MiB/s,  0.923 ms
+[ 3] mtf_2buffers      : 64404 /    0 MiB/s,  1.481 ms
+[ 4] mtf_thread        : 130090 /    0 MiB/s,  0.733 ms
+[ 5] mtf_thread_by4    : 116840 /    0 MiB/s,  0.816 ms
+[ 6] mtf_thread<8>     : 127170 /    0 MiB/s,  0.750 ms
+[ 7] mtf_thread<16>    : 127143 /    0 MiB/s,  0.750 ms
+[ 8] mtf_thread<32>    : 127121 /    0 MiB/s,  0.750 ms
+[ 9] mtf_thread<64>    : 127062 /    0 MiB/s,  0.751 ms
+[10] mtf_thread_by4<8> : 113304 /    0 MiB/s,  0.842 ms
+[11] mtf_thread_by4<16>: 110917 /    0 MiB/s,  0.860 ms
+[12] mtf_thread_by4<32>: 110930 /    0 MiB/s,  0.860 ms
+[13] mtf_thread_by4<64>: 110892 /    0 MiB/s,  0.860 ms
 
 C:\!FreeArc\public\Compression-Research\mtf>mtf -nogpu z:\e8
 rle: 100000000 => 36661038 (36.66%)
-[ 0] cpu (1 thread)    :   179 /   66 MiB/s,  532.593 ms
-[ 1] mtf_scalar        :  1373 /  503 MiB/s,  69.476 ms
-[ 2] mtf_2symbols      :  1041 /  382 MiB/s,  91.586 ms
-[ 3] mtf_2buffers      :  1539 /  564 MiB/s,  61.980 ms
-[ 4] mtf_thread        :   842 /  309 MiB/s,  113.220 ms
-[ 5] mtf_thread_by4    :   942 /  345 MiB/s,  101.254 ms
-[ 6] mtf_thread<8>     :  1352 /  496 MiB/s,  70.546 ms
-[ 7] mtf_thread<16>    :  1284 /  471 MiB/s,  74.270 ms
-[ 8] mtf_thread<32>    :  1165 /  427 MiB/s,  81.872 ms
-[ 9] mtf_thread<64>    :  1074 /  394 MiB/s,  88.817 ms
-[10] mtf_thread_by4<8> :  1347 /  494 MiB/s,  70.813 ms
-[11] mtf_thread_by4<16>:  1264 /  463 MiB/s,  75.451 ms
-[12] mtf_thread_by4<32>:  1165 /  427 MiB/s,  81.892 ms
-[13] mtf_thread_by4<64>:  1106 /  405 MiB/s,  86.237 ms
+[ 0] cpu (1 thread)    :   179 /   66 MiB/s,  531.700 ms
+[ 1] mtf_scalar        :  1372 /  503 MiB/s,  69.523 ms
+[ 2] mtf_2symbols      :  1043 /  382 MiB/s,  91.456 ms
+[ 3] mtf_2buffers      :  1541 /  565 MiB/s,  61.896 ms
+[ 4] mtf_thread        :   840 /  308 MiB/s,  113.586 ms
+[ 5] mtf_thread_by4    :  1124 /  412 MiB/s,  84.829 ms
+[ 6] mtf_thread<8>     :  1352 /  496 MiB/s,  70.518 ms
+[ 7] mtf_thread<16>    :  1285 /  471 MiB/s,  74.236 ms
+[ 8] mtf_thread<32>    :  1174 /  430 MiB/s,  81.228 ms
+[ 9] mtf_thread<64>    :  1077 /  395 MiB/s,  88.550 ms
+[10] mtf_thread_by4<8> :  1332 /  488 MiB/s,  71.607 ms
+[11] mtf_thread_by4<16>:  1291 /  473 MiB/s,  73.865 ms
+[12] mtf_thread_by4<32>:  1248 /  458 MiB/s,  76.412 ms
+[13] mtf_thread_by4<64>:  1180 /  432 MiB/s,  80.848 ms
 
 C:\!FreeArc\public\Compression-Research\mtf>mtf -nogpu z:\100m
 rle: 100000000 => 34089988 (34.09%)
-[ 0] cpu (1 thread)    :    99 /   34 MiB/s,  959.576 ms
-[ 1] mtf_scalar        :   830 /  283 MiB/s,  114.875 ms
-[ 2] mtf_2symbols      :   480 /  164 MiB/s,  198.560 ms
-[ 3] mtf_2buffers      :   952 /  324 MiB/s,  100.206 ms
-[ 4] mtf_thread        :   254 /   87 MiB/s,  375.808 ms
-[ 5] mtf_thread_by4    :   384 /  131 MiB/s,  248.367 ms
-[ 6] mtf_thread<8>     :  1337 /  456 MiB/s,  71.347 ms
-[ 7] mtf_thread<16>    :  1032 /  352 MiB/s,  92.428 ms
-[ 8] mtf_thread<32>    :   735 /  250 MiB/s,  129.801 ms
-[ 9] mtf_thread<64>    :   515 /  176 MiB/s,  185.052 ms
-[10] mtf_thread_by4<8> :  1392 /  475 MiB/s,  68.507 ms
-[11] mtf_thread_by4<16>:  1096 /  374 MiB/s,  86.985 ms
-[12] mtf_thread_by4<32>:   795 /  271 MiB/s,  120.016 ms
-[13] mtf_thread_by4<64>:   609 /  208 MiB/s,  156.552 ms
+[ 0] cpu (1 thread)    :   104 /   35 MiB/s,  918.986 ms
+[ 1] mtf_scalar        :   825 /  281 MiB/s,  115.630 ms
+[ 2] mtf_2symbols      :   480 /  164 MiB/s,  198.616 ms
+[ 3] mtf_2buffers      :   949 /  324 MiB/s,  100.464 ms
+[ 4] mtf_thread        :   254 /   87 MiB/s,  375.827 ms
+[ 5] mtf_thread_by4    :   426 /  145 MiB/s,  223.675 ms
+[ 6] mtf_thread<8>     :  1336 /  456 MiB/s,  71.373 ms
+[ 7] mtf_thread<16>    :  1031 /  352 MiB/s,  92.463 ms
+[ 8] mtf_thread<32>    :   732 /  250 MiB/s,  130.254 ms
+[ 9] mtf_thread<64>    :   513 /  175 MiB/s,  185.729 ms
+[10] mtf_thread_by4<8> :  1398 /  477 MiB/s,  68.197 ms
+[11] mtf_thread_by4<16>:  1174 /  400 MiB/s,  81.245 ms
+[12] mtf_thread_by4<32>:   916 /  312 MiB/s,  104.152 ms
+[13] mtf_thread_by4<64>:   687 /  234 MiB/s,  138.834 ms
 
 C:\!FreeArc\public\Compression-Research\mtf>mtf -nogpu z:\100m.tor
 rle: 27920815 => 27811097 (99.61%)
-[ 0] cpu (1 thread)    :    20 /   20 MiB/s,  1325.549 ms
-[ 1] mtf_scalar        :   157 /  157 MiB/s,  169.313 ms
-[ 2] mtf_2symbols      :   114 /  114 MiB/s,  232.825 ms
-[ 3] mtf_2buffers      :   212 /  211 MiB/s,  125.736 ms
-[ 4] mtf_thread        :    52 /   52 MiB/s,  511.245 ms
-[ 5] mtf_thread_by4    :    85 /   84 MiB/s,  313.941 ms
-[ 6] mtf_thread<8>     :   370 /  368 MiB/s,  71.996 ms
-[ 7] mtf_thread<16>    :   278 /  277 MiB/s,  95.667 ms
-[ 8] mtf_thread<32>    :   183 /  182 MiB/s,  145.903 ms
-[ 9] mtf_thread<64>    :   119 /  119 MiB/s,  223.065 ms
-[10] mtf_thread_by4<8> :   526 /  524 MiB/s,  50.613 ms
-[11] mtf_thread_by4<16>:   395 /  393 MiB/s,  67.407 ms
-[12] mtf_thread_by4<32>:   260 /  258 MiB/s,  102.608 ms
-[13] mtf_thread_by4<64>:   169 /  169 MiB/s,  157.176 ms
+[ 0] cpu (1 thread)    :    21 /   20 MiB/s,  1298.124 ms
+[ 1] mtf_scalar        :   158 /  157 MiB/s,  169.006 ms
+[ 2] mtf_2symbols      :   114 /  114 MiB/s,  233.536 ms
+[ 3] mtf_2buffers      :   212 /  211 MiB/s,  125.810 ms
+[ 4] mtf_thread        :    52 /   52 MiB/s,  513.046 ms
+[ 5] mtf_thread_by4    :    92 /   91 MiB/s,  290.632 ms
+[ 6] mtf_thread<8>     :   370 /  368 MiB/s,  71.982 ms
+[ 7] mtf_thread<16>    :   277 /  276 MiB/s,  96.082 ms
+[ 8] mtf_thread<32>    :   184 /  183 MiB/s,  144.713 ms
+[ 9] mtf_thread<64>    :   121 /  121 MiB/s,  220.040 ms
+[10] mtf_thread_by4<8> :   423 /  421 MiB/s,  62.936 ms
+[11] mtf_thread_by4<16>:   359 /  358 MiB/s,  74.131 ms
+[12] mtf_thread_by4<32>:   280 /  279 MiB/s,  95.204 ms
+[13] mtf_thread_by4<64>:   180 /  179 MiB/s,  147.825 ms
 
 C:\!FreeArc\public\Compression-Research\mtf>mtf -nogpu z:\e9
 rle: 1000000000 => 315797331 (31.58%)
-[ 0] cpu (1 thread)    :   202 /   64 MiB/s,  4727.694 ms
-[ 1] mtf_scalar        :  1600 /  505 MiB/s,  595.994 ms
-[ 2] mtf_2symbols      :  1224 /  387 MiB/s,  778.938 ms
-[ 3] mtf_2buffers      :  1796 /  567 MiB/s,  531.135 ms
-[ 4] mtf_thread        :  1016 /  321 MiB/s,  938.953 ms
-[ 5] mtf_thread_by4    :  1106 /  349 MiB/s,  861.929 ms
-[ 6] mtf_thread<8>     :  1613 /  509 MiB/s,  591.265 ms
-[ 7] mtf_thread<16>    :  1523 /  481 MiB/s,  626.078 ms
-[ 8] mtf_thread<32>    :  1391 /  439 MiB/s,  685.575 ms
-[ 9] mtf_thread<64>    :  1294 /  409 MiB/s,  737.043 ms
-[10] mtf_thread_by4<8> :  1593 /  503 MiB/s,  598.795 ms
-[11] mtf_thread_by4<16>:  1484 /  469 MiB/s,  642.650 ms
-[12] mtf_thread_by4<32>:  1362 /  430 MiB/s,  700.280 ms
-[13] mtf_thread_by4<64>:  1310 /  414 MiB/s,  727.727 ms
+[ 0] cpu (1 thread)    :   209 /   66 MiB/s,  4567.141 ms
+[ 1] mtf_scalar        :  1598 /  505 MiB/s,  596.850 ms
+[ 2] mtf_2symbols      :  1224 /  386 MiB/s,  779.278 ms
+[ 3] mtf_2buffers      :  1795 /  567 MiB/s,  531.280 ms
+[ 4] mtf_thread        :  1016 /  321 MiB/s,  938.825 ms
+[ 5] mtf_thread_by4    :  1330 /  420 MiB/s,  717.170 ms
+[ 6] mtf_thread<8>     :  1618 /  511 MiB/s,  589.310 ms
+[ 7] mtf_thread<16>    :  1523 /  481 MiB/s,  626.123 ms
+[ 8] mtf_thread<32>    :  1390 /  439 MiB/s,  686.323 ms
+[ 9] mtf_thread<64>    :  1292 /  408 MiB/s,  737.895 ms
+[10] mtf_thread_by4<8> :  1569 /  495 MiB/s,  607.880 ms
+[11] mtf_thread_by4<16>:  1523 /  481 MiB/s,  626.378 ms
+[12] mtf_thread_by4<32>:  1470 /  464 MiB/s,  648.972 ms
+[13] mtf_thread_by4<64>:  1418 /  448 MiB/s,  672.608 ms
 
 C:\!FreeArc\public\Compression-Research\mtf>mtf -nogpu z:\1g
 rle: 1000000000 => 337497035 (33.75%)
-[ 0] cpu (1 thread)    :   106 /   36 MiB/s,  8970.163 ms
-[ 1] mtf_scalar        :   847 /  286 MiB/s,  1125.345 ms
-[ 2] mtf_2symbols      :   490 /  165 MiB/s,  1945.026 ms
-[ 3] mtf_2buffers      :   970 /  327 MiB/s,  983.644 ms
-[ 4] mtf_thread        :   255 /   86 MiB/s,  3734.577 ms
-[ 5] mtf_thread_by4    :   389 /  131 MiB/s,  2452.725 ms
-[ 6] mtf_thread<8>     :  1466 /  495 MiB/s,  650.671 ms
-[ 7] mtf_thread<16>    :  1118 /  377 MiB/s,  852.646 ms
-[ 8] mtf_thread<32>    :   787 /  266 MiB/s,  1211.279 ms
-[ 9] mtf_thread<64>    :   552 /  186 MiB/s,  1728.710 ms
-[10] mtf_thread_by4<8> :  1532 /  517 MiB/s,  622.319 ms
-[11] mtf_thread_by4<16>:  1198 /  404 MiB/s,  796.283 ms
-[12] mtf_thread_by4<32>:   868 /  293 MiB/s,  1099.129 ms
-[13] mtf_thread_by4<64>:   659 /  222 MiB/s,  1447.267 ms
+[ 0] cpu (1 thread)    :   109 /   37 MiB/s,  8760.903 ms
+[ 1] mtf_scalar        :   847 /  286 MiB/s,  1125.660 ms
+[ 2] mtf_2symbols      :   490 /  165 MiB/s,  1947.626 ms
+[ 3] mtf_2buffers      :   970 /  327 MiB/s,  983.030 ms
+[ 4] mtf_thread        :   255 /   86 MiB/s,  3732.914 ms
+[ 5] mtf_thread_by4    :   431 /  145 MiB/s,  2213.632 ms
+[ 6] mtf_thread<8>     :  1462 /  493 MiB/s,  652.346 ms
+[ 7] mtf_thread<16>    :  1119 /  378 MiB/s,  852.183 ms
+[ 8] mtf_thread<32>    :   788 /  266 MiB/s,  1210.573 ms
+[ 9] mtf_thread<64>    :   551 /  186 MiB/s,  1730.647 ms
+[10] mtf_thread_by4<8> :  1521 /  513 MiB/s,  626.923 ms
+[11] mtf_thread_by4<16>:  1289 /  435 MiB/s,  739.690 ms
+[12] mtf_thread_by4<32>:   993 /  335 MiB/s,  960.836 ms
+[13] mtf_thread_by4<64>:   739 /  249 MiB/s,  1290.458 ms

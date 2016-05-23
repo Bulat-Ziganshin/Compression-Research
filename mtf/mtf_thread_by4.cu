@@ -3,16 +3,16 @@
 // Part of https://github.com/Bulat-Ziganshin/Compression-Research
 
 template <int CHUNK,  int NUM_THREADS = WARP_SIZE,  int MTF_SYMBOLS = ALPHABET_SIZE>
-__global__ void mtf_thread_by4 (const byte* _inbuf,  byte* outbuf,  int inbytes,  int chunk)
+__global__ void mtf_thread_by4 (const byte* inbuf,  byte* outbuf,  int inbytes,  int chunk)
 {
     const int idx = blockIdx.x * blockDim.x + threadIdx.x;
     const int tid = threadIdx.x;
 
     if (idx*CHUNK >= inbytes)  return;
-    const unsigned *inbuf = (unsigned*)(_inbuf+idx*CHUNK);
+    inbuf  += idx*CHUNK;
     outbuf += idx*CHUNK;
-    auto cur_word  = *inbuf++;
-    auto next_word = *inbuf++;
+    auto cur  = *inbuf++;
+    auto next = *inbuf++;
 
     volatile __shared__  byte mtf0 [MTF_SYMBOLS*NUM_THREADS];
     auto mtf = mtf0 + 4*tid;
@@ -24,9 +24,7 @@ __global__ void mtf_thread_by4 (const byte* _inbuf,  byte* outbuf,  int inbytes,
 
     int i = 0,  k = 0;
     auto mtf_k = mtf;
-    byte cur = cur_word;
-    byte old = cur;
-    cur_word >>= 8;
+    auto old = cur;
 
     for(;;)
     {
@@ -47,12 +45,8 @@ found:
         *outbuf++ = k;
         if (++i >= CHUNK)  return;
 
-        if (i%4 == 0)
-            cur_word = next_word,
-            next_word = *inbuf++;
-
-        old = cur = cur_word;
-        cur_word >>= 8;
+        old = cur = next;
+        next = *inbuf++;
 
         mtf_k = mtf;
         k = 0;

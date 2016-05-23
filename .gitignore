@@ -6,3 +6,14 @@
 *.fatbin
 
 *.exe
+
+mtf/0/*
+mtf/1/*
+mtf/2/*
+mtf/3/*
+mtf/4/*
+mtf/5/*
+mtf/6/*
+mtf/7/*
+mtf/8/*
+mtf/9/*
