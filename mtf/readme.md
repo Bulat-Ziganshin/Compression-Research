@@ -1,3 +1,4 @@
+[qlfc-cpu.cpp]:   https://github.com/Bulat-Ziganshin/Compression-Research/blob/master/mtf/qlfc-cpu.cpp
 [mtf_thread]:     https://github.com/Bulat-Ziganshin/Compression-Research/blob/master/mtf/mtf_thread.cu
 [mtf_thread_by4]: https://github.com/Bulat-Ziganshin/Compression-Research/blob/master/mtf/mtf_thread_by4.cu
 [mtf_scalar]:     https://github.com/Bulat-Ziganshin/Compression-Research/blob/master/mtf/mtf_scalar.cu
@@ -7,7 +8,7 @@
 
 ### CPU implementations
 
-The only one currently included is qlfc-cpu.cpp, borrowed from BSC 3.1
+The only one currently included is [qlfc-cpu.cpp], borrowed from BSC 3.1
 
 Further CPU optimizations:
 * use SSE/AVX to check 16-32 positions simultaneously (PCMPEQB+PMOVMSKB)
