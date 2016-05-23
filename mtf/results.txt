@@ -1,4 +1,4 @@
-C:\!FreeArc\public\Compression-Research\mtf>for %a in (00 e8 100m 100m.tor) do mtf z:\%a
+C:\!FreeArc\public\Compression-Research\mtf>for %a in (00 e8 100m 100m.tor e9 1g) do mtf z:\%a
 GeForce GTX 560 Ti, SM 2.1, 1.0 GB VRAM.  8 SM * 48 alu * 1800 MHz = 691 GIOPS
 
 
@@ -71,6 +71,41 @@ rle: 27920815 => 27811097 (99.61%)
 [11] mtf_thread_by4<16>:  71.741951 ms,  371.154726 MiB/s
 [12] mtf_thread_by4<32>:  95.816353 ms,  277.899997 MiB/s
 [13] mtf_thread_by4<64>:  147.306335 ms,  180.761839 MiB/s
+
+C:\!FreeArc\public\Compression-Research\mtf>mtf z:\e9
+rle: 1000000000 => 315797331 (31.58%)
+[ 0] cpu (1 thread)    :  4671.936721 ms,  204.128261 MiB/s
+[ 1] mtf_scalar        :  596.283165 ms,  1599.364819 MiB/s
+[ 2] mtf_2symbols      :  778.585861 ms,  1224.880086 MiB/s
+[ 3] mtf_2buffers      :  531.059456 ms,  1795.795755 MiB/s
+[ 4] mtf_thread        :  939.409203 ms,  1015.185197 MiB/s
+[ 5] mtf_thread_by4    :  716.580284 ms,  1330.868763 MiB/s
+[ 6] mtf_thread<8>     :  589.863110 ms,  1616.772266 MiB/s
+[ 7] mtf_thread<16>    :  626.703564 ms,  1521.731121 MiB/s
+[ 8] mtf_thread<32>    :  685.436855 ms,  1391.337961 MiB/s
+[ 9] mtf_thread<64>    :  736.888100 ms,  1294.191502 MiB/s
+[10] mtf_thread_by4<8> :  607.583366 ms,  1569.618869 MiB/s
+[11] mtf_thread_by4<16>:  624.128609 ms,  1528.009297 MiB/s
+[12] mtf_thread_by4<32>:  649.360577 ms,  1468.635995 MiB/s
+[13] mtf_thread_by4<64>:  670.647934 ms,  1422.019316 MiB/s
+
+C:\!FreeArc\public\Compression-Research\mtf>mtf z:\1g
+rle: 1000000000 => 337497035 (33.75%)
+[ 0] cpu (1 thread)    :  8788.958433 ms,  108.508229 MiB/s
+[ 1] mtf_scalar        :  1126.045155 ms,  846.923689 MiB/s
+[ 2] mtf_2symbols      :  1945.432785 ms,  490.211907 MiB/s
+[ 3] mtf_2buffers      :  985.041561 ms,  968.156425 MiB/s
+[ 4] mtf_thread        :  3733.794434 ms,  255.416931 MiB/s
+[ 5] mtf_thread_by4    :  2210.987648 ms,  431.334077 MiB/s
+[ 6] mtf_thread<8>     :  652.414856 ms,  1461.760577 MiB/s
+[ 7] mtf_thread<16>    :  852.843369 ms,  1118.229152 MiB/s
+[ 8] mtf_thread<32>    :  1211.771439 ms,  787.008413 MiB/s
+[ 9] mtf_thread<64>    :  1730.508995 ms,  551.094689 MiB/s
+[10] mtf_thread_by4<8> :  627.170437 ms,  1520.598326 MiB/s
+[11] mtf_thread_by4<16>:  738.796570 ms,  1290.848327 MiB/s
+[12] mtf_thread_by4<32>:  961.703102 ms,  991.651492 MiB/s
+[13] mtf_thread_by4<64>:  1290.892883 ms,  738.771070 MiB/s
+
 
 
 
