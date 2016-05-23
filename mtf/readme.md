@@ -21,7 +21,7 @@ Further CPU optimizations:
 Current GPU MTF implementations:
 * [mtf_scalar] - processes single buffer per warp, comparing 32 mtf positions in single operation
 * [mtf_2symbols] - the same, but checks 2 input symbols interleaved, increasing ILP
-* [mtf_2buffers] - the same, but processes 2 buffers interleaved, increasing ILP (don't yet provides correct results!!)
+* [mtf_2buffers] - the same, but processes 2 buffers interleaved, increasing ILP
 * [mtf_thread] - process 32 buffers per warp, on every algorithm step going 1 mtf position deeper and/or one input symbol further
 * [mtf_thread_by4] - the same, but process 4 mtf positions on every step
 * `mtf_thread<N>` and `mtf_thread_by4<N>` - mtf search depth limited to N, should be used together with second-pass algorithm

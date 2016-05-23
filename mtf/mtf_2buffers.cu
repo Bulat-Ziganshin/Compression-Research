@@ -8,7 +8,6 @@ __global__ void mtf_2buffers (const byte* __restrict__ inbuf,  byte* __restrict_
     const int idx = (blockIdx.x * blockDim.x + threadIdx.x) / WARP_SIZE;
     const int tid = (blockIdx.x * blockDim.x + threadIdx.x) % WARP_SIZE;
     const int warp_id = threadIdx.x / WARP_SIZE;
-//printf("%d ", warp_id);
 
     if (idx*CHUNK*2 >= inbytes)  return;
     inbuf  += idx*chunk*2;
@@ -17,7 +16,6 @@ __global__ void mtf_2buffers (const byte* __restrict__ inbuf,  byte* __restrict_
     auto inbuf1  = inbuf,  inbuf2  = inbuf+chunk;
     auto outbuf1 = outbuf, outbuf2 = outbuf+chunk;
 
-//    __shared__  byte in[128], out[128];
     __shared__  MTF_WORD mtf0 [ALPHABET_SIZE*NUM_WARPS*2];
     auto mtf1 = mtf0 + ALPHABET_SIZE*warp_id*2;
     auto mtf2 = mtf1 + ALPHABET_SIZE;
@@ -39,15 +37,16 @@ __global__ void mtf_2buffers (const byte* __restrict__ inbuf,  byte* __restrict_
         {
             auto cur1 = next1;
             auto old1 = mtf1[tid];
-            next1 = inbuf1[i+1];
 
             auto cur2 = next2;
             auto old2 = mtf2[tid];
-            next2 = inbuf2[i+1];
 
             n1 = __ballot (cur1==old1);
             n2 = __ballot (cur2==old2);
             if (n1==0 || n2==0)  goto deeper;
+
+            next1 = inbuf1[i+1];
+            next2 = inbuf2[i+1];
 
             auto minbit = __ffs(n1) - 1;
             if (tid < minbit)  mtf1[tid+1] = old1;
@@ -67,15 +66,17 @@ __global__ void mtf_2buffers (const byte* __restrict__ inbuf,  byte* __restrict_
             auto cur = next1;
             auto old = mtf1[tid];
 
-            int k;  unsigned n;
+            int k;  unsigned n = n1;
             #pragma unroll
-            for (k=0; k<ALPHABET_SIZE; k+=WARP_SIZE)
+            for (k=0; k<ALPHABET_SIZE-WARP_SIZE; k+=WARP_SIZE)
             {
-                n = __ballot (cur==old);
                 if (n) break;
-                auto next = mtf1[k+WARP_SIZE+tid];
+
+                auto next = mtf1[k+tid+WARP_SIZE];
                 mtf1[k+tid+1] = old;
                 old = next;
+
+                n = __ballot (cur==old);
                 SYNC_WARP();
             }
 
