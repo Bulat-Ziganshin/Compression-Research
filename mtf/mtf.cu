@@ -406,6 +406,12 @@ int rle (byte* buf, int size)
 
 int main (int argc, char **argv)
 {
+    bool apply_gpu_display = true;
+    if (argv[1] && strcmp(argv[1],"-nogpu")==0) {
+        apply_gpu_display = false;
+        argv++, argc--;
+    }
+
     bool apply_bwt = true;
     if (argv[1] && strcmp(argv[1],"-nobwt")==0) {
         apply_bwt = false;
@@ -421,6 +427,7 @@ int main (int argc, char **argv)
     if (!(argc==2 || argc==4)) {
         printf ("Usage: mtf [options] infile [N outfile]\n"
                 "  N is the number of function those output will be saved\n"
+                "  -nogpu   skip GPU name output\n"
                 "  -nobwt   skip BWT transformation\n"
                 "  -norle   skip RLE transformation\n"
                 );
@@ -453,7 +460,8 @@ int main (int argc, char **argv)
         return 1;
     }
     int save_num  =  argc==4? atoi(argv[2]) : 0;
-    DisplayCudaDevice();
+    if (apply_gpu_display)
+        DisplayCudaDevice();
 
 
     for (int inbytes; !!(inbytes = fread(inbuf,1,BUFSIZE,infile)); )
@@ -524,9 +532,14 @@ int main (int argc, char **argv)
     }
 
     printf("rle: %.0lf => %.0lf (%.2lf%%)\n", insize, outsize, outsize*100.0/insize);
-    for (int i=0; i<sizeof(duration)/sizeof(*duration); i++)
-        if (duration[i])
-            printf("[%2d] %-*s:  %.6lf ms,  %.6lf MiB/s\n", i, strlen(mtf_name[2]), mtf_name[i], duration[i], ((1000/duration[i]) * insize) / (1 << 20));
+    for (int i=0; i<sizeof(duration)/sizeof(*duration); i++) {
+        if (duration[i]) {
+            char in_speed[100], out_speed[100];
+            sprintf( in_speed,   "%5.0lf", ((1000/duration[i]) *  insize) / (1 << 20));
+            sprintf(out_speed, " /%5.0lf", ((1000/duration[i]) * outsize) / (1 << 20));
+            printf("[%2d] %-*s: %s%s MiB/s,  %.3lf ms\n", i, strlen(mtf_name[2]), mtf_name[i], in_speed, (apply_rle?out_speed:""), duration[i]);
+        }
+    }
     fclose(infile);
     fclose(outfile);
     cudaProfilerStop();
