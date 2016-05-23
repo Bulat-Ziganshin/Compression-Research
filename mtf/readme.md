@@ -1,8 +1,8 @@
-[mtf_thread]:     https://github.com/Bulat-Ziganshin/Compression-Research/blob/6709d3ceb368e59824d35ed58b0e3211b26281a4/mtf/mtf.cu#L31
-[mtf_thread_by4]: https://github.com/Bulat-Ziganshin/Compression-Research/blob/6709d3ceb368e59824d35ed58b0e3211b26281a4/mtf/mtf.cu#L76
-[mtf_scalar]:     https://github.com/Bulat-Ziganshin/Compression-Research/blob/6709d3ceb368e59824d35ed58b0e3211b26281a4/mtf/mtf.cu#L129
-[mtf_2symbols]:   https://github.com/Bulat-Ziganshin/Compression-Research/blob/6709d3ceb368e59824d35ed58b0e3211b26281a4/mtf/mtf.cu#L200
-[mtf_2buffers]:   https://github.com/Bulat-Ziganshin/Compression-Research/blob/6709d3ceb368e59824d35ed58b0e3211b26281a4/mtf/mtf.cu#L283
+[mtf_thread]:     https://github.com/Bulat-Ziganshin/Compression-Research/blob/master/mtf/mtf_thread.cu
+[mtf_thread_by4]: https://github.com/Bulat-Ziganshin/Compression-Research/blob/master/mtf/mtf_thread_by4.cu
+[mtf_scalar]:     https://github.com/Bulat-Ziganshin/Compression-Research/blob/master/mtf/mtf_scalar.cu
+[mtf_2symbols]:   https://github.com/Bulat-Ziganshin/Compression-Research/blob/master/mtf/mtf_2symbols.cu
+[mtf_2buffers]:   https://github.com/Bulat-Ziganshin/Compression-Research/blob/master/mtf/mtf_2buffers.cu
 
 
 ### CPU implementations
@@ -42,7 +42,7 @@ Overall, we can explore 3 versions of parallelism, employing the single warp to:
 * compare multiple mtf queue positions to the same symbol
 
 Unfortunately, each version of parallelism has its own drawbacks:
-* Since each MTF queue occupy 256 bytes of shared memory, the entire 32-thread warp occupies as much as 8 KB.
+* Since each MTF queue occupies 256 bytes of shared memory, the entire 32-thread warp occupies as much as 8 KB.
 This means that we cannot run more than 6..12 warps per SM, i.e. 1.5 .. 3 warps per one sheduler.
 This requires very careful programming that should provide a lot of ILP.
 In particular, input data should be prefetched, and probably multiple symbol/position checks should be interleaved.
@@ -52,7 +52,7 @@ in the MTF queue. I.e. when we are looking for 4 (different) symbols, we should 
 the first match, then by 3 positions until we got second match and so on. Alternatively, we can use 2 stages - the first stage
 only discovers symbol ranks and the second stage shifts the data.
 * Checking multiple MTF positions by the single warp is easy to implement, but results in significant inefficiency,
-especially on low-entropy data. Peter Fenwick discovered that average rank (on Calgary corpus) is ~6,
+especially on low-entropy data. Peter Fenwick discovered that average rank of BWT output (on Calgary corpus) is ~6,
 meaning that ~80% of comparisons are wasted, in addition to duplicating operations performed by multiple lanes.
 
 The same 3 versions of parallelism can be exploited at ILP level:
@@ -83,8 +83,9 @@ symbol = inbuf[i]
 for (int rank=0; rank<8; rank++)
     if (mtf[rank] == symbol)  {outbuf[i] = rank;  mtf[0] = symbol;  goto next_symbol;}
     ...
-// Oh, we've found symbol with rank>=8
+// Oh, we've found symbol with rank>=8. It will shift in at mtf[0] and mtf[7] are going to leave the queue.
 *tempbuf++ = {i, symbol, mtf[7]}
+mtf[0] = symbol
 ```
 
 While the high-rank (last pass) algorithm should process only symbols overflowed at previous pass, looking for the current
@@ -97,4 +98,4 @@ for (int rank=32; rank<256; rank++)
     ...
 ```
 
-And any intermediate algorithm should combine both features to process symbols only of its own rank range.
+And any intermediate pass should combine both features to process symbols only of its own rank range.
