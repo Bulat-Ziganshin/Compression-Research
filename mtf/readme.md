@@ -1,3 +1,10 @@
+[mtf_thread]:     https://github.com/Bulat-Ziganshin/Compression-Research/blob/6709d3ceb368e59824d35ed58b0e3211b26281a4/mtf/mtf.cu#L31
+[mtf_thread_by4]: https://github.com/Bulat-Ziganshin/Compression-Research/blob/6709d3ceb368e59824d35ed58b0e3211b26281a4/mtf/mtf.cu#L76
+[mtf_scalar]:     https://github.com/Bulat-Ziganshin/Compression-Research/blob/6709d3ceb368e59824d35ed58b0e3211b26281a4/mtf/mtf.cu#L129
+[mtf_2symbols]:   https://github.com/Bulat-Ziganshin/Compression-Research/blob/6709d3ceb368e59824d35ed58b0e3211b26281a4/mtf/mtf.cu#L200
+[mtf_2buffers]:   https://github.com/Bulat-Ziganshin/Compression-Research/blob/6709d3ceb368e59824d35ed58b0e3211b26281a4/mtf/mtf.cu#L283
+
+
 ### CPU implementations
 
 The only one currently included is qlfc-cpu.cpp, borrowed from BSC 3.1
@@ -11,11 +18,11 @@ Further CPU optimizations:
 ### GPU implementations
 
 Current GPU MTF implementations:
-* `mtf_scalar` - process single buffer per warp, compare 32 mtf positions in single operation
-* `mtf_2symbols` - the same, but check 2 input symbols interleaved, increasing ILP
-* `mtf_2buffers` - the same, but process 2 buffers interleaved, increasing ILP (not yet provides correct results!!)
-* `mtf_thread` - process 32 buffers per warp, on every algorithm step going 1 mtf position deeper and/or one input symbol further
-* `mtf_thread_by4` - the same, but process 4 mtf positions on every step
+* [mtf_scalar] - processes single buffer per warp, comparing 32 mtf positions in single operation
+* [mtf_2symbols] - the same, but checks 2 input symbols interleaved, increasing ILP
+* [mtf_2buffers] - the same, but processes 2 buffers interleaved, increasing ILP (don't yet provides correct results!!)
+* [mtf_thread] - process 32 buffers per warp, on every algorithm step going 1 mtf position deeper and/or one input symbol further
+* [mtf_thread_by4] - the same, but process 4 mtf positions on every step
 * `mtf_thread<N>` and `mtf_thread_by4<N>` - mtf search depth limited to N, should be used together with second-pass algorithm
 
 Further GPU optimizations:
@@ -29,7 +36,7 @@ Further GPU optimizations:
 
 ### How to implement MTF on GPU?
 
-Overall, we can explore 3 levels of parallelism, employing the single warp to:
+Overall, we can explore 3 versions of parallelism, employing the single warp to:
 * process multiple buffers
 * process multiple input symbols from the single buffer
 * compare multiple mtf queue positions to the same symbol
@@ -40,12 +47,18 @@ This means that we cannot run more than 6..12 warps per SM, i.e. 1.5 .. 3 warps 
 This requires very careful programming that should provide a lot of ILP.
 In particular, input data should be prefetched, and probably multiple symbol/position checks should be interleaved.
 Otherwise, we would stall a lot at memory delays and execution dependencies.
-* ...
+* Processimg multiple input symbols for the same buffer simultaneously makes it harder to simultaneously shift data
+in the MTF queue. I.e. when we are looking for 4 (different) symbols, we should shift MTF queue by 4 positions until we got
+the first match, then by 3 positions until we get second match and so on. Alternatively, we can use 2 stages - the first stage
+only discovers symbol ranks and the second stage performs actual data shift.
+* Checking multiple MTF positions by the single warp is easy to implement, but results in significant inefficiency,
+especially on low-entropy data. Peter Fenwick discovered that average rank (on Calgary corpus) is ~6,
+meaning that ~80% of comparisons are wasted, in addition to equivalent operations performed by multiple lanes.
 
 The same 3 versions of parallelism can be exploited at ILP level:
-* multiple buffers are processed by `mtf_2buffers`
-* multiple input symbols are processed by `mtf_2symbols`
-* multiple mtf positions are processed by `mtf_thread_by4`
+* multiple buffers are processed by [mtf_2buffers]
+* multiple input symbols are processed by [mtf_2symbols]
+* multiple mtf positions are processed by [mtf_thread_by4]
 
 Moreover, we can combine multiple parallelisms at warp level (f.e. check 4 positions in 8 buffers by the single warp instruction)
 and/or simultaneously at ILP level. This creates a large space of possible combinations, which we can explore
@@ -59,9 +72,9 @@ This can make reasonable a multi-pass approach, f.e. first pass may find only ra
 second pass - ranks of 8..31, and last pass - all remaining ranks.
 
 This means that the first passes will have much lower shared memory usage, allowing them to run more warps per SM
-and reach 100% occupancy even with some memory-aggressive algo like `mtf_thread_by4`,
+and reach 100% occupancy even with some memory-aggressive algo like [mtf_thread_by4],
 while the last pass process only a few remaining symbols, and can check 32 positions at each step without losing much efficiency
-with some simple algo like `mtf_scalar`. Isn't it beautiful?!
+with some simple algo like [mtf_scalar]. Isn't it beautiful?!
 
 The key point, of course, is how they can be combined? The low-rank (first pass) algorithm should save at each position
 where it was "overflowed", the symbol that was pushed out of its short MTF queue:
