@@ -47,13 +47,13 @@ This means that we cannot run more than 6..12 warps per SM, i.e. 1.5 .. 3 warps 
 This requires very careful programming that should provide a lot of ILP.
 In particular, input data should be prefetched, and probably multiple symbol/position checks should be interleaved.
 Otherwise, we would stall a lot at memory delays and execution dependencies.
-* Processimg multiple input symbols for the same buffer simultaneously makes it harder to simultaneously shift data
+* Processing multiple input symbols for the same buffer simultaneously makes it harder to simultaneously shift data
 in the MTF queue. I.e. when we are looking for 4 (different) symbols, we should shift MTF queue by 4 positions until we got
-the first match, then by 3 positions until we get second match and so on. Alternatively, we can use 2 stages - the first stage
-only discovers symbol ranks and the second stage performs actual data shift.
+the first match, then by 3 positions until we got second match and so on. Alternatively, we can use 2 stages - the first stage
+only discovers symbol ranks and the second stage shifts the data.
 * Checking multiple MTF positions by the single warp is easy to implement, but results in significant inefficiency,
 especially on low-entropy data. Peter Fenwick discovered that average rank (on Calgary corpus) is ~6,
-meaning that ~80% of comparisons are wasted, in addition to equivalent operations performed by multiple lanes.
+meaning that ~80% of comparisons are wasted, in addition to duplicating operations performed by multiple lanes.
 
 The same 3 versions of parallelism can be exploited at ILP level:
 * multiple buffers are processed by [mtf_2buffers]
