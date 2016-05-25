@@ -2,41 +2,44 @@
 // All right reserved
 // Part of https://github.com/Bulat-Ziganshin/Compression-Research
 
-template <int CHUNK,  int NUM_WARPS,  typename MTF_WORD = unsigned,  int MTF_SYMBOLS = WARP_SIZE>
+template <int CHUNK,  int NUM_WARPS,  int NUM_BUFFERS = 2,  typename MTF_WORD = unsigned,  int MTF_SYMBOLS = WARP_SIZE>
 __global__ void mtf_2buffers_depth32 (const byte* __restrict__ _inbuf,  byte* __restrict__ _outbuf,  int inbytes,  int chunk)
 {
     const int idx = (blockIdx.x * blockDim.x + threadIdx.x) / WARP_SIZE;
     const int tid = (blockIdx.x * blockDim.x + threadIdx.x) % WARP_SIZE;
     const int warp_id = threadIdx.x / WARP_SIZE;
 
-    if (idx*CHUNK*2 >= inbytes)  return;
+    if (idx*CHUNK*NUM_BUFFERS >= inbytes)  return;
 
-    const byte* inbuf[2];
-    inbuf[0]  = _inbuf + idx*chunk*2;
-    inbuf[1]  = inbuf[0] + chunk;
+    const byte* __restrict__ inbuf[NUM_BUFFERS];
+    byte* __restrict__ outbuf[NUM_BUFFERS];
+    byte next[NUM_BUFFERS];
 
-    byte* outbuf[2];
-    outbuf[0]  = _outbuf + idx*chunk*2;
-    outbuf[1]  = outbuf[0] + chunk;
+    __shared__  MTF_WORD mtf0 [(MTF_SYMBOLS+1)*NUM_WARPS*NUM_BUFFERS];
+    MTF_WORD* mtf[NUM_BUFFERS];
 
-    __shared__  MTF_WORD mtf0 [(MTF_SYMBOLS+1)*NUM_WARPS*2];
-    MTF_WORD* mtf[2];
-    mtf[0] = mtf0 + MTF_SYMBOLS*warp_id*2;
-    mtf[1] = mtf[0] + MTF_SYMBOLS;
-    for (int i=0; i<MTF_SYMBOLS; i+=WARP_SIZE)
+    #pragma unroll
+    for (int k=0; k<NUM_BUFFERS; k++)
     {
-        mtf[0][i+tid] = i+tid;
-        mtf[1][i+tid] = i+tid;
+        inbuf[k]  =  _inbuf + CHUNK * (idx*NUM_BUFFERS + k);
+        outbuf[k] = _outbuf + CHUNK * (idx*NUM_BUFFERS + k);
+        next[k]   = *inbuf[k]++;
+
+        mtf[k] = mtf0 + (MTF_SYMBOLS+1) * (warp_id*NUM_BUFFERS + k);
+        #pragma unroll
+        for (int i=0; i<MTF_SYMBOLS; i+=WARP_SIZE)
+        {
+            mtf[k][i+tid] = i+tid;
+        }
     }
     SYNC_WARP();
 
 
-    byte next[] = {*inbuf[0]++, *inbuf[1]++};
     #pragma unroll 16
     for (int i=0; i<CHUNK; i++)
     {
         #pragma unroll
-        for (int k=0; k<2; k++)
+        for (int k=0; k<NUM_BUFFERS; k++)
         {
             auto cur = next[k];
             auto old = mtf[k][tid];
