@@ -11,6 +11,7 @@ __global__ void mtf_4by8 (const byte* __restrict__ inbuf,  byte* __restrict__ ou
     const int idx = (blockIdx.x * blockDim.x + threadIdx.x) / NUM_POSITIONS;
     const int buf = threadIdx.x / NUM_POSITIONS;
     const int pos = threadIdx.x % NUM_POSITIONS;
+    const int first_bit = (buf * NUM_POSITIONS) % WARP_SIZE;
 
     if (idx*CHUNK >= inbytes)  return;
     inbuf  += idx*CHUNK;
@@ -32,15 +33,15 @@ __global__ void mtf_4by8 (const byte* __restrict__ inbuf,  byte* __restrict__ ou
 
     for(;;)
     {
-        unsigned n = __ballot (cur==old);                            // combined flags for NUM_POSITIONS in NUM_BUFFERS
-        if (NUM_POSITIONS != WARP_SIZE)
-            n  =  (n >> (buf*NUM_POSITIONS)) % (1<<NUM_POSITIONS);   // only NUM_POSITIONS flags for the current buffer
-        if (n==0) {                                                  // if there is no match among these positions in the current buffer
+        unsigned n = __ballot (cur==old);                       // combined flags for NUM_POSITIONS in NUM_BUFFERS
+        if (NUM_POSITIONS < WARP_SIZE)
+            n  =  (n >> first_bit) % (1<<NUM_POSITIONS);        // only NUM_POSITIONS flags for the current buffer
+        if (n==0) {                                             // if there is no match among these positions in the current buffer
             auto next = mtf[k+pos+NUM_POSITIONS];
-            //__syncthreads();
             mtf[k+pos+1] = old;
             old = next;
             k += NUM_POSITIONS;
+            //__syncthreads();
         } else {
             auto minbit = __ffs(n) - 1;
             if (pos < minbit)  mtf[k+pos+1] = old;
