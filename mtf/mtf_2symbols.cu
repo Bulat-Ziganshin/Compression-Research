@@ -26,7 +26,7 @@ __global__ void mtf_2symbols (const byte* __restrict__ inbuf,  byte* __restrict_
     {
         auto next1 = inbuf[i];
         auto next2 = inbuf[i+1];
-        #pragma unroll 8
+        #pragma unroll 4
         for ( ; i<CHUNK; i+=2)
         {
             auto cur1 = next1;
