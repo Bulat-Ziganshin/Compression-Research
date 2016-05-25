@@ -45,7 +45,7 @@ __global__ void mtf_4by8 (const byte* __restrict__ inbuf,  byte* __restrict__ ou
         } else {
             auto minbit = __ffs(n) - 1;
             if (pos < minbit)  mtf[k+pos+1] = old;
-            if (pos==0)        outbuf[i] = k+minbit;
+            *outbuf++ = k+minbit;
             mtf[0] = cur;
             if (++i >= CHUNK)  return;
 

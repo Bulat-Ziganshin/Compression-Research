@@ -38,7 +38,7 @@ __global__ void mtf_scalar (const byte* __restrict__ inbuf,  byte* __restrict__ 
 
             auto minbit = __ffs(n) - 1;
             if (tid < minbit)  mtf[tid+1] = old;
-            if (tid==0)        outbuf[i] = minbit;
+            *outbuf++ = minbit;
             mtf[0] = cur;
             __syncthreads();
         }
@@ -64,7 +64,7 @@ __global__ void mtf_scalar (const byte* __restrict__ inbuf,  byte* __restrict__ 
 
             auto minbit = __ffs(n) - 1;
             if (tid < minbit)  mtf[k+tid+1] = old;
-            if (tid==0)        outbuf[i] = k+minbit;
+            *outbuf++ = k+minbit;
             mtf[0] = cur;
             __syncthreads();
         }
