@@ -2,7 +2,7 @@
 // All right reserved
 // Part of https://github.com/Bulat-Ziganshin/Compression-Research
 
-template <int NUM_WARPS,  int CHUNK,  typename MTF_WORD = unsigned>
+template <int CHUNK,  int NUM_WARPS,  typename MTF_WORD = unsigned>
 __global__ void mtf_2symbols (const byte* __restrict__ inbuf,  byte* __restrict__ outbuf,  int inbytes,  int chunk)
 {
     const int idx = (blockIdx.x * blockDim.x + threadIdx.x) / WARP_SIZE;

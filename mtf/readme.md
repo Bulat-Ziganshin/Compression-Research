@@ -4,6 +4,7 @@
 [mtf_scalar]:     https://github.com/Bulat-Ziganshin/Compression-Research/blob/master/mtf/mtf_scalar.cu
 [mtf_2symbols]:   https://github.com/Bulat-Ziganshin/Compression-Research/blob/master/mtf/mtf_2symbols.cu
 [mtf_2buffers]:   https://github.com/Bulat-Ziganshin/Compression-Research/blob/master/mtf/mtf_2buffers.cu
+[mtf_4by8]:       https://github.com/Bulat-Ziganshin/Compression-Research/blob/master/mtf/mtf_4by8.cu
 
 
 ### CPU implementations
@@ -22,17 +23,17 @@ Current GPU MTF implementations:
 * [mtf_scalar] - processes single buffer per warp, comparing 32 mtf positions in single operation
 * [mtf_2symbols] - the same, but checks 2 input symbols interleaved, increasing ILP
 * [mtf_2buffers] - the same, but processes 2 buffers interleaved, increasing ILP
+* [mtf_4by8] - process 4/8 positions from 8/4 buffers in the single warp
 * [mtf_thread] - process 32 buffers per warp, on every algorithm step going 1 mtf position deeper and/or one input symbol further
 * [mtf_thread_by4] - the same, but process 4 mtf positions on every step
-* `mtf_thread<N>` and `mtf_thread_by4<N>` - mtf search depth limited to N, should be used together with second-pass algorithm
+* `mtf_2buffers<N>`, `mtf_thread<N>` and `mtf_thread_by4<N>` - mtf search depth limited to N, for use in multi-pass algorithm
 
 Further GPU optimizations:
 * global loads/stores (inbuf/outbuf)
-* process 4/8 positions from 8/4 buffers in the single warp
 * use 4-8 lanes to find ranks of 4-8 symbols simultaneously, then combine them and shift mtf[] elements by 1-4 positions
 * the same, but combine search with shift
 * the same with r2c[] and c2r[] machinery (see OpenBWT implementation)
-* first pass process only ranks up to 8-32, last pass - only a few remaining chars with rank>32
+* multi-pass: first pass process only ranks up to 8-32, last pass - only a few remaining chars with rank>32
 
 
 ### How to implement MTF on GPU?

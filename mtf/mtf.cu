@@ -20,18 +20,18 @@ const int WARP_SIZE = 32;
 typedef unsigned char byte;
 
 // Parameters
-const int NUM_WARPS = 6;
 const int BUFSIZE = 128*1024*1024;
 const int CHUNK = 4*1024;
 #define SYNC_WARP __threadfence_block  /* alternatively, __syncthreads or, better, __threadfence_warp */
 
 #include "qlfc-cpu.cpp"
-#include "mtf_2buffers.cu"
-#include "mtf_2symbols.cu"
 #include "mtf_scalar.cu"
+#include "mtf_2symbols.cu"
+#include "mtf_2buffers.cu"
+#include "mtf_2buffers_depth32.cu"
+#include "mtf_4by8.cu"
 #include "mtf_thread.cu"
 #include "mtf_thread_by4.cu"
-#include "mtf_4by8.cu"
 
 // In-place RLE transformation (run lengths are dropped!)
 int rle (byte* buf, int size)
@@ -151,9 +151,13 @@ int main (int argc, char **argv)
             num++;
         };
 
-        time_run ("mtf_scalar        ", [&] {mtf_scalar    <NUM_WARPS,CHUNK>       <<<(inbytes-1)/(CHUNK*NUM_WARPS)+1,   NUM_WARPS*WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
-        time_run ("mtf_2symbols      ", [&] {mtf_2symbols  <NUM_WARPS,CHUNK>       <<<(inbytes-1)/(CHUNK*NUM_WARPS)+1,   NUM_WARPS*WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
-        time_run ("mtf_2buffers      ", [&] {mtf_2buffers  <NUM_WARPS,CHUNK>       <<<(inbytes-1)/(CHUNK*NUM_WARPS*2)+1, NUM_WARPS*WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
+{
+        const int NUM_WARPS = 4;
+        time_run ("mtf_scalar        ", [&] {mtf_scalar    <CHUNK,NUM_WARPS>       <<<(inbytes-1)/(CHUNK*NUM_WARPS)+1,   NUM_WARPS*WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
+        time_run ("mtf_2symbols      ", [&] {mtf_2symbols  <CHUNK,NUM_WARPS>       <<<(inbytes-1)/(CHUNK*NUM_WARPS)+1,   NUM_WARPS*WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
+        time_run ("mtf_2buffers      ", [&] {mtf_2buffers  <CHUNK,NUM_WARPS>       <<<(inbytes-1)/(CHUNK*NUM_WARPS*2)+1, NUM_WARPS*WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
+        time_run ("mtf_2buffers<32>  ", [&] {mtf_2buffers_depth32 <CHUNK,NUM_WARPS><<<(inbytes-1)/(CHUNK*NUM_WARPS*2)+1, NUM_WARPS*WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
+}
 {
         const int NUM_THREADS = 8*WARP_SIZE,  NUM_BUFFERS = NUM_THREADS/8;
         time_run ("mtf_4by8          ", [&]{mtf_4by8<CHUNK,NUM_THREADS,NUM_BUFFERS><<<(inbytes-1)/(CHUNK*NUM_BUFFERS)+1,         NUM_THREADS>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
