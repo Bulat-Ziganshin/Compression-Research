@@ -21,15 +21,16 @@ __global__ void mtf_4by8 (const byte* __restrict__ inbuf,  byte* __restrict__ ou
 
     volatile __shared__  MTF_WORD mtf0 [MTF_SYMBOLS*NUM_BUFFERS];
     auto mtf = mtf0 + buf*MTF_SYMBOLS;
+    auto mtf_pos = mtf+pos;
     for (int k=0; k<MTF_SYMBOLS; k+=NUM_POSITIONS)
     {
-        mtf[k+pos] = k+pos;
+        mtf_pos[k] = k+pos;
     }
     //__syncthreads();
 
 
     int i = 0,  k = 0;
-    auto old  = mtf[pos];
+    auto old  = *mtf_pos;
 
     for(;;)
     {
@@ -37,24 +38,23 @@ __global__ void mtf_4by8 (const byte* __restrict__ inbuf,  byte* __restrict__ ou
         if (NUM_POSITIONS < WARP_SIZE)
             n  =  (n >> first_bit) % (1<<NUM_POSITIONS);        // only NUM_POSITIONS flags for the current buffer
         if (n==0) {                                             // if there is no match among these positions in the current buffer
-            auto next = mtf[k+pos+NUM_POSITIONS];
-            mtf[k+pos+1] = old;
+            auto next = mtf_pos[k+NUM_POSITIONS];
+            mtf_pos[k+1] = old;
             old = next;
             k += NUM_POSITIONS;
             //__syncthreads();
         } else {
             auto minbit = __ffs(n) - 1;
-            if (pos < minbit)  mtf[k+pos+1] = old;
+            if (pos < minbit)  mtf_pos[k+1] = old;
             *outbuf++ = k+minbit;
             mtf[0] = cur;
+            //__syncthreads();
+            old = *mtf_pos;
             if (++i >= CHUNK)  return;
 
             cur = next;
             next = *inbuf++;
             k = 0;
-            //__syncthreads();
-
-            old  = mtf[pos];
         }
     }
 }
