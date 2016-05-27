@@ -20,17 +20,22 @@ __global__ void mtf_4by8 (const byte* __restrict__ inbuf,  byte* __restrict__ ou
     auto next = *inbuf++;
 
     volatile __shared__  MTF_WORD mtf0 [MTF_SYMBOLS*NUM_BUFFERS];
-    auto mtf = mtf0 + buf*MTF_SYMBOLS;
+    auto mtf = mtf0 + (buf%(WARP_SIZE/NUM_POSITIONS))*NUM_POSITIONS
+                    + (buf/(WARP_SIZE/NUM_POSITIONS))*MTF_SYMBOLS*(WARP_SIZE/NUM_POSITIONS);
     auto mtf_pos = mtf+pos;
+    const int SKIP = WARP_SIZE;
     for (int k=0; k<MTF_SYMBOLS; k+=NUM_POSITIONS)
     {
-        mtf_pos[k] = k+pos;
+        mtf_pos[k*SKIP/NUM_POSITIONS] = k+pos;
     }
     //__syncthreads();
+    auto mtf_pos_next = mtf_pos+1;
+    if (pos == NUM_POSITIONS-1)
+        mtf_pos_next += SKIP - NUM_POSITIONS;
 
 
     int i = 0,  k = 0;
-    auto old  = *mtf_pos;
+    auto old = *mtf_pos;
 
     for(;;)
     {
@@ -38,15 +43,15 @@ __global__ void mtf_4by8 (const byte* __restrict__ inbuf,  byte* __restrict__ ou
         if (NUM_POSITIONS < WARP_SIZE)
             n  =  (n >> first_bit) % (1<<NUM_POSITIONS);        // only NUM_POSITIONS flags for the current buffer
         if (n==0) {                                             // if there is no match among these positions in the current buffer
-            auto next = mtf_pos[k+NUM_POSITIONS];
-            mtf_pos[k+1] = old;
+            auto next = mtf_pos[k+SKIP];
+            mtf_pos_next[k] = old;
             old = next;
-            k += NUM_POSITIONS;
+            k += SKIP;
             //__syncthreads();
         } else {
             auto minbit = __ffs(n) - 1;
-            if (pos < minbit)  mtf_pos[k+1] = old;
-            *outbuf++ = k+minbit;
+            if (pos < minbit)  mtf_pos_next[k] = old;
+            *outbuf++ = minbit + k/(SKIP/NUM_POSITIONS);
             mtf[0] = cur;
             //__syncthreads();
             old = *mtf_pos;

@@ -1,10 +1,10 @@
-[qlfc-cpu.cpp]:   https://github.com/Bulat-Ziganshin/Compression-Research/blob/master/mtf/qlfc-cpu.cpp
-[mtf_thread]:     https://github.com/Bulat-Ziganshin/Compression-Research/blob/master/mtf/mtf_thread.cu
-[mtf_thread_by4]: https://github.com/Bulat-Ziganshin/Compression-Research/blob/master/mtf/mtf_thread_by4.cu
-[mtf_scalar]:     https://github.com/Bulat-Ziganshin/Compression-Research/blob/master/mtf/mtf_scalar.cu
-[mtf_2symbols]:   https://github.com/Bulat-Ziganshin/Compression-Research/blob/master/mtf/mtf_2symbols.cu
-[mtf_2buffers]:   https://github.com/Bulat-Ziganshin/Compression-Research/blob/master/mtf/mtf_2buffers.cu
-[mtf_4by8]:       https://github.com/Bulat-Ziganshin/Compression-Research/blob/master/mtf/mtf_4by8.cu
+[qlfc-cpu.cpp]:   qlfc-cpu.cpp
+[mtf_thread]:     mtf_thread.cu
+[mtf_thread_by4]: mtf_thread_by4.cu
+[mtf_scalar]:     mtf_scalar.cu
+[mtf_2symbols]:   mtf_2symbols.cu
+[mtf_2buffers]:   mtf_2buffers.cu
+[mtf_4by8]:       mtf_4by8.cu
 
 
 ### CPU implementations
@@ -26,7 +26,7 @@ Current GPU MTF implementations:
 * [mtf_4by8] - process 4/8 positions from 8/4 buffers in the single warp
 * [mtf_thread] - process 32 buffers per warp, on every algorithm step going 1 mtf position deeper and/or one input symbol further
 * [mtf_thread_by4] - the same, but process 4 mtf positions on every step
-* `mtf_2buffers<N>`, `mtf_thread<N>` and `mtf_thread_by4<N>` - mtf search depth limited to N, for use in multi-pass algorithm
+* `mtf_Kbuffers<N>`, `mtf_thread<N>` and `mtf_thread_by4<N>` - mtf search depth limited to N, for use in multi-pass algorithm
 
 Further GPU optimizations:
 * global loads/stores (inbuf/outbuf)
