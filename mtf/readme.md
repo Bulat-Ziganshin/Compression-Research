@@ -38,7 +38,7 @@ Further GPU optimizations:
 
 ### How to implement MTF on GPU?
 
-Overall, we can explore 3 versions of parallelism, employing the single warp to:
+Overall, we can explore 3 ways to parallelism, employing the single warp to:
 * process multiple buffers
 * process multiple input symbols from the single buffer
 * compare multiple mtf queue positions to the same symbol
