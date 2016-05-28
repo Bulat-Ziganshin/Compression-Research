@@ -103,7 +103,7 @@ int main (int argc, char **argv)
     unsigned char* outbuf = new unsigned char[bufsize];
     int*      bwt_tempbuf = apply_bwt? new int[bufsize] : 0;
 
-    double insize = 0,  after_lzp = 0,  outsize = 0,  lzp_duration = 0,  duration[100] = {0};  char *mtf_name[100] = {"cpu (1 thread)"};
+    double insize = 0,  after_lzp = 0,  outsize = 0,  lzp_duration[2] = {0},  duration[100] = {0};  char *mtf_name[100] = {"cpu (1 thread)"};
 
     FILE* infile  = fopen (argv[1], "rb");
     FILE* outfile = fopen (argv[2]? argv[2] : "nul", "wb");
@@ -125,14 +125,23 @@ int main (int argc, char **argv)
         byte *ptr = inbuf;  size_t outbytes = inbytes;  // output buffer
 
         if (apply_lzp) {
+            lzp_cpu(inbuf, inbuf+inbytes, outbuf, outbuf+inbytes, 15, 32);
+
+            StartTimer();
+            lzp_cpu(inbuf, inbuf+inbytes, outbuf, outbuf+inbytes, 15, 32);
+            lzp_duration[1] += GetTimer();
+
             StartTimer();
             auto lzp_errcode  =  bsc_lzp_encode_block(inbuf, inbuf+inbytes, outbuf, outbuf+inbytes, 15, 32);
-            lzp_duration += GetTimer();
-            if (lzp_errcode < 0) {
-                printf ("LZP failed with errcode %d\n", lzp_errcode);
-                return 4;
+            lzp_duration[0] += GetTimer();
+
+            if (lzp_errcode != LIBBSC_NOT_COMPRESSIBLE) {
+                if (lzp_errcode < 0) {
+                    printf ("LZP failed with errcode %d\n", lzp_errcode);
+                    return 4;
+                }
+                memcpy (inbuf, outbuf, inbytes=lzp_errcode);
             }
-            memcpy (inbuf, outbuf, inbytes=lzp_errcode);
         }
         after_lzp += inbytes;
 
@@ -226,7 +235,8 @@ int main (int argc, char **argv)
         printf("\n");
     };
 
-    if (apply_lzp)  print_stage_stats ("lzp", insize, after_lzp, lzp_duration);
+    if (apply_lzp)  print_stage_stats ("lzp-bsc", insize, after_lzp, lzp_duration[0]);
+    if (apply_lzp)  print_stage_stats ("lzp-cpu", insize, after_lzp, lzp_duration[1]);
     if (apply_rle)  print_stage_stats ("rle", after_lzp, outsize, 0);
     for (int i=0; i<sizeof(duration)/sizeof(*duration); i++) {
         if (duration[i]) {
