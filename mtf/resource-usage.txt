@@ -1,0 +1,76 @@
+ptxas info    : 1808 bytes gmem, 184 bytes cmem[14]
+ptxas info    : Compiling entry function '_Z8mtf_4by8ILi4096ELi128ELi32EhLi256EEvPKhPhii' for 'sm_20'
+ptxas info    : Function properties for _Z8mtf_4by8ILi4096ELi128ELi32EhLi256EEvPKhPhii
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 27 registers, 8192 bytes smem, 56 bytes cmem[0], 4 bytes cmem[16]
+ptxas info    : Compiling entry function '_Z14mtf_thread_by4ILi4096ELi32ELi16EEvPKhPhii' for 'sm_20'
+ptxas info    : Function properties for _Z14mtf_thread_by4ILi4096ELi32ELi16EEvPKhPhii
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 16 registers, 512 bytes smem, 56 bytes cmem[0]
+ptxas info    : Compiling entry function '_Z20mtf_2buffers_depth32ILi4096ELi4ELi2EjLi32EEvPKhPhii' for 'sm_20'
+ptxas info    : Function properties for _Z20mtf_2buffers_depth32ILi4096ELi4ELi2EjLi32EEvPKhPhii
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 19 registers, 1056 bytes smem, 56 bytes cmem[0]
+ptxas info    : Compiling entry function '_Z10mtf_threadILi4096ELi32ELi16EEvPKhPhii' for 'sm_20'
+ptxas info    : Function properties for _Z10mtf_threadILi4096ELi32ELi16EEvPKhPhii
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 16 registers, 512 bytes smem, 56 bytes cmem[0]
+ptxas info    : Compiling entry function '_Z20mtf_2buffers_depth32ILi4096ELi4ELi4EjLi32EEvPKhPhii' for 'sm_20'
+ptxas info    : Function properties for _Z20mtf_2buffers_depth32ILi4096ELi4ELi4EjLi32EEvPKhPhii
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 20 registers, 2112 bytes smem, 56 bytes cmem[0]
+ptxas info    : Compiling entry function '_Z10mtf_threadILi4096ELi32ELi64EEvPKhPhii' for 'sm_20'
+ptxas info    : Function properties for _Z10mtf_threadILi4096ELi32ELi64EEvPKhPhii
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 23 registers, 2048 bytes smem, 56 bytes cmem[0]
+ptxas info    : Compiling entry function '_Z14mtf_thread_by4ILi4096ELi32ELi256EEvPKhPhii' for 'sm_20'
+ptxas info    : Function properties for _Z14mtf_thread_by4ILi4096ELi32ELi256EEvPKhPhii
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 22 registers, 8192 bytes smem, 56 bytes cmem[0]
+ptxas info    : Compiling entry function '_Z14mtf_thread_by4ILi4096ELi32ELi64EEvPKhPhii' for 'sm_20'
+ptxas info    : Function properties for _Z14mtf_thread_by4ILi4096ELi32ELi64EEvPKhPhii
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 22 registers, 2048 bytes smem, 56 bytes cmem[0]
+ptxas info    : Compiling entry function '_Z12mtf_2symbolsILi4096ELi4EjEvPKhPhii' for 'sm_20'
+ptxas info    : Function properties for _Z12mtf_2symbolsILi4096ELi4EjEvPKhPhii
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 26 registers, 4096 bytes smem, 56 bytes cmem[0]
+ptxas info    : Compiling entry function '_Z8mtf_4by8ILi4096ELi256ELi32EhLi256EEvPKhPhii' for 'sm_20'
+ptxas info    : Function properties for _Z8mtf_4by8ILi4096ELi256ELi32EhLi256EEvPKhPhii
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 22 registers, 8192 bytes smem, 56 bytes cmem[0], 8 bytes cmem[16]
+ptxas info    : Compiling entry function '_Z14mtf_thread_by4ILi4096ELi32ELi8EEvPKhPhii' for 'sm_20'
+ptxas info    : Function properties for _Z14mtf_thread_by4ILi4096ELi32ELi8EEvPKhPhii
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 16 registers, 256 bytes smem, 56 bytes cmem[0]
+ptxas info    : Compiling entry function '_Z12mtf_2buffersILi4096ELi4EjEvPKhPhii' for 'sm_20'
+ptxas info    : Function properties for _Z12mtf_2buffersILi4096ELi4EjEvPKhPhii
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 27 registers, 8192 bytes smem, 56 bytes cmem[0]
+ptxas info    : Compiling entry function '_Z10mtf_threadILi4096ELi32ELi8EEvPKhPhii' for 'sm_20'
+ptxas info    : Function properties for _Z10mtf_threadILi4096ELi32ELi8EEvPKhPhii
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 14 registers, 256 bytes smem, 56 bytes cmem[0]
+ptxas info    : Compiling entry function '_Z20mtf_2buffers_depth32ILi4096ELi4ELi3EjLi32EEvPKhPhii' for 'sm_20'
+ptxas info    : Function properties for _Z20mtf_2buffers_depth32ILi4096ELi4ELi3EjLi32EEvPKhPhii
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 19 registers, 1584 bytes smem, 56 bytes cmem[0]
+ptxas info    : Compiling entry function '_Z10mtf_threadILi4096ELi32ELi32EEvPKhPhii' for 'sm_20'
+ptxas info    : Function properties for _Z10mtf_threadILi4096ELi32ELi32EEvPKhPhii
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 18 registers, 1024 bytes smem, 56 bytes cmem[0]
+ptxas info    : Compiling entry function '_Z10mtf_threadILi4096ELi32ELi256EEvPKhPhii' for 'sm_20'
+ptxas info    : Function properties for _Z10mtf_threadILi4096ELi32ELi256EEvPKhPhii
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 23 registers, 8192 bytes smem, 56 bytes cmem[0]
+ptxas info    : Compiling entry function '_Z14mtf_thread_by4ILi4096ELi32ELi32EEvPKhPhii' for 'sm_20'
+ptxas info    : Function properties for _Z14mtf_thread_by4ILi4096ELi32ELi32EEvPKhPhii
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 18 registers, 1024 bytes smem, 56 bytes cmem[0]
+ptxas info    : Compiling entry function '_Z10mtf_scalarILi4096ELi4EjEvPKhPhii' for 'sm_20'
+ptxas info    : Function properties for _Z10mtf_scalarILi4096ELi4EjEvPKhPhii
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 21 registers, 4096 bytes smem, 56 bytes cmem[0]
+cuda.lib
+mtf.cu
+   Creating library mtf.lib and object mtf.exp

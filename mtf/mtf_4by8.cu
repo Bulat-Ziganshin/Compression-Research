@@ -12,6 +12,8 @@ __global__ void mtf_4by8 (const byte* __restrict__ inbuf,  byte* __restrict__ ou
     const int buf = threadIdx.x / NUM_POSITIONS;
     const int pos = threadIdx.x % NUM_POSITIONS;
     const int first_bit = (buf * NUM_POSITIONS) % WARP_SIZE;
+    const int BYTES_PER_WORD = 4;
+    const int offset = threadIdx.x / (NUM_THREADS/BYTES_PER_WORD);  // two highest bits of tid defines use of byte 0..3 of the word in mtf0[]
 
     if (idx*CHUNK >= inbytes)  return;
     inbuf  += idx*CHUNK;
@@ -20,18 +22,17 @@ __global__ void mtf_4by8 (const byte* __restrict__ inbuf,  byte* __restrict__ ou
     auto next = *inbuf++;
 
     volatile __shared__  MTF_WORD mtf0 [MTF_SYMBOLS*NUM_BUFFERS];
-    auto mtf = mtf0 + (buf%(WARP_SIZE/NUM_POSITIONS))*NUM_POSITIONS
-                    + (buf/(WARP_SIZE/NUM_POSITIONS))*MTF_SYMBOLS*(WARP_SIZE/NUM_POSITIONS);
-    auto mtf_pos = mtf+pos;
-    const int SKIP = WARP_SIZE;
+    auto mtf = mtf0 + offset + (buf % (NUM_BUFFERS/BYTES_PER_WORD)) * NUM_POSITIONS * BYTES_PER_WORD;
+    auto mtf_pos = mtf + pos*BYTES_PER_WORD;
+    const int SKIP = NUM_POSITIONS * NUM_BUFFERS;
     for (int k=0; k<MTF_SYMBOLS; k+=NUM_POSITIONS)
     {
         mtf_pos[k*SKIP/NUM_POSITIONS] = k+pos;
     }
     //__syncthreads();
-    auto mtf_pos_next = mtf_pos+1;
+    auto mtf_pos_next = mtf_pos + BYTES_PER_WORD;
     if (pos == NUM_POSITIONS-1)
-        mtf_pos_next += SKIP - NUM_POSITIONS;
+        mtf_pos_next += SKIP - NUM_POSITIONS*BYTES_PER_WORD;
 
 
     int i = 0,  k = 0;
@@ -39,6 +40,7 @@ __global__ void mtf_4by8 (const byte* __restrict__ inbuf,  byte* __restrict__ ou
 
     for(;;)
     {
+// to do: for(int _=0;_<4;_++) around if-then
         unsigned n = __ballot (cur==old);                       // combined flags for NUM_POSITIONS in NUM_BUFFERS
         if (NUM_POSITIONS < WARP_SIZE)
             n  =  (n >> first_bit) % (1<<NUM_POSITIONS);        // only NUM_POSITIONS flags for the current buffer
