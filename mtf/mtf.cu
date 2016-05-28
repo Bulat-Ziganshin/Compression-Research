@@ -25,6 +25,7 @@ const int DEFAULT_BUFSIZE = 128*1024*1024;
 const int CHUNK = 4*1024;
 #define SYNC_WARP __threadfence_block  /* alternatively, __syncthreads or, better, __threadfence_warp */
 
+#include "lzp-cpu.cpp"
 #include "qlfc-cpu.cpp"
 #include "mtf_scalar.cu"
 #include "mtf_2symbols.cu"
@@ -49,6 +50,7 @@ int rle (byte* buf, int size)
 int main (int argc, char **argv)
 {
     bool display_gpu = true;
+    bool apply_lzp = true;
     bool apply_bwt = true;
     bool apply_rle = true;
     bool apply_mtf = true;
@@ -60,6 +62,7 @@ int main (int argc, char **argv)
     auto src_argv = argv,  dst_argv = argv;
     while (*++src_argv) {
       ParseBool (*src_argv, "-gpu", "-nogpu", &display_gpu) ||
+      ParseBool (*src_argv, "-lzp", "-nolzp", &apply_lzp) ||
       ParseBool (*src_argv, "-bwt", "-nobwt", &apply_bwt) ||
       ParseBool (*src_argv, "-rle", "-norle", &apply_rle) ||
       ParseBool (*src_argv, "-mtf", "-nomtf", &apply_mtf) ||
@@ -77,6 +80,7 @@ int main (int argc, char **argv)
     if (!(argc==2 || argc==3) || error) {
         printf ("Usage: mtf [options] infile [outfile]\n"
                 "  -nogpu   skip GPU name output\n"
+                "  -nolzp   skip LZP transformation\n"
                 "  -nobwt   skip BWT transformation\n"
                 "  -norle   skip RLE transformation\n"
                 "  -nomtf   skip MTF transformation\n"
@@ -99,7 +103,7 @@ int main (int argc, char **argv)
     unsigned char* outbuf = new unsigned char[bufsize];
     int*      bwt_tempbuf = apply_bwt? new int[bufsize] : 0;
 
-    double insize = 0,  outsize = 0,  duration[100] = {0};  char *mtf_name[100] = {"cpu (1 thread)"};
+    double insize = 0,  after_lzp = 0,  outsize = 0,  lzp_duration = 0,  duration[100] = {0};  char *mtf_name[100] = {"cpu (1 thread)"};
 
     FILE* infile  = fopen (argv[1], "rb");
     FILE* outfile = fopen (argv[2]? argv[2] : "nul", "wb");
@@ -117,13 +121,26 @@ int main (int argc, char **argv)
 
     for (int inbytes; !!(inbytes = fread(inbuf,1,bufsize,infile)); )
     {
+        insize += inbytes;
         byte *ptr = inbuf;  size_t outbytes = inbytes;  // output buffer
+
+        if (apply_lzp) {
+            StartTimer();
+            auto lzp_errcode  =  bsc_lzp_encode_block(inbuf, inbuf+inbytes, outbuf, outbuf+inbytes, 15, 32);
+            lzp_duration += GetTimer();
+            if (lzp_errcode < 0) {
+                printf ("LZP failed with errcode %d\n", lzp_errcode);
+                return 4;
+            }
+            memcpy (inbuf, outbuf, inbytes=lzp_errcode);
+        }
+        after_lzp += inbytes;
 
         if (apply_bwt) {
             auto bwt_errcode  =  sais_bwt (inbuf, outbuf, bwt_tempbuf, inbytes);
             if (bwt_errcode < 0) {
                 printf ("BWT failed with errcode %d\n", bwt_errcode);
-                return 4;
+                return 5;
             }
             memcpy (inbuf, outbuf, inbytes);
         }
@@ -137,7 +154,6 @@ int main (int argc, char **argv)
         }
         int num = 1;
 
-        insize += inbytes;
         if (apply_rle) {
             inbytes = rle(inbuf,inbytes);
         }
@@ -203,7 +219,15 @@ int main (int argc, char **argv)
         outsize += outbytes;
     }
 
-    printf("rle: %.0lf => %.0lf (%.2lf%%)\n", insize, outsize, outsize*100.0/insize);
+    auto print_stage_stats = [&] (char *name, double insize, double outsize, double duration) {
+        printf("%s: %.0lf => %.0lf (%.2lf%%)", name, insize, outsize, outsize*100/insize);
+        if (duration)
+            printf("%5.0lf MiB/s,  %.3lf ms",  ((1000/duration) *  insize) / (1 << 20),  duration);
+        printf("\n");
+    };
+
+    if (apply_lzp)  print_stage_stats ("lzp", insize, after_lzp, lzp_duration);
+    if (apply_rle)  print_stage_stats ("rle", after_lzp, outsize, 0);
     for (int i=0; i<sizeof(duration)/sizeof(*duration); i++) {
         if (duration[i]) {
             char in_speed[100], out_speed[100];
