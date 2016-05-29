@@ -58,7 +58,7 @@ int main (int argc, char **argv)
     bool apply_bwt = true;
     bool apply_rle = true;
     bool apply_mtf = true;
-    int  mtf_num = -1,  lzp_num = -1;
+    int  mtf_num = -1,  lzp_num = -1,  lzpHashSize = 15,  lzpMinLen = 32;
     size_t bufsize = DEFAULT_BUFSIZE;
     char *comment;
     int error = 0;
@@ -73,6 +73,8 @@ int main (int argc, char **argv)
       ParseInt  (*src_argv, "-lzp",           &lzp_num) ||
       ParseInt  (*src_argv, "-mtf",           &mtf_num) ||
       ParseInt  (*src_argv, "-b",             &bufsize) ||
+      ParseInt  (*src_argv, "-h",             &lzpHashSize) ||
+      ParseInt  (*src_argv, "-l",             &lzpMinLen) ||
       ParseStr  (*src_argv, "-rem",           &comment) ||
       UnknownOption (*src_argv, &error) ||
       (*++dst_argv = *src_argv);
@@ -83,16 +85,19 @@ int main (int argc, char **argv)
         bufsize <<= 20;  // megabytes
 
     if (!(argc==2 || argc==3) || error) {
-        printf ("Usage: mtf [options] infile [outfile]\n"
+        printf ("BSL: the block-sorting lab.  Part of https://github.com/Bulat-Ziganshin/Compression-Research\n"
+                "Usage: mtf [options] infile [outfile]\n"
                 "  -nogpu   skip GPU name output\n"
                 "  -nolzp   skip LZP transformation\n"
                 "  -nobwt   skip BWT transformation\n"
                 "  -norle   skip RLE transformation\n"
                 "  -nomtf   skip MTF transformation\n"
                 "  -lzpN    perform only LZP transformation number N\n"
+                "  -hN      set LZP hash size (default 2^%d hash entries)\n"
+                "  -lN      set LZP minLen (default %d)\n"
                 "  -mtfN    perform only MTF transformation number N\n"
-                "  -bN      buffer N (mega)bytes\n"
-                );
+                "  -bN      buffer N (mebi)bytes (default %d MiB)\n"
+                , lzpHashSize, lzpMinLen, DEFAULT_BUFSIZE>>20);
         return argc==1 && !error?  0 : 1;
     }
 
@@ -126,14 +131,15 @@ int main (int argc, char **argv)
         DisplayCudaDevice();
 
 
+    // All preparations now are done. Now we are in the Analysis stage, processing input data with various algos and recording speed/outsize of every experiment
     for (int inbytes; !!(inbytes = fread(inbuf,1,bufsize,infile)); )
     {
         insize += inbytes;
         byte *ptr = inbuf;  size_t outbytes = inbytes;  // output buffer
 
         if (apply_lzp) {
-            int hashSize = 15,  minLen = 32, num = 1,  lzp_errcode;
-            lzp_cpu_bsc (inbuf, inbuf+inbytes, outbuf, outbuf+inbytes, hashSize, minLen);   // "massage" data in order to provide equal conditions for the both following lzp routines
+            int num = 1,  lzp_errcode;
+            lzp_cpu_bsc (inbuf, inbuf+inbytes, outbuf, outbuf+inbytes, lzpHashSize, lzpMinLen);   // "massage" data in order to provide equal conditions for the both following lzp routines
 
             auto lzp_time_run = [&] (char *name, std::function<int(void)> lzp_f) {
                 lzp_name[num] = name;
@@ -151,9 +157,9 @@ int main (int argc, char **argv)
                 }
                 num++;
             };
-            lzp_time_run ("lzp_cpu_bsc     ", [&] {return lzp_cpu_bsc      (inbuf, inbuf+inbytes, outbuf, outbuf+inbytes, hashSize, minLen);});
-            lzp_time_run ("lzp_cpu_bsc_mod ", [&] {return lzp_cpu_bsc_mod  (inbuf, inbuf+inbytes, outbuf, outbuf+inbytes, hashSize, minLen);});
-            lzp_time_run ("lzp_cpu_rollhash", [&] {return lzp_cpu_rollhash (inbuf, inbuf+inbytes, outbuf, outbuf+inbytes, hashSize, minLen);});
+            lzp_time_run ("lzp_cpu_bsc     ", [&] {return lzp_cpu_bsc      (inbuf, inbuf+inbytes, outbuf, outbuf+inbytes, lzpHashSize, lzpMinLen);});
+            lzp_time_run ("lzp_cpu_bsc_mod ", [&] {return lzp_cpu_bsc_mod  (inbuf, inbuf+inbytes, outbuf, outbuf+inbytes, lzpHashSize, lzpMinLen);});
+            lzp_time_run ("lzp_cpu_rollhash", [&] {return lzp_cpu_rollhash (inbuf, inbuf+inbytes, outbuf, outbuf+inbytes, lzpHashSize, lzpMinLen);});
 
             if (lzp_errcode != LIBBSC_NOT_COMPRESSIBLE)
                 memcpy (inbuf, outbuf, inbytes=lzp_errcode);
@@ -246,6 +252,7 @@ int main (int argc, char **argv)
     }
 
 
+    // The Analysis stage now is finished, we are going to display the collected data in fancy way
     auto print_stage_stats = [&] (int num, char *name, double insize, double outsize, double duration) {
         if (num >= 0)
             printf("[%2d] ", num);
