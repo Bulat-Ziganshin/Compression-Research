@@ -14,8 +14,8 @@
 #include "lib/wall_clock_timer.h"  // StartTimer() and GetTimer()
 #include "lib/cpu_common.h"        // my own helper functions
 #include "lib/cuda_common.h"       // my own cuda-specific helper functions
-
 #include "lib/libbsc.h"            // BSC common definitions
+
 const int WARP_SIZE = 32;
 typedef unsigned char byte;
 
@@ -29,6 +29,8 @@ const int CHUNK = 4*1024;
 #include "lzp/lzp-cpu-rollhash.cpp"
 
 #include "bwt/sais.c"              // OpenBWT implementation
+#define LIBBSC_SORT_TRANSFORM_SUPPORT
+#include "st/st.cpp"               // BSC Sort Transform implementation
 
 #include "mtf/qlfc-cpu.cpp"
 #include "mtf/mtf_scalar.cu"
@@ -58,7 +60,8 @@ int main (int argc, char **argv)
     bool apply_bwt = true;
     bool apply_rle = true;
     bool apply_mtf = true;
-    int  mtf_num = -1,  lzp_num = -1,  lzpHashSize = 15,  lzpMinLen = 32;
+    enum STAGE {LZP, BWT, MTF};  const int STAGES = 3;
+    int snum[] = {-1,-1,-1},  lzpHashSize = 15,  lzpMinLen = 32;
     size_t bufsize = DEFAULT_BUFSIZE;
     char *comment;
     int error = 0;
@@ -70,8 +73,9 @@ int main (int argc, char **argv)
       ParseBool (*src_argv, "-bwt", "-nobwt", &apply_bwt) ||
       ParseBool (*src_argv, "-rle", "-norle", &apply_rle) ||
       ParseBool (*src_argv, "-mtf", "-nomtf", &apply_mtf) ||
-      ParseInt  (*src_argv, "-lzp",           &lzp_num) ||
-      ParseInt  (*src_argv, "-mtf",           &mtf_num) ||
+      ParseInt  (*src_argv, "-lzp",           &snum[LZP]) ||
+      ParseInt  (*src_argv, "-bwt",           &snum[BWT]) ||
+      ParseInt  (*src_argv, "-mtf",           &snum[MTF]) ||
       ParseInt  (*src_argv, "-b",             &bufsize) ||
       ParseInt  (*src_argv, "-h",             &lzpHashSize) ||
       ParseInt  (*src_argv, "-l",             &lzpMinLen) ||
@@ -92,11 +96,13 @@ int main (int argc, char **argv)
                 "  -nobwt   skip BWT transformation\n"
                 "  -norle   skip RLE transformation\n"
                 "  -nomtf   skip MTF transformation\n"
+                "  -bN      buffer N (mebi)bytes (default %d MiB)\n"
                 "  -lzpN    perform only LZP transformation number N\n"
                 "  -hN      set LZP hash size (default 2^%d hash entries)\n"
                 "  -lN      set LZP minLen (default %d)\n"
+                "  -bwtN    perform only sorting transformation number N\n"
                 "  -mtfN    perform only MTF transformation number N\n"
-                "  -bN      buffer N (mebi)bytes (default %d MiB)\n"
+                "  -rem...  ignored by the program\n"
                 , lzpHashSize, lzpMinLen, DEFAULT_BUFSIZE>>20);
         return argc==1 && !error?  0 : 1;
     }
@@ -114,8 +120,27 @@ int main (int argc, char **argv)
     unsigned char* outbuf = new unsigned char[bufsize];
     int*      bwt_tempbuf = apply_bwt? new int[bufsize] : 0;
 
-    double insize = 0,  after_lzp = 0,  outsize = 0,  bwt_duration = 0,  duration[100] = {0};  char *mtf_name[100] = {"cpu (1 thread)"};
-    double lzp_size[100] = {0},  lzp_duration[100] = {0};  char *lzp_name[100];
+    double insize = 0,  after_lzp = 0,  outsize = 0;
+    double size[STAGES][100] = {0},  duration[STAGES][100] = {0};  char *name[STAGES][100] = {{},{},{"cpu (1 thread)"}};
+
+    int inbytes, num, stage, bsc_errcode;
+    auto cpu_time_run = [&] (char *_name, std::function<int(void)> stage_f) {
+        name[stage][num] = _name;
+        if (num == snum[stage]  ||  snum[stage] < 0)
+        {
+            StartTimer();
+            bsc_errcode  =  stage_f();
+            duration[stage][num] += GetTimer();
+
+            if (bsc_errcode < 0  &&  bsc_errcode != LIBBSC_NOT_COMPRESSIBLE) {
+                printf ("%s failed with errcode %d\n", name, bsc_errcode);
+                exit(4);
+            }
+            size[stage][num]  +=  (bsc_errcode != LIBBSC_NOT_COMPRESSIBLE?  bsc_errcode : inbytes);
+        }
+        num++;
+    };
+
 
     FILE* infile  = fopen (argv[1], "rb");
     FILE* outfile = fopen (argv[2]? argv[2] : "nul", "wb");
@@ -132,44 +157,28 @@ int main (int argc, char **argv)
 
 
     // All preparations now are done. Now we are in the Analysis stage, processing input data with various algos and recording speed/outsize of every experiment
-    for (int inbytes; !!(inbytes = fread(inbuf,1,bufsize,infile)); )
+    while (!!(inbytes = fread(inbuf,1,bufsize,infile)))
     {
         insize += inbytes;
         byte *ptr = inbuf;  size_t outbytes = inbytes;  // output buffer
 
         if (apply_lzp) {
-            int num = 1,  lzp_errcode;
             lzp_cpu_bsc (inbuf, inbuf+inbytes, outbuf, outbuf+inbytes, lzpHashSize, lzpMinLen);   // "massage" data in order to provide equal conditions for the both following lzp routines
 
-            auto lzp_time_run = [&] (char *name, std::function<int(void)> lzp_f) {
-                lzp_name[num] = name;
-                if (num == lzp_num  ||  lzp_num < 0)
-                {
-                    StartTimer();
-                    lzp_errcode  =  lzp_f();
-                    lzp_duration[num] += GetTimer();
+            num = 1,  stage = LZP;
+            cpu_time_run ("lzp_cpu_bsc     ", [&] {return lzp_cpu_bsc      (inbuf, inbuf+inbytes, outbuf, outbuf+inbytes, lzpHashSize, lzpMinLen);});
+            cpu_time_run ("lzp_cpu_bsc_mod ", [&] {return lzp_cpu_bsc_mod  (inbuf, inbuf+inbytes, outbuf, outbuf+inbytes, lzpHashSize, lzpMinLen);});
+            cpu_time_run ("lzp_cpu_rollhash", [&] {return lzp_cpu_rollhash (inbuf, inbuf+inbytes, outbuf, outbuf+inbytes, lzpHashSize, lzpMinLen);});
 
-                    if (lzp_errcode < 0  &&  lzp_errcode != LIBBSC_NOT_COMPRESSIBLE) {
-                        printf ("%s failed with errcode %d\n", name, lzp_errcode);
-                        exit(4);
-                    }
-                    lzp_size[num]  +=  (lzp_errcode != LIBBSC_NOT_COMPRESSIBLE?  lzp_errcode : inbytes);
-                }
-                num++;
-            };
-            lzp_time_run ("lzp_cpu_bsc     ", [&] {return lzp_cpu_bsc      (inbuf, inbuf+inbytes, outbuf, outbuf+inbytes, lzpHashSize, lzpMinLen);});
-            lzp_time_run ("lzp_cpu_bsc_mod ", [&] {return lzp_cpu_bsc_mod  (inbuf, inbuf+inbytes, outbuf, outbuf+inbytes, lzpHashSize, lzpMinLen);});
-            lzp_time_run ("lzp_cpu_rollhash", [&] {return lzp_cpu_rollhash (inbuf, inbuf+inbytes, outbuf, outbuf+inbytes, lzpHashSize, lzpMinLen);});
-
-            if (lzp_errcode != LIBBSC_NOT_COMPRESSIBLE)
-                memcpy (inbuf, outbuf, inbytes=lzp_errcode);
+            if (bsc_errcode != LIBBSC_NOT_COMPRESSIBLE)
+                memcpy (inbuf, outbuf, inbytes=bsc_errcode);
         }
         after_lzp += inbytes;
 
         if (apply_bwt) {
             StartTimer();
             auto bwt_errcode  =  sais_bwt (inbuf, outbuf, bwt_tempbuf, inbytes);
-            bwt_duration += GetTimer();
+            duration[BWT][0] += GetTimer();
             if (bwt_errcode < 0) {
                 printf ("BWT failed with errcode %d\n", bwt_errcode);
                 return 5;
@@ -177,12 +186,12 @@ int main (int argc, char **argv)
             memcpy (inbuf, outbuf, inbytes);
         }
 
-        if (0 == mtf_num  ||  mtf_num < 0) {
+        if (0 == snum[MTF]  ||  snum[MTF] < 0) {
             StartTimer();
                 unsigned char MTFTable[ALPHABET_SIZE];
                 ptr = qlfc (inbuf, outbuf, inbytes, MTFTable);
                 outbytes = outbuf+inbytes - ptr;
-            duration[0] += GetTimer();
+            duration[MTF][0] += GetTimer();
         }
         int num = 1;
 
@@ -193,16 +202,16 @@ int main (int argc, char **argv)
         checkCudaErrors( cudaMemcpy (d_inbuf, inbuf, inbytes, cudaMemcpyHostToDevice));
         checkCudaErrors( cudaDeviceSynchronize());
 
-        auto time_run = [&] (char *name, std::function<void(void)> f) {
-            mtf_name[num] = name;
-            if (num == mtf_num  ||  mtf_num < 0)
+        auto time_run = [&] (char *_name, std::function<void(void)> f) {
+            name[MTF][num] = _name;
+            if (num == snum[MTF]  ||  snum[MTF] < 0)
             {
                 checkCudaErrors( cudaEventRecord (start, nullptr));
                 f();
                 checkCudaErrors( cudaEventRecord (stop, nullptr));
                 checkCudaErrors( cudaDeviceSynchronize());
 
-                if (num == mtf_num) {
+                if (num == snum[MTF]) {
                     checkCudaErrors( cudaMemcpy (outbuf, d_outbuf, inbytes, cudaMemcpyDeviceToHost));
                     checkCudaErrors( cudaDeviceSynchronize());
                     ptr = outbuf;
@@ -211,7 +220,7 @@ int main (int argc, char **argv)
 
                 float start_stop;
                 checkCudaErrors( cudaEventElapsedTime (&start_stop, start, stop));
-                duration[num] += start_stop;
+                duration[MTF][num] += start_stop;
             }
             num++;
         };
@@ -267,21 +276,21 @@ int main (int argc, char **argv)
         printf("\n");
     };
 
-    for (int i=1; i<sizeof(lzp_duration)/sizeof(*lzp_duration); i++) {
-        if (lzp_duration[i]) {
-            print_stage_stats (i, lzp_name[i], insize, lzp_size[i], lzp_duration[i]);
+    for (int i=1; i<100; i++) {
+        if (duration[LZP][i]) {
+            print_stage_stats (i, name[LZP][i], insize, size[LZP][i], duration[LZP][i]);
         }
     }
 
-    if (apply_bwt)  print_stage_stats (-1, "bwt", after_lzp, -1, bwt_duration);
+    if (apply_bwt)  print_stage_stats (-1, "bwt", after_lzp, -1, duration[BWT][0]);
     if (apply_rle)  print_stage_stats (-1, "rle", after_lzp, outsize, 0);
 
-    for (int i=0; i<sizeof(duration)/sizeof(*duration); i++) {
-        if (duration[i]) {
+    for (int i=0; i<100; i++) {
+        if (duration[MTF][i]) {
             char in_speed[100], out_speed[100];
-            sprintf( in_speed,   "%5.0lf", ((1000/duration[i]) *  insize) / (1 << 20));
-            sprintf(out_speed, " /%5.0lf", ((1000/duration[i]) * outsize) / (1 << 20));
-            printf("[%2d] %-*s: %s%s MiB/s,  %.3lf ms\n", i, strlen(mtf_name[2]), mtf_name[i], in_speed, (outsize!=insize?out_speed:""), duration[i]);
+            sprintf( in_speed,   "%5.0lf", ((1000/duration[MTF][i]) *  insize) / (1 << 20));
+            sprintf(out_speed, " /%5.0lf", ((1000/duration[MTF][i]) * outsize) / (1 << 20));
+            printf("[%2d] %-*s: %s%s MiB/s,  %.3lf ms\n", i, strlen(name[MTF][2]), name[MTF][i], in_speed, (outsize!=insize?out_speed:""), duration[MTF][i]);
         }
     }
     fclose(infile);
