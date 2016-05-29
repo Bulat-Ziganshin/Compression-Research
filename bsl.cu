@@ -11,9 +11,9 @@
 #include <cuda_profiler_api.h >
 #include <cuda.h>
 
-#include "wall_clock_timer.h"  // StartTimer() and GetTimer()
-#include "cpu_common.h"        // my own helper functions
-#include "cuda_common.h"       // my own cuda-specific helper functions
+#include "lib/wall_clock_timer.h"  // StartTimer() and GetTimer()
+#include "lib/cpu_common.h"        // my own helper functions
+#include "lib/cuda_common.h"       // my own cuda-specific helper functions
 
 const int ALPHABET_SIZE = 256;
 const int WARP_SIZE = 32;
@@ -24,20 +24,20 @@ const int DEFAULT_BUFSIZE = 128*1024*1024;
 const int CHUNK = 4*1024;
 #define SYNC_WARP __threadfence_block  /* alternatively, __syncthreads or, better, __threadfence_warp */
 
-#include "lzp-cpu-bsc.cpp"
-#include "lzp-cpu-bsc-mod.cpp"
-#include "lzp-cpu-rollhash.cpp"
+#include "lzp/lzp-cpu-bsc.cpp"
+#include "lzp/lzp-cpu-bsc-mod.cpp"
+#include "lzp/lzp-cpu-rollhash.cpp"
 
-#include "sais.c"              // OpenBWT implementation
+#include "bwt/sais.c"              // OpenBWT implementation
 
-#include "qlfc-cpu.cpp"
-#include "mtf_scalar.cu"
-#include "mtf_2symbols.cu"
-#include "mtf_2buffers.cu"
-#include "mtf_2buffers_depth32.cu"
-#include "mtf_4by8.cu"
-#include "mtf_thread.cu"
-#include "mtf_thread_by4.cu"
+#include "mtf/qlfc-cpu.cpp"
+#include "mtf/mtf_scalar.cu"
+#include "mtf/mtf_2symbols.cu"
+#include "mtf/mtf_2buffers.cu"
+#include "mtf/mtf_2buffers_depth32.cu"
+#include "mtf/mtf_4by8.cu"
+#include "mtf/mtf_thread.cu"
+#include "mtf/mtf_thread_by4.cu"
 
 // In-place RLE transformation (run lengths are dropped!)
 int rle (byte* buf, int size)

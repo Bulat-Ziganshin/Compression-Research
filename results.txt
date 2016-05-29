@@ -1,5 +1,4 @@
-for %a in (00 e8 100m 100m.tor e9 1g) do mtf z:\%a
-GeForce GTX 560 Ti, SM 2.1, 1.0 GB VRAM.  8 SM * 48 alu * 1800 MHz = 691 GIOPS
+GeForce GTX 560 Ti, SM 2.1.  1.0 GB VRAM (2004 MHz * 256-bit = 128 GB/s).  8 SM * 48 alu * 1800 MHz = 691 GIOPS
 
 C:\!FreeArc\public\Compression-Research\mtf>compile-cuda.cmd mtf.cu -o mtf.exe  && mtf.exe -nogpu -nobwt z:\e8.ST6
 rle: 100000000 => 40470315 (40.47%)
