@@ -177,6 +177,15 @@ int main (int argc, char **argv)
 
         stage = BWT,  insize[stage] += inbytes,  ret_outsize = false,  _num = 1;
         if (apply_bwt) {
+            int retval = bsc_st_init(0);
+            if (retval != LIBBSC_NO_ERROR) {
+                printf ("bsc_st_init failed with errcode %d\n", retval);
+                exit(4);
+            }
+
+            char *st_name[] = {"st0", "st1", "st2", "st3", "st4", "st5", "st6", "st7", "st8"};
+            for (int i=3; i<=6; i++)
+                cpu_time_run (st_name[i], [&] {memcpy (outbuf, inbuf, inbytes);  return bsc_st_encode (outbuf, inbytes, i, 0);});
             cpu_time_run ("bwt", [&] {return sais_bwt (inbuf, outbuf, bwt_tempbuf, inbytes);});
             memcpy (inbuf, outbuf, inbytes);
         }
