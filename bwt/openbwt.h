@@ -35,9 +35,9 @@ extern "C" {
 
 #ifndef OBWT_API
 # ifdef OBWT_BUILD_DLL
-#  define OBWT_API 
+#  define OBWT_API
 # else
-#  define OBWT_API 
+#  define OBWT_API
 # endif
 #endif
 
