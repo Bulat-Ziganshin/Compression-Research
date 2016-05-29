@@ -85,7 +85,7 @@ symbol = inbuf[i]
 for (int rank=0; rank<8; rank++)
     if (mtf[rank] == symbol)  {outbuf[i] = rank;  mtf[0] = symbol;  goto next_symbol;}
     ...
-// Oh, we've found symbol with rank>=8. It will shift in at mtf[0] and mtf[7] are going to leave the queue.
+// Oh, we've found symbol with rank>=8. It will shift in at mtf[0], while mtf[7] is going to leave the queue.
 *tempbuf++ = {i, symbol, mtf[7]}
 mtf[0] = symbol
 ```
@@ -101,3 +101,19 @@ for (int rank=32; rank<256; rank++)
 ```
 
 And any intermediate pass should combine both features to process symbols only of its own rank range.
+
+
+### Parallel MTF algorithm
+
+Parallel MTF algorithm was described in the
+[Parallel Lossless Data Compression on the GPU](http://idav.ucdavis.edu/publications/print_pub?pub_id=1087)
+and implemented in the [CUDPP library](https://github.com/cudpp/cudpp/blob/279eb8654b5a1e6b02573c568beafbb2b1344cc7/src/cudpp/app/compress_app.cu#L120).
+
+The algorithm consists of three steps:
+1. Split data into blocks and compute the local (partial) outbound MTF queue for every block - it's just the list of all symbols
+appearing in the block, in the order of their **last** appearance.
+2. Perform a (parallel) scan in order to combine partial MTF queues of the blocks into full outbound MTF queue for every block.
+The full outbound MTF queue of the block is equal to its local outbound MTF queue plus any remaining symbols
+in the order of their appearance in its inbound MTF queue (i.e. outbound MTF queue of the previous block).
+The MTF queue preceding all blocks is the trivial [0, 1 .. 255] list.
+3. And finally, perform MTF on each block using full outbound MTF queue of the previous block as the initial MTF queue contents.
