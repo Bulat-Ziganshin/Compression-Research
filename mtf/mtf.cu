@@ -109,7 +109,7 @@ int main (int argc, char **argv)
     unsigned char* outbuf = new unsigned char[bufsize];
     int*      bwt_tempbuf = apply_bwt? new int[bufsize] : 0;
 
-    double insize = 0,  after_lzp = 0,  outsize = 0,  duration[100] = {0};  char *mtf_name[100] = {"cpu (1 thread)"};
+    double insize = 0,  after_lzp = 0,  outsize = 0,  bwt_duration = 0,  duration[100] = {0};  char *mtf_name[100] = {"cpu (1 thread)"};
     double lzp_size[100] = {0},  lzp_duration[100] = {0};  char *lzp_name[100];
 
     FILE* infile  = fopen (argv[1], "rb");
@@ -161,7 +161,9 @@ int main (int argc, char **argv)
         after_lzp += inbytes;
 
         if (apply_bwt) {
+            StartTimer();
             auto bwt_errcode  =  sais_bwt (inbuf, outbuf, bwt_tempbuf, inbytes);
+            bwt_duration += GetTimer();
             if (bwt_errcode < 0) {
                 printf ("BWT failed with errcode %d\n", bwt_errcode);
                 return 5;
@@ -244,27 +246,35 @@ int main (int argc, char **argv)
     }
 
 
-    auto print_stage_stats = [&] (char *name, double insize, double outsize, double duration) {
-        printf("%s: %.0lf => %.0lf (%.2lf%%)", name, insize, outsize, outsize*100/insize);
-        if (duration)
-            printf("%5.0lf MiB/s,  %.3lf ms",  ((1000/duration) *  insize) / (1 << 20),  duration);
+    auto print_stage_stats = [&] (int num, char *name, double insize, double outsize, double duration) {
+        if (num >= 0)
+            printf("[%2d] ", num);
+        printf("%s: ", name);
+        if (outsize >= 0  &&  outsize != insize)
+            printf("%.0lf => %.0lf (%.2lf%%)", insize, outsize, outsize*100/insize);
+        if (duration) {
+            auto speed = ((1000/duration) *  insize) / (1 << 20);
+            int digits = speed<10?3:speed<100?2:0;
+            printf("%*.*lf MiB/s,  %.3lf ms", (num>=0?5:0), digits, speed, duration);
+        }
         printf("\n");
     };
 
     for (int i=1; i<sizeof(lzp_duration)/sizeof(*lzp_duration); i++) {
         if (lzp_duration[i]) {
-            print_stage_stats (lzp_name[i], insize, lzp_size[i], lzp_duration[i]);
+            print_stage_stats (i, lzp_name[i], insize, lzp_size[i], lzp_duration[i]);
         }
     }
 
-    if (apply_rle)  print_stage_stats ("rle", after_lzp, outsize, 0);
+    if (apply_bwt)  print_stage_stats (-1, "bwt", after_lzp, -1, bwt_duration);
+    if (apply_rle)  print_stage_stats (-1, "rle", after_lzp, outsize, 0);
 
     for (int i=0; i<sizeof(duration)/sizeof(*duration); i++) {
         if (duration[i]) {
             char in_speed[100], out_speed[100];
             sprintf( in_speed,   "%5.0lf", ((1000/duration[i]) *  insize) / (1 << 20));
             sprintf(out_speed, " /%5.0lf", ((1000/duration[i]) * outsize) / (1 << 20));
-            printf("[%2d] %-*s: %s%s MiB/s,  %.3lf ms\n", i, strlen(mtf_name[2]), mtf_name[i], in_speed, (apply_rle?out_speed:""), duration[i]);
+            printf("[%2d] %-*s: %s%s MiB/s,  %.3lf ms\n", i, strlen(mtf_name[2]), mtf_name[i], in_speed, (outsize!=insize?out_speed:""), duration[i]);
         }
     }
     fclose(infile);
