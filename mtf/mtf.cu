@@ -1,5 +1,5 @@
-// Copyright (C) 2016 Bulat Ziganshin
-// All right reserved
+// Copyright (c) 2016 Bulat Ziganshin <Bulat.Ziganshin@gmail.com>
+// All rights reserved
 // Part of https://github.com/Bulat-Ziganshin/Compression-Research
 
 #include <stdio.h>
@@ -14,7 +14,6 @@
 #include "wall_clock_timer.h"  // StartTimer() and GetTimer()
 #include "cpu_common.h"        // my own helper functions
 #include "cuda_common.h"       // my own cuda-specific helper functions
-#include "sais.c"              // OpenBWT implementation
 
 const int ALPHABET_SIZE = 256;
 const int WARP_SIZE = 32;
@@ -25,7 +24,12 @@ const int DEFAULT_BUFSIZE = 128*1024*1024;
 const int CHUNK = 4*1024;
 #define SYNC_WARP __threadfence_block  /* alternatively, __syncthreads or, better, __threadfence_warp */
 
-#include "lzp-cpu.cpp"
+#include "lzp-cpu-bsc.cpp"
+#include "lzp-cpu-bsc-mod.cpp"
+#include "lzp-cpu-rollhash.cpp"
+
+#include "sais.c"              // OpenBWT implementation
+
 #include "qlfc-cpu.cpp"
 #include "mtf_scalar.cu"
 #include "mtf_2symbols.cu"
@@ -54,7 +58,7 @@ int main (int argc, char **argv)
     bool apply_bwt = true;
     bool apply_rle = true;
     bool apply_mtf = true;
-    int  mtf_num = -1;
+    int  mtf_num = -1,  lzp_num = -1;
     size_t bufsize = DEFAULT_BUFSIZE;
     char *comment;
     int error = 0;
@@ -66,6 +70,7 @@ int main (int argc, char **argv)
       ParseBool (*src_argv, "-bwt", "-nobwt", &apply_bwt) ||
       ParseBool (*src_argv, "-rle", "-norle", &apply_rle) ||
       ParseBool (*src_argv, "-mtf", "-nomtf", &apply_mtf) ||
+      ParseInt  (*src_argv, "-lzp",           &lzp_num) ||
       ParseInt  (*src_argv, "-mtf",           &mtf_num) ||
       ParseInt  (*src_argv, "-b",             &bufsize) ||
       ParseStr  (*src_argv, "-rem",           &comment) ||
@@ -84,6 +89,7 @@ int main (int argc, char **argv)
                 "  -nobwt   skip BWT transformation\n"
                 "  -norle   skip RLE transformation\n"
                 "  -nomtf   skip MTF transformation\n"
+                "  -lzpN    perform only LZP transformation number N\n"
                 "  -mtfN    perform only MTF transformation number N\n"
                 "  -bN      buffer N (mega)bytes\n"
                 );
@@ -103,7 +109,8 @@ int main (int argc, char **argv)
     unsigned char* outbuf = new unsigned char[bufsize];
     int*      bwt_tempbuf = apply_bwt? new int[bufsize] : 0;
 
-    double insize = 0,  after_lzp = 0,  outsize = 0,  lzp_duration[2] = {0},  duration[100] = {0};  char *mtf_name[100] = {"cpu (1 thread)"};
+    double insize = 0,  after_lzp = 0,  outsize = 0,  duration[100] = {0};  char *mtf_name[100] = {"cpu (1 thread)"};
+    double lzp_size[100] = {0},  lzp_duration[100] = {0};  char *lzp_name[100];
 
     FILE* infile  = fopen (argv[1], "rb");
     FILE* outfile = fopen (argv[2]? argv[2] : "nul", "wb");
@@ -125,23 +132,31 @@ int main (int argc, char **argv)
         byte *ptr = inbuf;  size_t outbytes = inbytes;  // output buffer
 
         if (apply_lzp) {
-            lzp_cpu(inbuf, inbuf+inbytes, outbuf, outbuf+inbytes, 15, 32);
+            int hashSize = 15,  minLen = 32, num = 1,  lzp_errcode;
+            lzp_cpu_bsc (inbuf, inbuf+inbytes, outbuf, outbuf+inbytes, hashSize, minLen);   // "massage" data in order to provide equal conditions for the both following lzp routines
 
-            StartTimer();
-            lzp_cpu(inbuf, inbuf+inbytes, outbuf, outbuf+inbytes, 15, 32);
-            lzp_duration[1] += GetTimer();
+            auto lzp_time_run = [&] (char *name, std::function<int(void)> lzp_f) {
+                lzp_name[num] = name;
+                if (num == lzp_num  ||  lzp_num < 0)
+                {
+                    StartTimer();
+                    lzp_errcode  =  lzp_f();
+                    lzp_duration[num] += GetTimer();
 
-            StartTimer();
-            auto lzp_errcode  =  bsc_lzp_encode_block(inbuf, inbuf+inbytes, outbuf, outbuf+inbytes, 15, 32);
-            lzp_duration[0] += GetTimer();
-
-            if (lzp_errcode != LIBBSC_NOT_COMPRESSIBLE) {
-                if (lzp_errcode < 0) {
-                    printf ("LZP failed with errcode %d\n", lzp_errcode);
-                    return 4;
+                    if (lzp_errcode < 0  &&  lzp_errcode != LIBBSC_NOT_COMPRESSIBLE) {
+                        printf ("%s failed with errcode %d\n", name, lzp_errcode);
+                        exit(4);
+                    }
+                    lzp_size[num]  +=  (lzp_errcode != LIBBSC_NOT_COMPRESSIBLE?  lzp_errcode : inbytes);
                 }
+                num++;
+            };
+            lzp_time_run ("lzp_cpu_bsc     ", [&] {return lzp_cpu_bsc      (inbuf, inbuf+inbytes, outbuf, outbuf+inbytes, hashSize, minLen);});
+            lzp_time_run ("lzp_cpu_bsc_mod ", [&] {return lzp_cpu_bsc_mod  (inbuf, inbuf+inbytes, outbuf, outbuf+inbytes, hashSize, minLen);});
+            lzp_time_run ("lzp_cpu_rollhash", [&] {return lzp_cpu_rollhash (inbuf, inbuf+inbytes, outbuf, outbuf+inbytes, hashSize, minLen);});
+
+            if (lzp_errcode != LIBBSC_NOT_COMPRESSIBLE)
                 memcpy (inbuf, outbuf, inbytes=lzp_errcode);
-            }
         }
         after_lzp += inbytes;
 
@@ -228,6 +243,7 @@ int main (int argc, char **argv)
         outsize += outbytes;
     }
 
+
     auto print_stage_stats = [&] (char *name, double insize, double outsize, double duration) {
         printf("%s: %.0lf => %.0lf (%.2lf%%)", name, insize, outsize, outsize*100/insize);
         if (duration)
@@ -235,9 +251,14 @@ int main (int argc, char **argv)
         printf("\n");
     };
 
-    if (apply_lzp)  print_stage_stats ("lzp-bsc", insize, after_lzp, lzp_duration[0]);
-    if (apply_lzp)  print_stage_stats ("lzp-cpu", insize, after_lzp, lzp_duration[1]);
+    for (int i=1; i<sizeof(lzp_duration)/sizeof(*lzp_duration); i++) {
+        if (lzp_duration[i]) {
+            print_stage_stats (lzp_name[i], insize, lzp_size[i], lzp_duration[i]);
+        }
+    }
+
     if (apply_rle)  print_stage_stats ("rle", after_lzp, outsize, 0);
+
     for (int i=0; i<sizeof(duration)/sizeof(*duration); i++) {
         if (duration[i]) {
             char in_speed[100], out_speed[100];
