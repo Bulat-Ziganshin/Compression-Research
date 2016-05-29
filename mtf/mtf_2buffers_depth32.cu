@@ -1,5 +1,5 @@
-// Copyright (C) 2016 Bulat Ziganshin
-// All right reserved
+// Copyright (c) 2016 Bulat Ziganshin <Bulat.Ziganshin@gmail.com>
+// All rights reserved
 // Part of https://github.com/Bulat-Ziganshin/Compression-Research
 
 template <int CHUNK,  int NUM_WARPS,  int NUM_BUFFERS = 2,  typename MTF_WORD = unsigned,  int MTF_SYMBOLS = WARP_SIZE>
