@@ -15,7 +15,7 @@
 #include "lib/cpu_common.h"        // my own helper functions
 #include "lib/cuda_common.h"       // my own cuda-specific helper functions
 
-const int ALPHABET_SIZE = 256;
+#include "lib/libbsc.h"            // BSC common definitions
 const int WARP_SIZE = 32;
 typedef unsigned char byte;
 

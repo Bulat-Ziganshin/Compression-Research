@@ -32,21 +32,6 @@ See also the bsc and libbsc web site:
 
 --*/
 
-#define LIBBSC_NO_ERROR                0
-#define LIBBSC_BAD_PARAMETER          -1
-#define LIBBSC_NOT_ENOUGH_MEMORY      -2
-#define LIBBSC_NOT_COMPRESSIBLE       -3
-#define LIBBSC_NOT_SUPPORTED          -4
-#define LIBBSC_UNEXPECTED_EOB         -5
-#define LIBBSC_DATA_CORRUPT           -6
-
-void * bsc_malloc(size_t size)       {return malloc(size);}
-void * bsc_zero_malloc(size_t size)  {return calloc(1, size);}
-void bsc_free(void * address)        {free(address);}
-
-
-#define LIBBSC_LZP_MATCH_FLAG   0xF2
-
 int lzp_cpu_bsc (const unsigned char * input, const unsigned char * inputEnd, unsigned char * output, unsigned char * outputEnd, int hashSize, int minLen)
 {
     if (inputEnd - input < 16)
