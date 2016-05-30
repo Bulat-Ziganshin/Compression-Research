@@ -8,24 +8,22 @@
 This file is a part of bsc and/or libbsc, a program and a library for
 lossless, block-sorting data compression.
 
-Copyright (c) 2009-2011 Ilya Grebnov <ilya.grebnov@gmail.com>
+   Copyright (c) 2009-2012 Ilya Grebnov <ilya.grebnov@gmail.com>
 
-See file AUTHORS for a full list of contributors.
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
 
-The bsc and libbsc is free software; you can redistribute it and/or modify
-it under the terms of the GNU Lesser General Public License as published by
-the Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+       http://www.apache.org/licenses/LICENSE-2.0
 
-The bsc and libbsc is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
-or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
-License for more details.
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
 
-You should have received a copy of the GNU Lesser General Public License
-along with the bsc and libbsc. If not, see http://www.gnu.org/licenses/.
-
-Please see the files COPYING and COPYING.LIB for full copyright information.
+Please see the file LICENSE for full copyright information and file AUTHORS
+for full list of contributors.
 
 See also the bsc and libbsc web site:
   http://libbsc.com/ for more information.
@@ -54,8 +52,8 @@ preprocessor macro LIBBSC_SORT_TRANSFORM_SUPPORT at compile time.
 
 #include "st.h"
 
-// #include "../libbsc.h"
-// #include "../platform/platform.h"
+#include "../libbsc.h"
+#include "../platform/platform.h"
 
 #include "st.cuh"
 
@@ -70,7 +68,7 @@ int bsc_st_init(int features)
 #endif
 }
 
-static int bsc_st3_transform_serial(unsigned char * T, unsigned short * P, int * bucket, int n)
+static int bsc_st3_transform_serial(unsigned char * RESTRICT T, unsigned short * RESTRICT P, int * RESTRICT bucket, int n)
 {
     unsigned int count[ALPHABET_SIZE]; memset(count, 0, ALPHABET_SIZE * sizeof(unsigned int));
 
@@ -116,7 +114,7 @@ static int bsc_st3_transform_serial(unsigned char * T, unsigned short * P, int *
     return index;
 }
 
-static int bsc_st4_transform_serial(unsigned char * T, unsigned int * P, int * bucket, int n)
+static int bsc_st4_transform_serial(unsigned char * RESTRICT T, unsigned int * RESTRICT P, int * RESTRICT bucket, int n)
 {
     for (int i = 0; i < LIBBSC_HEADER_SIZE; ++i) T[n + i] = T[i];
 
@@ -156,7 +154,7 @@ static int bsc_st4_transform_serial(unsigned char * T, unsigned int * P, int * b
     return index;
 }
 
-static int bsc_st5_transform_serial(unsigned char * T, unsigned int * P, int * bucket, int n)
+static int bsc_st5_transform_serial(unsigned char * RESTRICT T, unsigned int * RESTRICT P, int * RESTRICT bucket, int n)
 {
     for (int i = 0; i < LIBBSC_HEADER_SIZE; ++i) T[n + i] = T[i];
 
@@ -214,7 +212,7 @@ static int bsc_st5_transform_serial(unsigned char * T, unsigned int * P, int * b
     return index;
 }
 
-static int bsc_st6_transform_serial(unsigned char * T, unsigned int * P, int * bucket, int n)
+static int bsc_st6_transform_serial(unsigned char * RESTRICT T, unsigned int * RESTRICT P, int * RESTRICT bucket, int n)
 {
     for (int i = 0; i < LIBBSC_HEADER_SIZE; ++i) T[n + i] = T[i];
 
@@ -254,12 +252,12 @@ static int bsc_st6_transform_serial(unsigned char * T, unsigned int * P, int * b
 
 #ifdef LIBBSC_OPENMP
 
-static int bsc_st3_transform_parallel(unsigned char * T, unsigned short * P, int * bucket0, int n)
+static int bsc_st3_transform_parallel(unsigned char * RESTRICT T, unsigned short * RESTRICT P, int * RESTRICT bucket0, int n)
 {
     unsigned int count0[ALPHABET_SIZE]; memset(count0, 0, ALPHABET_SIZE * sizeof(unsigned int));
     unsigned int count1[ALPHABET_SIZE]; memset(count1, 0, ALPHABET_SIZE * sizeof(unsigned int));
 
-    if (int * bucket1 = (int *)bsc_zero_malloc(ALPHABET_SIZE * ALPHABET_SIZE * sizeof(int)))
+    if (int * RESTRICT bucket1 = (int *)bsc_zero_malloc(ALPHABET_SIZE * ALPHABET_SIZE * sizeof(int)))
     {
         int pos, index;
 
@@ -398,11 +396,11 @@ static int bsc_st3_transform_parallel(unsigned char * T, unsigned short * P, int
     return LIBBSC_NOT_ENOUGH_MEMORY;
 }
 
-static int bsc_st4_transform_parallel(unsigned char * T, unsigned int * P, int * bucket, int n)
+static int bsc_st4_transform_parallel(unsigned char * RESTRICT T, unsigned int * RESTRICT P, int * RESTRICT bucket, int n)
 {
-    if (int * bucket0 = (int *)bsc_zero_malloc(ALPHABET_SIZE * ALPHABET_SIZE * sizeof(int)))
+    if (int * RESTRICT bucket0 = (int *)bsc_zero_malloc(ALPHABET_SIZE * ALPHABET_SIZE * sizeof(int)))
     {
-        if (int * bucket1 = (int *)bsc_zero_malloc(ALPHABET_SIZE * ALPHABET_SIZE * sizeof(int)))
+        if (int * RESTRICT bucket1 = (int *)bsc_zero_malloc(ALPHABET_SIZE * ALPHABET_SIZE * sizeof(int)))
         {
             int pos, index;
 
@@ -545,9 +543,9 @@ static int bsc_st4_transform_parallel(unsigned char * T, unsigned int * P, int *
     return LIBBSC_NOT_ENOUGH_MEMORY;
 }
 
-static int bsc_st5_transform_parallel(unsigned char * T, unsigned int * P, int * bucket0, int n)
+static int bsc_st5_transform_parallel(unsigned char * RESTRICT T, unsigned int * RESTRICT P, int * RESTRICT bucket0, int n)
 {
-    if (int * bucket1 = (int *)bsc_zero_malloc(ALPHABET_SQRT_SIZE * ALPHABET_SIZE * ALPHABET_SIZE * sizeof(int)))
+    if (int * RESTRICT bucket1 = (int *)bsc_zero_malloc(ALPHABET_SQRT_SIZE * ALPHABET_SIZE * ALPHABET_SIZE * sizeof(int)))
     {
         int pos, index;
 
@@ -721,11 +719,11 @@ static int bsc_st5_transform_parallel(unsigned char * T, unsigned int * P, int *
     return LIBBSC_NOT_ENOUGH_MEMORY;
 }
 
-static int bsc_st6_transform_parallel(unsigned char * T, unsigned int * P, int * bucket, int n)
+static int bsc_st6_transform_parallel(unsigned char * RESTRICT T, unsigned int * RESTRICT P, int * RESTRICT bucket, int n)
 {
-    if (int * bucket0 = (int *)bsc_zero_malloc(ALPHABET_SIZE * ALPHABET_SIZE * ALPHABET_SIZE * sizeof(int)))
+    if (int * RESTRICT bucket0 = (int *)bsc_zero_malloc(ALPHABET_SIZE * ALPHABET_SIZE * ALPHABET_SIZE * sizeof(int)))
     {
-        if (int * bucket1 = (int *)bsc_zero_malloc(ALPHABET_SIZE * ALPHABET_SIZE * ALPHABET_SIZE * sizeof(int)))
+        if (int * RESTRICT bucket1 = (int *)bsc_zero_malloc(ALPHABET_SIZE * ALPHABET_SIZE * ALPHABET_SIZE * sizeof(int)))
         {
             int pos, index;
 
@@ -1028,7 +1026,7 @@ int bsc_st_encode(unsigned char * T, int n, int k, int features)
     return LIBBSC_NOT_SUPPORTED;
 }
 
-static bool bsc_unst_sort_serial(unsigned char * T, unsigned int * P, unsigned int * count, unsigned int * bucket, int n, int k)
+static bool bsc_unst_sort_serial(unsigned char * RESTRICT T, unsigned int * RESTRICT P, unsigned int * RESTRICT count, unsigned int * RESTRICT bucket, int n, int k)
 {
     unsigned int index[ALPHABET_SIZE];
              int group[ALPHABET_SIZE];
@@ -1043,7 +1041,7 @@ static bool bsc_unst_sort_serial(unsigned char * T, unsigned int * P, unsigned i
             int tmp = sum; sum += count[c]; count[c] = tmp;
             if ((int)count[c] != sum)
             {
-                unsigned int * bucket_p = &bucket[c << 8];
+                unsigned int * RESTRICT bucket_p = &bucket[c << 8];
                 for (int i = count[c]; i < sum; ++i) bucket_p[T[i]]++;
             }
         }
@@ -1109,7 +1107,7 @@ static bool bsc_unst_sort_serial(unsigned char * T, unsigned int * P, unsigned i
     return failBack;
 }
 
-static void bsc_unst_reconstruct_case1_serial(unsigned char * T, unsigned int * P, unsigned int * count, int n, int start)
+static void bsc_unst_reconstruct_case1_serial(unsigned char * RESTRICT T, unsigned int * RESTRICT P, unsigned int * RESTRICT count, int n, int start)
 {
     unsigned int index[ALPHABET_SIZE];
              int group[ALPHABET_SIZE];
@@ -1146,7 +1144,7 @@ static void bsc_unst_reconstruct_case1_serial(unsigned char * T, unsigned int * 
     }
 }
 
-static void bsc_unst_reconstruct_case2_serial(unsigned char * T, unsigned int * P, unsigned int * count, int n, int start)
+static void bsc_unst_reconstruct_case2_serial(unsigned char * RESTRICT T, unsigned int * RESTRICT P, unsigned int * RESTRICT count, int n, int start)
 {
     unsigned int index[ALPHABET_SIZE];
              int group[ALPHABET_SIZE];
@@ -1191,7 +1189,7 @@ static INLINE int bsc_unst_search(int index, unsigned int * p, unsigned int v)
 
 #define ST_NUM_FASTBITS (10)
 
-static void bsc_unst_reconstruct_case3_serial(unsigned char * T, unsigned int * P, unsigned int * count, int n, int start)
+static void bsc_unst_reconstruct_case3_serial(unsigned char * RESTRICT T, unsigned int * RESTRICT P, unsigned int * RESTRICT count, int n, int start)
 {
     unsigned char   fastbits[1 << ST_NUM_FASTBITS];
     unsigned int    index[ALPHABET_SIZE];
@@ -1262,7 +1260,7 @@ static void bsc_unst_reconstruct_serial(unsigned char * T, unsigned int * P, uns
 
 #ifdef LIBBSC_OPENMP
 
-static bool bsc_unst_sort_parallel(unsigned char * T, unsigned int * P, unsigned int * count, unsigned int * bucket, int n, int k)
+static bool bsc_unst_sort_parallel(unsigned char * RESTRICT T, unsigned int * RESTRICT P, unsigned int * RESTRICT count, unsigned int * RESTRICT bucket, int n, int k)
 {
     bool failBack = false;
     {
@@ -1291,7 +1289,7 @@ static bool bsc_unst_sort_parallel(unsigned char * T, unsigned int * P, unsigned
             int start = count[c], end = (c + 1 < ALPHABET_SIZE) ? count[c + 1] : n;
             if (start != end)
             {
-                unsigned int * bucket_p = &bucket[c << 8];
+                unsigned int * RESTRICT bucket_p = &bucket[c << 8];
                 for (int i = start; i < end; ++i) bucket_p[T[i]]++;
             }
         }
@@ -1314,7 +1312,7 @@ static bool bsc_unst_sort_parallel(unsigned char * T, unsigned int * P, unsigned
         memcpy(index, count, ALPHABET_SIZE * sizeof(unsigned int));
         for (int C0 = 0; C0 < ALPHABET_SIZE; ++C0)
         {
-            unsigned int * bucket_p = &bucket[C0 << 8];
+            unsigned int * RESTRICT bucket_p = &bucket[C0 << 8];
             for (int C1 = 0; C1 < ALPHABET_SIZE; ++C1)
             {
                 int tmp = index[C1]; index[C1] += bucket_p[C1]; bucket_p[C1] = tmp;
@@ -1349,7 +1347,7 @@ static bool bsc_unst_sort_parallel(unsigned char * T, unsigned int * P, unsigned
     return failBack;
 }
 
-static void bsc_unst_reconstruct_case1_parallel(unsigned char * T, unsigned int * P, unsigned int * count, unsigned int * bucket, int n, int start)
+static void bsc_unst_reconstruct_case1_parallel(unsigned char * RESTRICT T, unsigned int * RESTRICT P, unsigned int * RESTRICT count, unsigned int * RESTRICT bucket, int n, int start)
 {
     #pragma omp parallel for schedule(static, 1)
     for (int c = 0; c < ALPHABET_SIZE; ++c)
@@ -1388,7 +1386,7 @@ static void bsc_unst_reconstruct_case1_parallel(unsigned char * T, unsigned int 
     }
 }
 
-static void bsc_unst_reconstruct_case2_parallel(unsigned char * T, unsigned int * P, unsigned int * count, unsigned int * bucket, int n, int start)
+static void bsc_unst_reconstruct_case2_parallel(unsigned char * RESTRICT T, unsigned int * RESTRICT P, unsigned int * RESTRICT count, unsigned int * RESTRICT bucket, int n, int start)
 {
     #pragma omp parallel for schedule(static, 1)
     for (int c = 0; c < ALPHABET_SIZE; ++c)
@@ -1430,7 +1428,7 @@ static void bsc_unst_reconstruct_case2_parallel(unsigned char * T, unsigned int 
     }
 }
 
-static void bsc_unst_reconstruct_case3_parallel(unsigned char * T, unsigned int * P, unsigned int * count, unsigned int * bucket, int n, int start)
+static void bsc_unst_reconstruct_case3_parallel(unsigned char * RESTRICT T, unsigned int * RESTRICT P, unsigned int * RESTRICT count, unsigned int * RESTRICT bucket, int n, int start)
 {
     #pragma omp parallel for schedule(static, 1)
     for (int c = 0; c < ALPHABET_SIZE; ++c)

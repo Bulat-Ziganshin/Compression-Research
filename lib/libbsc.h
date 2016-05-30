@@ -116,6 +116,18 @@ preprocessor macro LIBBSC_SORT_TRANSFORM_SUPPORT at compile time.
     #define INLINE /* */
 #endif
 
+#if defined(__GNUC__) && (__GNUC__ >= 4 || (__GNUC__ == 3 && __GNUC_MINOR__ >= 4))
+    #define RESTRICT __restrict__
+#elif defined(__INTEL_COMPILER) && (__INTEL_COMPILER >= 600)
+    #define RESTRICT __restrict
+#elif defined(_MSC_VER) && (_MSC_VER >= 1400)
+    #define RESTRICT __restrict
+#elif defined(__CUDACC__) && (CUDA_VERSION >= 3000)
+    #define RESTRICT __restrict__
+#else
+    #define RESTRICT /* */
+#endif
+
 #define ALPHABET_SIZE (256)
 
 #define bsc_malloc malloc
