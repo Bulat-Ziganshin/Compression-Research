@@ -201,7 +201,7 @@ int main (int argc, char **argv)
 
 
         if (0 == num[MTF]  ||  num[MTF] < 0) {
-            name[MTF][0] = "cpu (1 thread)";
+            name[MTF][0] = "cpu (1 thread)    ";
             StartTimer();
                 unsigned char MTFTable[ALPHABET_SIZE];
                 ptr = qlfc (inbuf, outbuf, inbytes, MTFTable);
@@ -280,37 +280,35 @@ int main (int argc, char **argv)
 
 
     // The Analysis stage now is finished, we are going to display the collected data in fancy way
-    auto print_stage_stats = [&] (int _num, char *name, double insize, double outsize, double duration) {
+    auto print_stage_stats = [&] (int _num, char *name, double _insize, double outsize, double duration) {
         if (_num >= 0)
             printf("[%2d] ", _num);
         printf("%s: ", name);
-        if (outsize != insize)
-            printf("%.0lf => %.0lf (%.2lf%%)", insize, outsize, outsize*100/insize);
+        if (outsize  &&  outsize != _insize)
+            printf("%.0lf => %.0lf (%.2lf%%)", _insize, outsize, outsize*100/_insize);
         if (duration) {
-            auto speed = ((1000/duration) *  insize) / (1 << 20);
-            int digits = speed<10?3:speed<100?2:0;
-            printf("%*.*lf MiB/s,  %.3lf ms", (_num>=0?5:0), digits, speed, duration);
+            auto print_speed = [&] (double insize, double duration, char *suffix) {
+                auto speed = ((1000/duration) *  insize) / (1 << 20);
+                int digits = speed<10?2:speed<100?1:0;
+                printf("%*.*lf%s", (_num>=0?5:0), digits, speed, suffix);
+            };
+            if (insize[0] != _insize)    // if incoming data are already compacted, print speeds both in terms of read-from-disk and incoming-to-this-stage sizes
+                print_speed (insize[0], duration, " /");
+            print_speed (_insize, duration, " MiB/s");
+            printf(",  %.3lf ms", duration);
         }
         printf("\n");
     };
 
-    for (int stage=LZP; stage<MTF; stage++) {
+    for (int stage=0; stage<=STAGES; stage++) {
         for (int i=0; i<100; i++) {
             if (duration[stage][i]) {
                 print_stage_stats (stage==RLE?-1:i, name[stage][i], insize[stage], size[stage][i], stage==RLE?0:duration[stage][i]);
             }
         }
-        printf("\n");
+        // printf("\n");
     }
 
-    for (int i=0; i<100; i++) {
-        if (duration[MTF][i]) {
-            char in_speed[100], out_speed[100];
-            sprintf( in_speed,   "%5.0lf", ((1000/duration[MTF][i]) *  insize[0]) / (1 << 20));
-            sprintf(out_speed, " /%5.0lf", ((1000/duration[MTF][i]) * outsize) / (1 << 20));
-            printf("[%2d] %-*s: %s%s MiB/s,  %.3lf ms\n", i, strlen(name[MTF][2]), name[MTF][i], in_speed, (outsize!=insize[0]?out_speed:""), duration[MTF][i]);
-        }
-    }
     fclose(infile);
     fclose(outfile);
     cudaProfilerStop();
