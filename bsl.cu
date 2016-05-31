@@ -122,10 +122,10 @@ int main (int argc, char **argv)
     unsigned char* outbuf = new unsigned char[bufsize];
     int*      bwt_tempbuf = apply_bwt? new int[bufsize] : 0;
 
-    double outsize = 0,  insize[STAGES] = {0},  size[STAGES][100] = {0},  duration[STAGES][100] = {0};
-    char *name[STAGES][100] = {0};  bool ret_outsize;
+    int _num, stage, retval;  size_t inbytes;  bool ret_outsize;
+    uint64_t outsize = 0,  insize[STAGES] = {0},  size[STAGES][100] = {0};
+    char *name[STAGES][100] = {0};  double duration[STAGES][100] = {0};
 
-    int inbytes, _num, stage, retval;
     auto cpu_time_run = [&] (char *_name, std::function<int(void)> stage_f) {
         name[stage][_num] = _name;
         if (_num == num[stage]  ||  num[stage] < 0)
@@ -281,26 +281,29 @@ int main (int argc, char **argv)
 
     // The Analysis stage now is finished, we are going to display the collected data in fancy way
     auto print_stage_stats = [&] (int _num, char *name, double _insize, double outsize, double duration) {
+        char extra[99], temp1[99], temp2[99];
         if (_num >= 0)
-            printf("[%2d] ", _num);
+            printf ("[%2d] ", _num);
         printf("%s: ", name);
-        if (outsize  &&  outsize != _insize)
-            printf("%.0lf => %.0lf (%.2lf%%)", _insize, outsize, outsize*100/_insize);
+        if (outsize  &&  outsize != _insize) {
+            sprintf (extra, " / %.2lf%%", outsize*100.0/insize[0]);
+            printf ("%s => %s (%.2lf%%%s)",  show3(_insize,temp1),  show3(outsize,temp2),  outsize*100.0/_insize,  (insize[0]!=_insize? extra:""));
+        }
         if (duration) {
             auto print_speed = [&] (double insize, double duration, char *suffix) {
                 auto speed = ((1000/duration) *  insize) / (1 << 20);
                 int digits = speed<10?2:speed<100?1:0;
-                printf("%*.*lf%s", (_num>=0?5:0), digits, speed, suffix);
+                printf ("%*.*lf%s", (_num>=0?5:0), digits, speed, suffix);
             };
             if (insize[0] != _insize)    // if incoming data are already compacted, print speeds both in terms of read-from-disk and incoming-to-this-stage sizes
                 print_speed (insize[0], duration, " /");
             print_speed (_insize, duration, " MiB/s");
-            printf(",  %.3lf ms", duration);
+            printf (",  %.3lf ms", duration);
         }
         printf("\n");
     };
 
-    for (int stage=0; stage<=STAGES; stage++) {
+    for (int stage=0; stage<STAGES; stage++) {
         for (int i=0; i<100; i++) {
             if (duration[stage][i]) {
                 print_stage_stats (stage==RLE?-1:i, name[stage][i], insize[stage], size[stage][i], stage==RLE?0:duration[stage][i]);
