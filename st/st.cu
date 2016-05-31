@@ -61,8 +61,6 @@ preprocessor macro LIBBSC_SORT_TRANSFORM_SUPPORT at compile time.
 #include <cuda_runtime_api.h>
 #include <device_functions.h>
 
-#include "b40c/radix_sort/enactor.cuh"
-#include "b40c/util/multi_buffer.cuh"
 
 #ifdef LIBBSC_OPENMP
 
@@ -310,7 +308,6 @@ int bsc_st8_encode_cuda(unsigned char * T, unsigned char * T_device, int n, int 
 
                     {
                         b40c::radix_sort::Enactor enactor;
-                        
                         status = enactor.Sort(storage, n);
 
                         K_device_sorted = storage.d_keys[storage.selector];
