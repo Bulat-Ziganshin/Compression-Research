@@ -61,6 +61,7 @@ preprocessor macro LIBBSC_SORT_TRANSFORM_SUPPORT at compile time.
 #include <cuda_runtime_api.h>
 #include <device_functions.h>
 
+#include <cub/cub.cuh>
 
 #ifdef LIBBSC_OPENMP
 
@@ -223,20 +224,26 @@ int bsc_st567_encode_cuda(unsigned char * T, unsigned char * T_device, int n, in
 
             cudaError_t status = cudaSuccess;
             {
-                b40c::util::DoubleBuffer<unsigned long long> storage;
-                {
-                    storage.d_keys[storage.selector ^ 0] = K_device;
-                    storage.d_keys[storage.selector ^ 1] = K_device + ((n + 2 * CUDA_DEVICE_PADDING) / CUDA_DEVICE_PADDING) * CUDA_DEVICE_PADDING;
-                }
+                // Bit subrange [begin_bit, end_bit) of differentiating key bits
+                int begin_bit = 56-8*k,  end_bit = 56;
 
-                {
-                    b40c::radix_sort::Enactor enactor;
-                    if (k == 5) status = enactor.Sort<b40c::radix_sort::LARGE_PROBLEM, 40, 16>(storage, n);
-                    if (k == 6) status = enactor.Sort<b40c::radix_sort::LARGE_PROBLEM, 48,  8>(storage, n);
-                    if (k == 7) status = enactor.Sort<b40c::radix_sort::LARGE_PROBLEM, 56,  0>(storage, n);
+                // Create a DoubleBuffer to wrap the pair of device pointers
+                cub::DoubleBuffer<unsigned long long> d_keys ( K_device
+                                                             , K_device + ((n + 2 * CUDA_DEVICE_PADDING) / CUDA_DEVICE_PADDING) * CUDA_DEVICE_PADDING);
 
-                    K_device_sorted = storage.d_keys[storage.selector];
-                }
+                // Determine temporary device storage requirements
+                void     *d_temp_storage = NULL;
+                size_t   temp_storage_bytes = 0;
+                cub::DeviceRadixSort::SortKeys(d_temp_storage, temp_storage_bytes, d_keys, n, begin_bit, end_bit);
+
+                // Allocate temporary storage
+                cudaMalloc(&d_temp_storage, temp_storage_bytes);
+
+                // Run sorting operation
+                status = cub::DeviceRadixSort::SortKeys(d_temp_storage, temp_storage_bytes, d_keys, n, begin_bit, end_bit);
+
+                // Extract the result
+                K_device_sorted = d_keys.Current();
             }
 
             if (bsc_cuda_safe_call(__FILE__, __LINE__, status) == cudaSuccess)
@@ -298,21 +305,27 @@ int bsc_st8_encode_cuda(unsigned char * T, unsigned char * T_device, int n, int 
 
                 cudaError_t status = cudaSuccess;
                 {
-                    b40c::util::DoubleBuffer<unsigned long long, unsigned char> storage;
-                    {
-                        storage.d_keys  [storage.selector ^ 0] = K_device;
-                        storage.d_keys  [storage.selector ^ 1] = K_device + ((n + 2 * CUDA_DEVICE_PADDING) / CUDA_DEVICE_PADDING) * CUDA_DEVICE_PADDING;
-                        storage.d_values[storage.selector ^ 0] = V_device;
-                        storage.d_values[storage.selector ^ 1] = V_device + ((n + 2 * CUDA_DEVICE_PADDING) / CUDA_DEVICE_PADDING) * CUDA_DEVICE_PADDING;
-                    }
+                    // Create a set of DoubleBuffers to wrap pairs of device pointers
+                    cub::DoubleBuffer<unsigned long long> d_keys ( K_device
+                                                                 , K_device + ((n + 2 * CUDA_DEVICE_PADDING) / CUDA_DEVICE_PADDING) * CUDA_DEVICE_PADDING);
 
-                    {
-                        b40c::radix_sort::Enactor enactor;
-                        status = enactor.Sort(storage, n);
+                    cub::DoubleBuffer<unsigned char> d_values ( V_device
+                                                              , V_device + ((n + 2 * CUDA_DEVICE_PADDING) / CUDA_DEVICE_PADDING) * CUDA_DEVICE_PADDING);
 
-                        K_device_sorted = storage.d_keys[storage.selector];
-                        V_device_sorted = storage.d_values[storage.selector];
-                    }
+                    // Determine temporary device storage requirements
+                    void     *d_temp_storage = NULL;
+                    size_t   temp_storage_bytes = 0;
+                    cub::DeviceRadixSort::SortPairs(d_temp_storage, temp_storage_bytes, d_keys, d_values, n);
+
+                    // Allocate temporary storage
+                    cudaMalloc(&d_temp_storage, temp_storage_bytes);
+
+                    // Run sorting operation
+                    status = cub::DeviceRadixSort::SortPairs(d_temp_storage, temp_storage_bytes, d_keys, d_values, n);
+
+                    // Extract the result
+                    K_device_sorted = d_keys.Current();
+                    V_device_sorted = d_values.Current();
                 }
 
                 if (bsc_cuda_safe_call(__FILE__, __LINE__, status) == cudaSuccess)

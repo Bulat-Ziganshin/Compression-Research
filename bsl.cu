@@ -185,12 +185,17 @@ int main (int argc, char **argv)
                 exit(4);
             }
 
-            char *st_name[] = {"st0", "st1", "st2", "st3", "st4", "st5", "st6", "st7", "st8"};
+            memcpy (outbuf, inbuf, inbytes);  bsc_st_encode_cuda (outbuf, inbytes, 5, 0);   // warm up the CUDA
+
+            char *cuda_st_name[] = {"st0-cuda", "st1-cuda", "st2-cuda", "st3-cuda", "st4-cuda", "st5-cuda", "st6-cuda", "st7-cuda", "st8-cuda"};
             for (int i=5; i<=8; i++)
-                cpu_time_run (st_name[i], [&] {memcpy (outbuf, inbuf, inbytes);  return bsc_st_encode_cuda (outbuf, inbytes, i, 0);});
+                cpu_time_run (cuda_st_name[i], [&] {memcpy (outbuf, inbuf, inbytes);  return bsc_st_encode_cuda (outbuf, inbytes, i, 0);});
+
+            char *cpu_st_name[] = {"st0-cpu ", "st1-cpu ", "st2-cpu ", "st3-cpu ", "st4-cpu ", "st5-cpu ", "st6-cpu ", "st7-cpu ", "st8-cpu "};
             for (int i=3; i<=6; i++)
-                cpu_time_run (st_name[i], [&] {memcpy (outbuf, inbuf, inbytes);  return bsc_st_encode (outbuf, inbytes, i, 0);});
-            cpu_time_run ("bwt", [&] {return sais_bwt (inbuf, outbuf, bwt_tempbuf, inbytes);});
+                cpu_time_run (cpu_st_name[i], [&] {memcpy (outbuf, inbuf, inbytes);  return bsc_st_encode (outbuf, inbytes, i, 0);});
+
+            cpu_time_run ("OpenBWT ", [&] {return sais_bwt (inbuf, outbuf, bwt_tempbuf, inbytes);});
             memcpy (inbuf, outbuf, inbytes);
         }
 
