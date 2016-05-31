@@ -52,8 +52,7 @@ preprocessor macro LIBBSC_SORT_TRANSFORM_SUPPORT at compile time.
 
 #include "st.h"
 
-#include "../libbsc.h"
-#include "../platform/platform.h"
+#include "../lib/libbsc.h"
 
 #include "st.cuh"
 

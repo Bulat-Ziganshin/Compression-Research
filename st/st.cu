@@ -56,8 +56,7 @@ preprocessor macro LIBBSC_SORT_TRANSFORM_SUPPORT at compile time.
 
 #include "st.cuh"
 
-#include "../libbsc.h"
-#include "../platform/platform.h"
+#include "../lib/libbsc.h"
 
 #include <cuda_runtime_api.h>
 #include <device_functions.h>

@@ -30,7 +30,9 @@ const int CHUNK = 4*1024;
 
 #include "bwt/sais.c"              // OpenBWT implementation
 #define LIBBSC_SORT_TRANSFORM_SUPPORT
-#include "st/st.cpp"               // BSC Sort Transform implementation
+#define LIBBSC_CUDA_SUPPORT
+#include "st/st.cpp"               // BSC CPU Sort Transform implementation
+#include "st/st.cu"                // BSC GPU Sort Transform implementation
 
 #include "mtf/qlfc-cpu.cpp"
 #include "mtf/mtf_scalar.cu"
@@ -184,6 +186,8 @@ int main (int argc, char **argv)
             }
 
             char *st_name[] = {"st0", "st1", "st2", "st3", "st4", "st5", "st6", "st7", "st8"};
+            for (int i=5; i<=8; i++)
+                cpu_time_run (st_name[i], [&] {memcpy (outbuf, inbuf, inbytes);  return bsc_st_encode_cuda (outbuf, inbytes, i, 0);});
             for (int i=3; i<=6; i++)
                 cpu_time_run (st_name[i], [&] {memcpy (outbuf, inbuf, inbytes);  return bsc_st_encode (outbuf, inbytes, i, 0);});
             cpu_time_run ("bwt", [&] {return sais_bwt (inbuf, outbuf, bwt_tempbuf, inbytes);});
