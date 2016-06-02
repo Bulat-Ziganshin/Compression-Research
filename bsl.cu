@@ -92,20 +92,20 @@ int main (int argc, char **argv)
 
     if (!(argc==2 || argc==3) || error) {
         printf ("BSL: the block-sorting lab.  Part of https://github.com/Bulat-Ziganshin/Compression-Research\n"
-                "Usage: mtf [options] infile [outfile]\n"
-                "  -nogpu   skip GPU name output\n"
-                "  -nolzp   skip LZP transformation\n"
-                "  -nobwt   skip BWT transformation\n"
-                "  -norle   skip RLE transformation\n"
-                "  -nomtf   skip MTF transformation\n"
+                "Usage: bsl [options] infile [outfile]\n"
                 "  -bN      buffer N (mebi)bytes (default %d MiB)\n"
-                "  -lzpN    perform only LZP transformation number N\n"
+                "  -nogpu   skip GPU name output\n"
+                "  -nolzp   skip LZP transform\n"
+                "  -nobwt   skip BWT/ST transform\n"
+                "  -norle   skip RLE transform\n"
+                "  -nomtf   skip MTF transform\n"
+                "  -lzpN    perform only LZP transform number N\n"
                 "  -hN      set LZP hash size (default 2^%d hash entries)\n"
                 "  -lN      set LZP minLen (default %d)\n"
-                "  -bwtN    perform only sorting transformation number N\n"
-                "  -mtfN    perform only MTF transformation number N\n"
+                "  -bwtN    perform only sorting transform number N\n"
+                "  -mtfN    perform only MTF transform number N\n"
                 "  -rem...  ignored by the program\n"
-                , lzpHashSize, lzpMinLen, DEFAULT_BUFSIZE>>20);
+                , DEFAULT_BUFSIZE>>20, lzpHashSize, lzpMinLen);
         return argc==1 && !error?  0 : 1;
     }
 
@@ -151,7 +151,7 @@ int main (int argc, char **argv)
         return 2;
     }
     if (!outfile) {
-        printf ("Can't open outfile %s\n", argv[3]);
+        printf ("Can't open outfile %s\n", argv[2]);
         return 3;
     }
     if (display_gpu)
@@ -185,7 +185,9 @@ int main (int argc, char **argv)
                 exit(4);
             }
 
-            memcpy (outbuf, inbuf, inbytes);  bsc_st_encode_cuda (outbuf, inbytes, 5, 0);   // warm up the CUDA
+            if (num[BWT] <= 4) {  // CUDA will be used, so we need to warm it up
+                memcpy (outbuf, inbuf, inbytes);  bsc_st_encode_cuda (outbuf, inbytes, 5, 0);
+            }
 
             char *cuda_st_name[] = {"st0-cuda", "st1-cuda", "st2-cuda", "st3-cuda", "st4-cuda", "st5-cuda", "st6-cuda", "st7-cuda", "st8-cuda"};
             for (int i=5; i<=8; i++)
@@ -299,7 +301,7 @@ int main (int argc, char **argv)
                 int digits = speed<10?2:speed<100?1:0;
                 printf ("%*.*lf%s", (_num>=0?5:0), digits, speed, suffix);
             };
-            if (insize[0] != _insize)    // if incoming data are already compacted, print speeds both in terms of read-from-disk and incoming-to-this-stage sizes
+            if (insize[0] != _insize)    // if incoming data are already compacted, print both raw and effective speeds
                 print_speed (insize[0], duration, " /");
             print_speed (_insize, duration, " MiB/s");
             printf (",  %.3lf ms", duration);
