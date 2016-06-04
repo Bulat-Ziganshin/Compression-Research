@@ -214,13 +214,13 @@ int main (int argc, char **argv)
         }
 
 
-        if (apply_mtf  &&  (0 == num[MTF]  ||  num[MTF] < 0)) {
-            name[MTF][0] = "cpu (1 thread)    ";
+        if (apply_mtf  &&  (1 == num[MTF]  ||  num[MTF] < 0)) {
+            name[MTF][1] = "cpu (1 thread)    ";
             StartTimer();
                 unsigned char MTFTable[ALPHABET_SIZE];
                 ptr = qlfc (inbuf, outbuf, inbytes, MTFTable);
                 outbytes = outbuf+inbytes - ptr;
-            duration[MTF][0] += GetTimer();
+            duration[MTF][1] += GetTimer();
         }
 
 
@@ -231,8 +231,8 @@ int main (int argc, char **argv)
         }
 
 
-        stage = MTF,  insize[stage] += inbytes,  ret_outsize = false,  _num = 1;
-        if (apply_mtf  &&  (0 != num[MTF]))
+        stage = MTF,  insize[stage] += inbytes,  ret_outsize = false,  _num = 2;
+        if (apply_mtf  &&  (1 != num[MTF]))
         {
             cpu_time_run ("mtf_shelwien      ", [&] {mtf_shelwien (inbuf, outbuf, inbytes);  return inbytes;});
 
