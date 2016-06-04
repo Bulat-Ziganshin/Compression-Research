@@ -34,41 +34,37 @@ int lzp_cpu_rollhash (const unsigned char * input, const unsigned char * inputEn
         PRIME2_POW *= PRIME2;
     }
 
-    const unsigned char * inputMinLenEnd = inputEnd - minLen - 8 - 8*sizeof(size_t); // 8*8 for the find-match-len loop unrolling
+    const unsigned char * inputMinLenEnd = inputEnd - minLen - 8 - 8; // exra 8 for the STEP() loop unrolling
     while ((input < inputMinLenEnd) && (output < outputEOB))
     {
         LOOKUP_T value;
         while ((input < inputMinLenEnd) && (output < outputEOB))
         {
-            unsigned int index  =  (*(unsigned int *)(input-4) * PRIME1)  >>  (32 - hashSize);
-            value = lookup[index];  lookup[index] = (LOOKUP_T(input - inputStart) << 32) + rolling_hash;
-            if (uint32_t(value) == rolling_hash)  goto FOUND;
-            rolling_hash  =  rolling_hash*PRIME2 + (input[minLen] - input[0]*PRIME2_POW);
-            unsigned char next = *output++ = *input++;
-            if (unlikely (next == LIBBSC_LZP_MATCH_FLAG)  &&  value > 0)
-                *output++ = 255;
+#define STEP()                                                                                                                  \
+{                                                                                                                               \
+            unsigned int index  =  (*(unsigned int *)(input-4) * PRIME1)  >>  (32 - hashSize);                                  \
+            value = lookup[index];  lookup[index] = (LOOKUP_T(input - inputStart) << 32) + rolling_hash;                        \
+            if (uint32_t(value) == rolling_hash)  goto FOUND;                                                                   \
+            rolling_hash  =  rolling_hash*PRIME2 + (input[minLen] - input[0]*PRIME2_POW);                                       \
+            unsigned char next = *output++ = *input++;                                                                          \
+            if (unlikely (next == LIBBSC_LZP_MATCH_FLAG)  &&  value > 0)                                                        \
+                *output++ = 255;                                                                                                \
+}
+            STEP(); STEP(); STEP(); STEP(); STEP(); STEP(); STEP(); STEP();
         }
         break;
 
 FOUND:
         const unsigned char * reference = inputStart + (value>>32);
 
-        size_t* in  = (size_t*) input;
-        size_t* ref = (size_t*) reference;
-        size_t x;
-        for (; (void*) in < inputMinLenEnd; in+=8, ref+=8)
+        int len = 0;
+        for (; input + len < inputMinLenEnd; len += 4)
         {
-            x = in[0] ^ ref[0];  if (x) break;
-            x = in[1] ^ ref[1];  if (x) {in++; break;}
-            x = in[2] ^ ref[2];  if (x) {in+=2; break;}
-            x = in[3] ^ ref[3];  if (x) {in+=3; break;}
-            x = in[4] ^ ref[4];  if (x) {in+=4; break;}
-            x = in[5] ^ ref[5];  if (x) {in+=5; break;}
-            x = in[6] ^ ref[6];  if (x) {in+=6; break;}
-            x = in[7] ^ ref[7];  if (x) {in+=7; break;}
-            x = (size_t)-1;
+            if (*(unsigned int *)(input + len) != *(unsigned int *)(reference + len)) break;
         }
-        int len = (unsigned char *)in - input + LZ4_NbCommonBytes(x);
+        if (input[len] == reference[len]) len++;
+        if (input[len] == reference[len]) len++;
+        if (input[len] == reference[len]) len++;
 
         if (unlikely (len < minLen))
         {
