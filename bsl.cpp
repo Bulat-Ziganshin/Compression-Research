@@ -143,7 +143,7 @@ int main (int argc, char **argv)
             duration[stage][_num] += GetTimer();
 
             if (retval < 0  &&  retval != LIBBSC_NOT_COMPRESSIBLE) {
-                printf ("%s failed with errcode %d\n", name, retval);
+                printf ("%s failed with errcode %d\n", _name, retval);
                 exit(4);
             }
             size[stage][_num]  +=  (ret_outsize && retval != LIBBSC_NOT_COMPRESSIBLE?  retval : inbytes);
