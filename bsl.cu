@@ -35,6 +35,7 @@ const int CHUNK = 4*1024;
 #include "st/st.cu"                // BSC GPU Sort Transform implementation
 
 #include "mtf/qlfc-cpu.cpp"
+#include "mtf/mtf_shelwien.cpp"
 #include "mtf/mtf_scalar.cu"
 #include "mtf/mtf_2symbols.cu"
 #include "mtf/mtf_2buffers.cu"
@@ -220,7 +221,11 @@ int main (int argc, char **argv)
 
 
         stage = MTF,  insize[stage] += inbytes,  ret_outsize = false,  _num = 1;
-        if (apply_mtf  &&  (0 != num[MTF])) {
+        if (apply_mtf  &&  (0 != num[MTF]))
+        {
+            cpu_time_run ("mtf_shelwien      ", [&] {mtf_shelwien (inbuf, outbuf, inbytes);  return inbytes;});
+
+
             checkCudaErrors( cudaMemcpy (d_inbuf, inbuf, inbytes, cudaMemcpyHostToDevice));
             checkCudaErrors( cudaDeviceSynchronize());
 
