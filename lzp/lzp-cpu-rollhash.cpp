@@ -3,9 +3,6 @@
 // All rights reserved
 // Part of https://github.com/Bulat-Ziganshin/Compression-Research
 
-#include <stdint.h>
-#define unlikely
-
 
 /*  Highly optimized CPU LZP implementation employing rolling hash of next minLen bytes
 */

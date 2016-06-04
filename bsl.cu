@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <vector>
 #include <functional>
+#include <stdint.h>
 
 #include <helper_functions.h>  // helper for shared functions common to CUDA Samples
 #include <helper_cuda.h>       // helper functions for CUDA error checking and initialization
@@ -15,6 +16,7 @@
 #include "lib/cpu_common.h"        // my own helper functions
 #include "lib/cuda_common.h"       // my own cuda-specific helper functions
 #include "lib/libbsc.h"            // BSC common definitions
+#include "lib/lz4_common.h"        // Utility functions from LZ4
 
 const int WARP_SIZE = 32;
 typedef unsigned char byte;
@@ -123,11 +125,11 @@ int main (int argc, char **argv)
     unsigned char* outbuf = new unsigned char[bufsize];
     int*      bwt_tempbuf = apply_bwt? new int[bufsize] : 0;
 
-    int _num, stage, retval;  size_t inbytes;  bool ret_outsize;
+    int _num, stage, retval;  int64_t inbytes;  bool ret_outsize;
     uint64_t outsize = 0,  insize[STAGES] = {0},  size[STAGES][100] = {0};
     char *name[STAGES][100] = {0};  double duration[STAGES][100] = {0};
 
-    auto cpu_time_run = [&] (char *_name, std::function<int(void)> stage_f) {
+    auto cpu_time_run = [&] (char *_name, std::function<int64_t(void)> stage_f) {
         name[stage][_num] = _name;
         if (_num == num[stage]  ||  num[stage] < 0)
         {

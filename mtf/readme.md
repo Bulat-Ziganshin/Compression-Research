@@ -1,4 +1,5 @@
 [qlfc-cpu.cpp]:   qlfc-cpu.cpp
+[mtf_shelwien.cpp]:   mtf_shelwien.cpp
 [mtf_thread]:     mtf_thread.cu
 [mtf_thread_by4]: mtf_thread_by4.cu
 [mtf_scalar]:     mtf_scalar.cu
@@ -9,7 +10,8 @@
 
 ### CPU implementations
 
-The only one currently included is [qlfc-cpu.cpp], borrowed from BSC 3.1
+The first one included is [qlfc-cpu.cpp], borrowed from BSC 3.1.
+Another one is [mtf_shelwien.cpp], vectorizable constant-speed algo developed by Eugene Shelwien.
 
 Further CPU optimizations:
 * use SSE/AVX to check 16-32 positions simultaneously (PCMPEQB+PMOVMSKB)
