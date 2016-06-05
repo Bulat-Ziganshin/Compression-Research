@@ -1,0 +1,77 @@
+C:\!FreeArc\public\Compression-Research>bsl-msvc-x64-avx2.exe m:\e9 -nobwt -nomtf -norle -h10
+[ 1] lzp_cpu_bsc              : 1,000,000,000 => 903,431,446 (90.34%)  412 MiB/s,  2317.236 ms
+[ 2] lzp_cpu_bsc_mod          : 1,000,000,000 => 907,891,946 (90.79%)  505 MiB/s,  1886.898 ms
+[ 3] lzp_cpu_rollhash         : 1,000,000,000 => 906,855,290 (90.69%)  483 MiB/s,  1976.303 ms
+[ 4] lzp_cpu_rollhash (OpenMP):  1534 MiB/s,  621.651 ms
+
+C:\!FreeArc\public\Compression-Research>bsl-msvc-x64-avx2.exe m:\e9 -nobwt -nomtf -norle -h11
+[ 1] lzp_cpu_bsc              : 1,000,000,000 => 885,490,988 (88.55%)  400 MiB/s,  2381.256 ms
+[ 2] lzp_cpu_bsc_mod          : 1,000,000,000 => 886,940,601 (88.69%)  503 MiB/s,  1894.349 ms
+[ 3] lzp_cpu_rollhash         : 1,000,000,000 => 887,128,673 (88.71%)  489 MiB/s,  1948.895 ms
+[ 4] lzp_cpu_rollhash (OpenMP):  1430 MiB/s,  667.035 ms
+
+C:\!FreeArc\public\Compression-Research>bsl-msvc-x64-avx2.exe m:\e9 -nobwt -nomtf -norle -h12
+[ 1] lzp_cpu_bsc              : 1,000,000,000 => 873,306,360 (87.33%)  391 MiB/s,  2437.286 ms
+[ 2] lzp_cpu_bsc_mod          : 1,000,000,000 => 875,076,079 (87.51%)  486 MiB/s,  1962.973 ms
+[ 3] lzp_cpu_rollhash         : 1,000,000,000 => 874,277,935 (87.43%)  494 MiB/s,  1930.573 ms
+[ 4] lzp_cpu_rollhash (OpenMP):  1444 MiB/s,  660.329 ms
+
+C:\!FreeArc\public\Compression-Research>bsl-msvc-x64-avx2.exe m:\e9 -nobwt -nomtf -norle -h13
+[ 1] lzp_cpu_bsc              : 1,000,000,000 => 865,259,197 (86.53%)  369 MiB/s,  2582.197 ms
+[ 2] lzp_cpu_bsc_mod          : 1,000,000,000 => 865,707,641 (86.57%)  461 MiB/s,  2069.617 ms
+[ 3] lzp_cpu_rollhash         : 1,000,000,000 => 866,177,705 (86.62%)  491 MiB/s,  1941.465 ms
+[ 4] lzp_cpu_rollhash (OpenMP):  1695 MiB/s,  562.489 ms
+
+C:\!FreeArc\public\Compression-Research>bsl-msvc-x64-avx2.exe m:\e9 -nobwt -nomtf -norle -h14
+[ 1] lzp_cpu_bsc              : 1,000,000,000 => 859,466,478 (85.95%)  349 MiB/s,  2730.774 ms
+[ 2] lzp_cpu_bsc_mod          : 1,000,000,000 => 859,707,439 (85.97%)  434 MiB/s,  2197.730 ms
+[ 3] lzp_cpu_rollhash         : 1,000,000,000 => 860,344,657 (86.03%)  491 MiB/s,  1941.320 ms
+[ 4] lzp_cpu_rollhash (OpenMP):  1564 MiB/s,  609.851 ms
+
+C:\!FreeArc\public\Compression-Research>bsl-msvc-x64-avx2.exe m:\e9 -nobwt -nomtf -norle -h15
+[ 1] lzp_cpu_bsc              : 1,000,000,000 => 855,183,966 (85.52%)  323 MiB/s,  2952.158 ms
+[ 2] lzp_cpu_bsc_mod          : 1,000,000,000 => 855,168,159 (85.52%)  386 MiB/s,  2470.942 ms
+[ 3] lzp_cpu_rollhash         : 1,000,000,000 => 855,369,315 (85.54%)  468 MiB/s,  2038.084 ms
+[ 4] lzp_cpu_rollhash (OpenMP):  1518 MiB/s,  628.221 ms
+
+C:\!FreeArc\public\Compression-Research>bsl-msvc-x64-avx2.exe m:\e9 -nobwt -nomtf -norle -h16
+[ 1] lzp_cpu_bsc              : 1,000,000,000 => 851,287,205 (85.13%)  276 MiB/s,  3452.640 ms
+[ 2] lzp_cpu_bsc_mod          : 1,000,000,000 => 851,443,162 (85.14%)  325 MiB/s,  2932.524 ms
+[ 3] lzp_cpu_rollhash         : 1,000,000,000 => 851,533,195 (85.15%)  431 MiB/s,  2213.000 ms
+[ 4] lzp_cpu_rollhash (OpenMP):  1338 MiB/s,  712.612 ms
+
+C:\!FreeArc\public\Compression-Research>bsl-msvc-x64-avx2.exe m:\e9 -nobwt -nomtf -norle -h17
+[ 1] lzp_cpu_bsc              : 1,000,000,000 => 847,944,813 (84.79%)  238 MiB/s,  4001.172 ms
+[ 2] lzp_cpu_bsc_mod          : 1,000,000,000 => 848,336,959 (84.83%)  286 MiB/s,  3330.473 ms
+[ 3] lzp_cpu_rollhash         : 1,000,000,000 => 848,348,226 (84.83%)  414 MiB/s,  2301.230 ms
+[ 4] lzp_cpu_rollhash (OpenMP):  1054 MiB/s,  904.957 ms
+
+C:\!FreeArc\public\Compression-Research>bsl-msvc-x64-avx2.exe m:\e9 -nobwt -nomtf -norle -h18
+[ 1] lzp_cpu_bsc              : 1,000,000,000 => 845,574,559 (84.56%)  215 MiB/s,  4435.014 ms
+[ 2] lzp_cpu_bsc_mod          : 1,000,000,000 => 845,738,996 (84.57%)  255 MiB/s,  3732.659 ms
+[ 3] lzp_cpu_rollhash         : 1,000,000,000 => 845,802,582 (84.58%)  390 MiB/s,  2442.526 ms
+[ 4] lzp_cpu_rollhash (OpenMP):   715 MiB/s,  1333.871 ms
+
+C:\!FreeArc\public\Compression-Research>bsl-msvc-x64-avx2.exe m:\e9 -nobwt -nomtf -norle -h19
+[ 1] lzp_cpu_bsc              : 1,000,000,000 => 844,059,662 (84.41%)  200 MiB/s,  4772.962 ms
+[ 2] lzp_cpu_bsc_mod          : 1,000,000,000 => 843,995,316 (84.40%)  228 MiB/s,  4183.576 ms
+[ 3] lzp_cpu_rollhash         : 1,000,000,000 => 843,965,545 (84.40%)  346 MiB/s,  2760.132 ms
+[ 4] lzp_cpu_rollhash (OpenMP):   532 MiB/s,  1791.391 ms
+
+C:\!FreeArc\public\Compression-Research>bsl-msvc-x64-avx2.exe m:\e9 -nobwt -nomtf -norle -h20
+[ 1] lzp_cpu_bsc              : 1,000,000,000 => 843,063,667 (84.31%)  184 MiB/s,  5194.535 ms
+[ 2] lzp_cpu_bsc_mod          : 1,000,000,000 => 842,849,903 (84.28%)  184 MiB/s,  5194.627 ms
+[ 3] lzp_cpu_rollhash         : 1,000,000,000 => 842,936,362 (84.29%)  232 MiB/s,  4102.329 ms
+[ 4] lzp_cpu_rollhash (OpenMP):   434 MiB/s,  2195.059 ms
+
+C:\!FreeArc\public\Compression-Research>bsl-msvc-x64-avx2.exe m:\e9 -nobwt -nomtf -norle -h21
+[ 1] lzp_cpu_bsc              : 1,000,000,000 => 842,568,770 (84.26%)  172 MiB/s,  5554.364 ms
+[ 2] lzp_cpu_bsc_mod          : 1,000,000,000 => 842,253,872 (84.23%)  150 MiB/s,  6362.955 ms
+[ 3] lzp_cpu_rollhash         : 1,000,000,000 => 842,377,789 (84.24%)  187 MiB/s,  5110.980 ms
+[ 4] lzp_cpu_rollhash (OpenMP):   388 MiB/s,  2455.281 ms
+
+C:\!FreeArc\public\Compression-Research>bsl-msvc-x64-avx2.exe m:\e9 -nobwt -nomtf -norle -h22
+[ 1] lzp_cpu_bsc              : 1,000,000,000 => 842,182,603 (84.22%)  159 MiB/s,  5990.937 ms
+[ 2] lzp_cpu_bsc_mod          : 1,000,000,000 => 841,933,618 (84.19%)  129 MiB/s,  7373.990 ms
+[ 3] lzp_cpu_rollhash         : 1,000,000,000 => 842,053,578 (84.21%)  158 MiB/s,  6046.103 ms
+[ 4] lzp_cpu_rollhash (OpenMP):   316 MiB/s,  3015.091 ms

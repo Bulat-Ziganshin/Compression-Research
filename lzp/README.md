@@ -1,9 +1,10 @@
 
-This directory contains my experiments on fast LZP coder. Current results on enwik8 with i7-4770 (single thread):
+This directory contains my experiments on fast LZP coder. Current results on enwik9 with i7-4770:
 ```
-lzp_cpu_bsc     : 100,000,000 => 95,006,102 (95.01%)  341 MiB/s,  280.002 ms
-lzp_cpu_bsc_mod : 100,000,000 => 95,012,381 (95.01%)  361 MiB/s,  263.985 ms
-lzp_cpu_rollhash: 100,000,000 => 95,025,330 (95.03%)  379 MiB/s,  251.672 ms
+lzp_cpu_bsc              : 1,000,000,000 => 855,183,966 (85.52%)  314 MiB/s,  3033.297 ms
+lzp_cpu_bsc_mod          : 1,000,000,000 => 855,168,159 (85.52%)  384 MiB/s,  2483.152 ms
+lzp_cpu_rollhash         : 1,000,000,000 => 855,369,315 (85.54%)  476 MiB/s,  2005.023 ms
+lzp_cpu_rollhash (OpenMP):                                       1520 MiB/s,   627.267 ms
 ```
 
 ### [lzp-cpu-bsc.cpp](lzp-cpu-bsc.cpp)
