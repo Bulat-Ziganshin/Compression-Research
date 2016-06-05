@@ -1,17 +1,17 @@
-[qlfc-cpu.cpp]:   qlfc-cpu.cpp
-[mtf_shelwien.cpp]:   mtf_shelwien.cpp
-[mtf_thread]:     mtf_thread.cu
-[mtf_thread_by4]: mtf_thread_by4.cu
-[mtf_scalar]:     mtf_scalar.cu
-[mtf_2symbols]:   mtf_2symbols.cu
-[mtf_2buffers]:   mtf_2buffers.cu
-[mtf_4by8]:       mtf_4by8.cu
+[mtf_cpu_bsc]:         mtf_cpu_bsc.cpp
+[mtf_cpu_shelwien]:    mtf_cpu_shelwien.cpp
+[mtf_cuda_thread]:     mtf_cuda_thread.cu
+[mtf_cuda_thread_by4]: mtf_cuda_thread_by4.cu
+[mtf_cuda_scalar]:     mtf_cuda_scalar.cu
+[mtf_cuda_2symbols]:   mtf_cuda_2symbols.cu
+[mtf_cuda_2buffers]:   mtf_cuda_2buffers.cu
+[mtf_cuda_4by8]:       mtf_cuda_4by8.cu
 
 
 ### CPU implementations
 
-The first one included is [qlfc-cpu.cpp], borrowed from BSC 3.1.
-Another one is [mtf_shelwien.cpp], vectorizable constant-speed algo developed by Eugene Shelwien.
+The first one included is [mtf_cpu_bsc], borrowed from BSC 3.1.
+Another one is [mtf_cpu_shelwien], vectorizable constant-speed algo developed by Eugene Shelwien.
 
 Further CPU optimizations:
 * use SSE/AVX to check 16-32 positions simultaneously (PCMPEQB+PMOVMSKB)
@@ -22,13 +22,13 @@ Further CPU optimizations:
 ### GPU implementations
 
 Current GPU MTF implementations:
-* [mtf_scalar] - processes single buffer per warp, comparing 32 mtf positions in single operation
-* [mtf_2symbols] - the same, but checks 2 input symbols interleaved, increasing ILP
-* [mtf_2buffers] - the same, but processes 2 buffers interleaved, increasing ILP
-* [mtf_4by8] - process 4/8 positions from 8/4 buffers in the single warp
-* [mtf_thread] - process 32 buffers per warp, on every algorithm step going 1 mtf position deeper and/or one input symbol further
-* [mtf_thread_by4] - the same, but process 4 mtf positions on every step
-* `mtf_Kbuffers<N>`, `mtf_thread<N>` and `mtf_thread_by4<N>` - mtf search depth limited to N, for use in multi-pass algorithm
+* [mtf_cuda_scalar] - processes single buffer per warp, comparing 32 mtf positions in single operation
+* [mtf_cuda_2symbols] - the same, but checks 2 input symbols interleaved, increasing ILP
+* [mtf_cuda_2buffers] - the same, but processes 2 buffers interleaved, increasing ILP
+* [mtf_cuda_4by8] - process 4/8 positions from 8/4 buffers in the single warp
+* [mtf_cuda_thread] - process 32 buffers per warp, on every algorithm step going 1 mtf position deeper and/or one input symbol further
+* [mtf_cuda_thread_by4] - the same, but process 4 mtf positions on every step
+* `mtf_cuda_Kbuffers<N>`, `mtf_cuda_thread<N>` and `mtf_cuda_thread_by4<N>` - mtf search depth limited to N, for use in multi-pass algorithm
 
 Further GPU optimizations:
 * global loads/stores (inbuf/outbuf)
@@ -60,9 +60,9 @@ especially on low-entropy data. Peter Fenwick discovered that average rank of BW
 meaning that ~80% of comparisons are wasted, in addition to duplicating operations performed by multiple lanes.
 
 The same 3 versions of parallelism can be exploited at ILP level:
-* multiple buffers are processed by [mtf_2buffers]
-* multiple input symbols are processed by [mtf_2symbols]
-* multiple mtf positions are processed by [mtf_thread_by4]
+* multiple buffers are processed by [mtf_cuda_2buffers]
+* multiple input symbols are processed by [mtf_cuda_2symbols]
+* multiple mtf positions are processed by [mtf_cuda_thread_by4]
 
 Moreover, we can combine multiple parallelisms at warp level (f.e. check 4 positions in 8 buffers by the single warp instruction)
 and/or simultaneously at ILP level. This creates a large space of possible combinations, which we can explore
@@ -76,9 +76,9 @@ This can make reasonable a multi-pass approach, f.e. first pass may find only ra
 second pass - ranks of 8..31, and last pass - all remaining ranks.
 
 This means that the first passes will have much lower shared memory usage, allowing them to run more warps per SM
-and reach 100% occupancy even with some memory-aggressive algo like [mtf_thread_by4],
+and reach 100% occupancy even with some memory-aggressive algo like [mtf_cuda_thread_by4],
 while the last pass process only a few remaining symbols, and can check 32 positions at each step without losing much efficiency
-with some simple algo like [mtf_scalar]. Isn't it beautiful?!
+with some simple algo like [mtf_cuda_scalar]. Isn't it beautiful?!
 
 The key point, of course, is how they can be combined? The low-rank (first pass) algorithm should save at each position
 where it was "overflowed", the symbol that was pushed out of its short MTF queue:
