@@ -241,6 +241,9 @@ int bsc_st567_encode_cuda(unsigned char * T, unsigned char * T_device, int n, in
                 // Run sorting operation
                 status = cub::DeviceRadixSort::SortKeys(d_temp_storage, temp_storage_bytes, d_keys, n, begin_bit, end_bit);
 
+                // Release temporary storage
+                cudaFree(d_temp_storage);
+
                 // Extract the result
                 K_device_sorted = d_keys.Current();
             }
@@ -321,6 +324,9 @@ int bsc_st8_encode_cuda(unsigned char * T, unsigned char * T_device, int n, int 
 
                     // Run sorting operation
                     status = cub::DeviceRadixSort::SortPairs(d_temp_storage, temp_storage_bytes, d_keys, d_values, n);
+
+                    // Release temporary storage
+                    cudaFree(d_temp_storage);
 
                     // Extract the result
                     K_device_sorted = d_keys.Current();
