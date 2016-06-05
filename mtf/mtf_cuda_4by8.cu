@@ -3,7 +3,7 @@
 // Part of https://github.com/Bulat-Ziganshin/Compression-Research
 
 template <int CHUNK,  int NUM_THREADS,  int NUM_BUFFERS,  typename MTF_WORD = byte,  int MTF_SYMBOLS = ALPHABET_SIZE>
-__global__ void mtf_4by8 (const byte* __restrict__ inbuf,  byte* __restrict__ outbuf,  int inbytes,  int chunk)
+__global__ void mtf_cuda_4by8 (const byte* __restrict__ inbuf,  byte* __restrict__ outbuf,  int inbytes,  int chunk)
 {
     // NUM_BUFFERS   - how many buffers processed by each thread block
     // NUM_POSITIONS - how many positions in each buffer are checked simultaneously (i.e. by the single warp)

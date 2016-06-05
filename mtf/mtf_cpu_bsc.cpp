@@ -32,7 +32,7 @@ See also the bsc and libbsc web site:
 
 --*/
 
-unsigned char * qlfc (const unsigned char * input, unsigned char * buffer, int n, unsigned char * MTFTable)
+unsigned char * mtf_cpu_bsc (const unsigned char * input, unsigned char * buffer, int n, unsigned char * MTFTable)
 {
     unsigned char Flag[ALPHABET_SIZE];
 

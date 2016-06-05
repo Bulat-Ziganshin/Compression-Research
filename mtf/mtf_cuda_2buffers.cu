@@ -3,7 +3,7 @@
 // Part of https://github.com/Bulat-Ziganshin/Compression-Research
 
 template <int CHUNK,  int NUM_WARPS,  typename MTF_WORD = unsigned>
-__global__ void mtf_2buffers (const byte* __restrict__ inbuf,  byte* __restrict__ outbuf,  int inbytes,  int chunk)
+__global__ void mtf_cuda_2buffers (const byte* __restrict__ inbuf,  byte* __restrict__ outbuf,  int inbytes,  int chunk)
 {
     const int idx = (blockIdx.x * blockDim.x + threadIdx.x) / WARP_SIZE;
     const int tid = (blockIdx.x * blockDim.x + threadIdx.x) % WARP_SIZE;

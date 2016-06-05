@@ -3,7 +3,7 @@
 // Part of https://github.com/Bulat-Ziganshin/Compression-Research
 
 template <int CHUNK,  int NUM_THREADS = WARP_SIZE,  int MTF_SYMBOLS = ALPHABET_SIZE>
-__global__ void mtf_thread (const byte* inbuf,  byte* outbuf,  int inbytes,  int chunk)
+__global__ void mtf_cuda_thread_by4 (const byte* inbuf,  byte* outbuf,  int inbytes,  int chunk)
 {
     const int idx = blockIdx.x * blockDim.x + threadIdx.x;
     const int tid = threadIdx.x;
@@ -23,24 +23,32 @@ __global__ void mtf_thread (const byte* inbuf,  byte* outbuf,  int inbytes,  int
 
 
     int i = 0,  k = 0;
-    auto old  = mtf[0];
+    auto mtf_k = mtf;
+    auto old = cur;
 
     for(;;)
     {
-        if (cur != old  &&  !(MTF_SYMBOLS < ALPHABET_SIZE  &&  k >= MTF_SYMBOLS-1)) {
-            k++;
-            auto index = (k&252)*NUM_THREADS+(k&3);
-            auto next = mtf[index];
-            mtf[index] = old;
+        #pragma unroll
+        for (int x=0; x<4; x++)
+        {
+            auto next = mtf_k[x];
+            mtf_k[x] = old;
             old = next;
-        } else {
-            mtf[0] = cur;
-            *outbuf++ = k;
-            if (++i >= CHUNK)  return;
-            old = cur;
-            cur = next;
-            next = *inbuf++;
-            k = 0;
+            if (cur==old)  goto found;
+            k++;
         }
+        mtf_k += 4*NUM_THREADS;
+        if (MTF_SYMBOLS == ALPHABET_SIZE  ||  k < MTF_SYMBOLS)
+            continue;
+
+found:
+        *outbuf++ = k;
+        if (++i >= CHUNK)  return;
+
+        old = cur = next;
+        next = *inbuf++;
+
+        mtf_k = mtf;
+        k = 0;
     }
 }

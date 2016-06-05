@@ -37,16 +37,16 @@ const int CHUNK = 4*1024;
 #include "st/st.cpp"               // BSC CPU Sort Transform implementation
 #include "st/st.cu"                // BSC GPU Sort Transform implementation
 
-#include "mtf/qlfc-cpu.cpp"
-#include "mtf/mtf_shelwien.cpp"
+#include "mtf/mtf_cpu_bsc.cpp"
+#include "mtf/mtf_cpu_shelwien.cpp"
 #ifdef LIBBSC_CUDA_SUPPORT
-#include "mtf/mtf_scalar.cu"
-#include "mtf/mtf_2symbols.cu"
-#include "mtf/mtf_2buffers.cu"
-#include "mtf/mtf_2buffers_depth32.cu"
-#include "mtf/mtf_4by8.cu"
-#include "mtf/mtf_thread.cu"
-#include "mtf/mtf_thread_by4.cu"
+#include "mtf/mtf_cuda_scalar.cu"
+#include "mtf/mtf_cuda_2symbols.cu"
+#include "mtf/mtf_cuda_2buffers.cu"
+#include "mtf/mtf_cuda_2buffers_depth32.cu"
+#include "mtf/mtf_cuda_4by8.cu"
+#include "mtf/mtf_cuda_thread.cu"
+#include "mtf/mtf_cuda_thread_by4.cu"
 #endif // LIBBSC_CUDA_SUPPORT
 
 // In-place RLE transformation (run lengths are dropped!)
@@ -230,10 +230,10 @@ int main (int argc, char **argv)
 
 
         if (apply_mtf  &&  (1 == num[MTF]  ||  num[MTF] < 0)) {
-            name[MTF][1] = "mtf-bsc (1 thread)";
+            name[MTF][1] = "mtf_cpu_bsc";
             StartTimer();
                 unsigned char MTFTable[ALPHABET_SIZE];
-                ptr = qlfc (inbuf, outbuf, inbytes, MTFTable);
+                ptr = mtf_cpu_bsc (inbuf, outbuf, inbytes, MTFTable);
                 outbytes = outbuf+inbytes - ptr;
             duration[MTF][1] += GetTimer();
         }
@@ -249,15 +249,15 @@ int main (int argc, char **argv)
         stage = MTF,  insize[stage] += inbytes,  ret_outsize = false,  _num = 2;
         if (apply_mtf  &&  (1 != num[MTF]))
         {
-            cpu_time_run ("mtf_shelwien (1 thread)", [&] {mtf_shelwien (inbuf, outbuf, inbytes);  return inbytes;});
+            cpu_time_run ("mtf_cpu_shelwien", [&] {mtf_cpu_shelwien (inbuf, outbuf, inbytes);  return inbytes;});
 
 #ifdef _OPENMP
-            cpu_time_run ("mtf_shelwien (OpenMP)", [&] {
+            cpu_time_run ("mtf_cpu_shelwien (OpenMP)", [&] {
                 #pragma omp parallel
                 #pragma omp for schedule(dynamic, 1)
                 for (int64_t base=0; base<inbytes; base+=1 MB)
                 {
-                    mtf_shelwien (inbuf+base, outbuf+base, mymin(inbytes-base,1 MB));
+                    mtf_cpu_shelwien (inbuf+base, outbuf+base, mymin(inbytes-base,1 MB));
                 }
                 return inbytes;
             });
@@ -294,34 +294,34 @@ int main (int argc, char **argv)
 
 {
             const int NUM_WARPS = 4;
-            time_run ("mtf_scalar        ", [&] {mtf_scalar    <CHUNK,NUM_WARPS>       <<<(inbytes-1)/(CHUNK*NUM_WARPS)+1,   NUM_WARPS*WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
-            time_run ("mtf_2symbols      ", [&] {mtf_2symbols  <CHUNK,NUM_WARPS>       <<<(inbytes-1)/(CHUNK*NUM_WARPS)+1,   NUM_WARPS*WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
-            time_run ("mtf_2buffers      ", [&] {mtf_2buffers  <CHUNK,NUM_WARPS>       <<<(inbytes-1)/(CHUNK*NUM_WARPS*2)+1, NUM_WARPS*WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
-            time_run ("mtf_2buffers<32>  ", [&] {mtf_2buffers_depth32 <CHUNK,NUM_WARPS><<<(inbytes-1)/(CHUNK*NUM_WARPS*2)+1, NUM_WARPS*WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
-            time_run ("mtf_3buffers<32>  ", [&] {mtf_2buffers_depth32 <CHUNK,NUM_WARPS,3><<<(inbytes-1)/(CHUNK*NUM_WARPS*3)+1, NUM_WARPS*WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
-            time_run ("mtf_4buffers<32>  ", [&] {mtf_2buffers_depth32 <CHUNK,NUM_WARPS,4><<<(inbytes-1)/(CHUNK*NUM_WARPS*4)+1, NUM_WARPS*WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
+            time_run ("mtf_cuda_scalar        ", [&] {mtf_cuda_scalar    <CHUNK,NUM_WARPS>       <<<(inbytes-1)/(CHUNK*NUM_WARPS)+1,   NUM_WARPS*WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
+            time_run ("mtf_cuda_2symbols      ", [&] {mtf_cuda_2symbols  <CHUNK,NUM_WARPS>       <<<(inbytes-1)/(CHUNK*NUM_WARPS)+1,   NUM_WARPS*WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
+            time_run ("mtf_cuda_2buffers      ", [&] {mtf_cuda_2buffers  <CHUNK,NUM_WARPS>       <<<(inbytes-1)/(CHUNK*NUM_WARPS*2)+1, NUM_WARPS*WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
+            time_run ("mtf_cuda_2buffers<32>  ", [&] {mtf_cuda_2buffers_depth32 <CHUNK,NUM_WARPS><<<(inbytes-1)/(CHUNK*NUM_WARPS*2)+1, NUM_WARPS*WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
+            time_run ("mtf_cuda_3buffers<32>  ", [&] {mtf_cuda_2buffers_depth32 <CHUNK,NUM_WARPS,3><<<(inbytes-1)/(CHUNK*NUM_WARPS*3)+1, NUM_WARPS*WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
+            time_run ("mtf_cuda_4buffers<32>  ", [&] {mtf_cuda_2buffers_depth32 <CHUNK,NUM_WARPS,4><<<(inbytes-1)/(CHUNK*NUM_WARPS*4)+1, NUM_WARPS*WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
 }
 {
             const int NUM_THREADS = 8*WARP_SIZE,  NUM_BUFFERS = NUM_THREADS/8;
-            time_run ("mtf_4by8          ", [&]{mtf_4by8<CHUNK,NUM_THREADS,NUM_BUFFERS><<<(inbytes-1)/(CHUNK*NUM_BUFFERS)+1,         NUM_THREADS>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
+            time_run ("mtf_cuda_4by8          ", [&]{mtf_cuda_4by8<CHUNK,NUM_THREADS,NUM_BUFFERS><<<(inbytes-1)/(CHUNK*NUM_BUFFERS)+1,         NUM_THREADS>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
 }
 {
             const int NUM_THREADS = 4*WARP_SIZE,  NUM_BUFFERS = NUM_THREADS/4;
-            time_run ("mtf_8by4          ", [&]{mtf_4by8<CHUNK,NUM_THREADS,NUM_BUFFERS><<<(inbytes-1)/(CHUNK*NUM_BUFFERS)+1,         NUM_THREADS>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
+            time_run ("mtf_cuda_8by4          ", [&]{mtf_cuda_4by8<CHUNK,NUM_THREADS,NUM_BUFFERS><<<(inbytes-1)/(CHUNK*NUM_BUFFERS)+1,         NUM_THREADS>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
 }
-            time_run ("mtf_thread        ", [&] {mtf_thread    <CHUNK>                 <<<(inbytes-1)/(CHUNK*WARP_SIZE)+1,             WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
-            time_run ("mtf_thread_by4    ", [&] {mtf_thread_by4<CHUNK>                 <<<(inbytes-1)/(CHUNK*WARP_SIZE)+1,             WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
+            time_run ("mtf_cuda_thread        ", [&] {mtf_cuda_thread    <CHUNK>                 <<<(inbytes-1)/(CHUNK*WARP_SIZE)+1,             WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
+            time_run ("mtf_cuda_thread_by4    ", [&] {mtf_cuda_thread_by4<CHUNK>                 <<<(inbytes-1)/(CHUNK*WARP_SIZE)+1,             WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
 
             const int NUM_THREADS = 1*WARP_SIZE;
-            time_run ("mtf_thread<8>     ", [&] {mtf_thread    <CHUNK,NUM_THREADS,8>   <<<(inbytes-1)/(CHUNK*NUM_THREADS)+1,         NUM_THREADS>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
-            time_run ("mtf_thread<16>    ", [&] {mtf_thread    <CHUNK,NUM_THREADS,16>  <<<(inbytes-1)/(CHUNK*NUM_THREADS)+1,         NUM_THREADS>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
-            time_run ("mtf_thread<32>    ", [&] {mtf_thread    <CHUNK,NUM_THREADS,32>  <<<(inbytes-1)/(CHUNK*NUM_THREADS)+1,         NUM_THREADS>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
-            time_run ("mtf_thread<64>    ", [&] {mtf_thread    <CHUNK,NUM_THREADS,64>  <<<(inbytes-1)/(CHUNK*NUM_THREADS)+1,         NUM_THREADS>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
+            time_run ("mtf_cuda_thread<8>     ", [&] {mtf_cuda_thread    <CHUNK,NUM_THREADS,8>   <<<(inbytes-1)/(CHUNK*NUM_THREADS)+1,         NUM_THREADS>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
+            time_run ("mtf_cuda_thread<16>    ", [&] {mtf_cuda_thread    <CHUNK,NUM_THREADS,16>  <<<(inbytes-1)/(CHUNK*NUM_THREADS)+1,         NUM_THREADS>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
+            time_run ("mtf_cuda_thread<32>    ", [&] {mtf_cuda_thread    <CHUNK,NUM_THREADS,32>  <<<(inbytes-1)/(CHUNK*NUM_THREADS)+1,         NUM_THREADS>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
+            time_run ("mtf_cuda_thread<64>    ", [&] {mtf_cuda_thread    <CHUNK,NUM_THREADS,64>  <<<(inbytes-1)/(CHUNK*NUM_THREADS)+1,         NUM_THREADS>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
 
-            time_run ("mtf_thread_by4<8> ", [&] {mtf_thread_by4<CHUNK,NUM_THREADS,8>   <<<(inbytes-1)/(CHUNK*NUM_THREADS)+1,         NUM_THREADS>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
-            time_run ("mtf_thread_by4<16>", [&] {mtf_thread_by4<CHUNK,NUM_THREADS,16>  <<<(inbytes-1)/(CHUNK*NUM_THREADS)+1,         NUM_THREADS>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
-            time_run ("mtf_thread_by4<32>", [&] {mtf_thread_by4<CHUNK,NUM_THREADS,32>  <<<(inbytes-1)/(CHUNK*NUM_THREADS)+1,         NUM_THREADS>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
-            time_run ("mtf_thread_by4<64>", [&] {mtf_thread_by4<CHUNK,NUM_THREADS,64>  <<<(inbytes-1)/(CHUNK*NUM_THREADS)+1,         NUM_THREADS>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
+            time_run ("mtf_cuda_thread_by4<8> ", [&] {mtf_cuda_thread_by4<CHUNK,NUM_THREADS,8>   <<<(inbytes-1)/(CHUNK*NUM_THREADS)+1,         NUM_THREADS>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
+            time_run ("mtf_cuda_thread_by4<16>", [&] {mtf_cuda_thread_by4<CHUNK,NUM_THREADS,16>  <<<(inbytes-1)/(CHUNK*NUM_THREADS)+1,         NUM_THREADS>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
+            time_run ("mtf_cuda_thread_by4<32>", [&] {mtf_cuda_thread_by4<CHUNK,NUM_THREADS,32>  <<<(inbytes-1)/(CHUNK*NUM_THREADS)+1,         NUM_THREADS>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
+            time_run ("mtf_cuda_thread_by4<64>", [&] {mtf_cuda_thread_by4<CHUNK,NUM_THREADS,64>  <<<(inbytes-1)/(CHUNK*NUM_THREADS)+1,         NUM_THREADS>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
 #endif // LIBBSC_CUDA_SUPPORT
         }
 

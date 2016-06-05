@@ -2,7 +2,7 @@
 /* Vectorizable MTF algo by Eugene Shelwien (original: gmtf_v2f.zip)
 */
 
-void mtf_shelwien (const byte* input, byte* output, int n)
+void mtf_cpu_shelwien (const byte* input, byte* output, int n)
 {
     typedef signed char ranktype;
     ranktype Rank[ALPHABET_SIZE];
