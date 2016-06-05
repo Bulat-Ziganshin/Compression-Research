@@ -51,9 +51,6 @@ preprocessor macro LIBBSC_SORT_TRANSFORM_SUPPORT at compile time.
 #include <memory.h>
 
 #include "st.h"
-
-#include "../lib/libbsc.h"
-
 #include "st.cuh"
 
 #define ALPHABET_SQRT_SIZE  (16)

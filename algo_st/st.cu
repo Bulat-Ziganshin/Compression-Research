@@ -54,14 +54,13 @@ preprocessor macro LIBBSC_SORT_TRANSFORM_SUPPORT at compile time.
 #include <stdlib.h>
 #include <memory.h>
 
-#include "st.cuh"
-
-#include "../lib/libbsc.h"
-
 #include <cuda_runtime_api.h>
 #include <device_functions.h>
 
 #include <cub/cub.cuh>
+
+#include "st.cuh"
+
 
 #ifdef LIBBSC_OPENMP
 

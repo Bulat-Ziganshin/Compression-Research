@@ -8,17 +8,17 @@
 #include <stdint.h>
 
 #ifdef LIBBSC_CUDA_SUPPORT
-#include <helper_functions.h>  // helper for shared functions common to CUDA Samples
-#include <helper_cuda.h>       // helper functions for CUDA error checking and initialization
+#include <helper_functions.h>          // helper for shared functions common to CUDA Samples
+#include <helper_cuda.h>               // helper functions for CUDA error checking and initialization
 #include <cuda_profiler_api.h >
 #include <cuda.h>
-#include "lib/cuda_common.h"       // my own cuda-specific helper functions
+#include "../util/cuda_common.h"       // my own cuda-specific helper functions
 #endif // LIBBSC_CUDA_SUPPORT
 
-#include "lib/wall_clock_timer.h"  // StartTimer() and GetTimer()
-#include "lib/cpu_common.h"        // my own helper functions
-#include "lib/libbsc.h"            // BSC common definitions
-#include "lib/lz4_common.h"        // Utility functions from LZ4
+#include "../util/wall_clock_timer.h"  // StartTimer() and GetTimer()
+#include "../util/cpu_common.h"        // my own helper functions
+#include "../util/libbsc.h"            // BSC common definitions
+#include "../util/lz4_common.h"        // Utility functions from LZ4
 
 const int WARP_SIZE = 32;
 typedef unsigned char byte;
@@ -28,25 +28,25 @@ const int DEFAULT_BUFSIZE = 128*1024*1024;
 const int CHUNK = 4*1024;
 #define SYNC_WARP __threadfence_block  /* alternatively, __syncthreads or, better, __threadfence_warp */
 
-#include "lzp/lzp-cpu-bsc.cpp"
-#include "lzp/lzp-cpu-bsc-mod.cpp"
-#include "lzp/lzp-cpu-rollhash.cpp"
+#include "../algo_lzp/lzp-cpu-bsc.cpp"
+#include "../algo_lzp/lzp-cpu-bsc-mod.cpp"
+#include "../algo_lzp/lzp-cpu-rollhash.cpp"
 
-#include "bwt/sais.c"              // OpenBWT implementation
+#include "../algo_bwt/sais.c"              // OpenBWT implementation
 #define LIBBSC_SORT_TRANSFORM_SUPPORT
-#include "st/st.cpp"               // BSC CPU Sort Transform implementation
-#include "st/st.cu"                // BSC GPU Sort Transform implementation
+#include "../algo_st/st.cpp"               // BSC CPU Sort Transform implementation
+#include "../algo_st/st.cu"                // BSC GPU Sort Transform implementation
 
-#include "mtf/mtf_cpu_bsc.cpp"
-#include "mtf/mtf_cpu_shelwien.cpp"
+#include "../algo_mtf/mtf_cpu_bsc.cpp"
+#include "../algo_mtf/mtf_cpu_shelwien.cpp"
 #ifdef LIBBSC_CUDA_SUPPORT
-#include "mtf/mtf_cuda_scalar.cu"
-#include "mtf/mtf_cuda_2symbols.cu"
-#include "mtf/mtf_cuda_2buffers.cu"
-#include "mtf/mtf_cuda_2buffers_depth32.cu"
-#include "mtf/mtf_cuda_4by8.cu"
-#include "mtf/mtf_cuda_thread.cu"
-#include "mtf/mtf_cuda_thread_by4.cu"
+#include "../algo_mtf/mtf_cuda_scalar.cu"
+#include "../algo_mtf/mtf_cuda_2symbols.cu"
+#include "../algo_mtf/mtf_cuda_2buffers.cu"
+#include "../algo_mtf/mtf_cuda_2buffers_depth32.cu"
+#include "../algo_mtf/mtf_cuda_4by8.cu"
+#include "../algo_mtf/mtf_cuda_thread.cu"
+#include "../algo_mtf/mtf_cuda_thread_by4.cu"
 #endif // LIBBSC_CUDA_SUPPORT
 
 // In-place RLE transformation (run lengths are dropped!)
