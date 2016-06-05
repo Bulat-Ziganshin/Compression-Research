@@ -4,7 +4,7 @@ set sources=bsl.cpp
 set options=-I%boost% %sources%
 set options_gcc4=%options% -O2 -s -static -std=c++1y -lstdc++ -pipe -lshell32 -lole32 -loleaut32 -luuid -Wno-write-strings
 :: -g -Wa,-adhlns=srep.lst  libacof64o.lib -fno-builtin  -fno-asynchronous-unwind-tables
-set options_ms=-MP -Gy -GR- -nologo -Fo%TEMP%\ -Fp%TEMP%\ %options% user32.lib shell32.lib ole32.lib advapi32.lib %* -link -LARGEADDRESSAWARE
+set options_ms=-openmp -MP -Gy -GR- -nologo -Fo%TEMP%\ -Fp%TEMP%\ %options% user32.lib shell32.lib ole32.lib advapi32.lib %* -link -LARGEADDRESSAWARE
 set options_ms_cl=-O2 -EHsc %options_ms%
 :: -Fa
 set options_ms_icl=-w -O3 -Qipo %options_ms%

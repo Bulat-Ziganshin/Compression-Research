@@ -1,3 +1,6 @@
+
+#define mymin(a,b)               ((a)<(b)? (a) : (b))
+
 // Parse boolean option with names for enabling & disabling, return true if option was recognized
 static inline bool ParseBool (char *argv, char *enable, char *disable, bool *option)
 {

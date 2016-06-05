@@ -178,6 +178,19 @@ int main (int argc, char **argv)
         if (apply_lzp) {
             lzp_cpu_bsc (inbuf, inbuf+inbytes, outbuf, outbuf+inbytes, lzpHashSize, lzpMinLen);   // "massage" data in order to provide equal conditions for the both following lzp routines
 
+            _num = 4;
+            cpu_time_run ("lzp_cpu_rollhash (OpenMP)", [&] {
+                #pragma omp parallel
+                #pragma omp for
+                for (int64_t base=0; base<inbytes; base+=8 MB)
+                {
+                    auto size = mymin(inbytes-base,8 MB);
+                    lzp_cpu_rollhash (inbuf+base, inbuf+base+size, outbuf+base, outbuf+base+size, lzpHashSize, lzpMinLen);
+                }
+                return inbytes;
+            });
+
+            _num = 1;
             cpu_time_run ("lzp_cpu_bsc     ", [&] {return lzp_cpu_bsc      (inbuf, inbuf+inbytes, outbuf, outbuf+inbytes, lzpHashSize, lzpMinLen);});
             cpu_time_run ("lzp_cpu_bsc_mod ", [&] {return lzp_cpu_bsc_mod  (inbuf, inbuf+inbytes, outbuf, outbuf+inbytes, lzpHashSize, lzpMinLen);});
             cpu_time_run ("lzp_cpu_rollhash", [&] {return lzp_cpu_rollhash (inbuf, inbuf+inbytes, outbuf, outbuf+inbytes, lzpHashSize, lzpMinLen);});
@@ -234,7 +247,18 @@ int main (int argc, char **argv)
         stage = MTF,  insize[stage] += inbytes,  ret_outsize = false,  _num = 2;
         if (apply_mtf  &&  (1 != num[MTF]))
         {
-            cpu_time_run ("mtf_shelwien      ", [&] {mtf_shelwien (inbuf, outbuf, inbytes);  return inbytes;});
+            cpu_time_run ("mtf_shelwien         ", [&] {mtf_shelwien (inbuf, outbuf, inbytes);  return inbytes;});
+
+            cpu_time_run ("mtf_shelwien (OpenMP)", [&] {
+                #pragma omp parallel
+                #pragma omp for
+                for (int64_t base=0; base<inbytes; base+=1 MB)
+                {
+                    mtf_shelwien (inbuf+base, outbuf+base, mymin(inbytes-base,1 MB));
+                }
+                return inbytes;
+            });
+
 
 #ifdef LIBBSC_CUDA_SUPPORT
             checkCudaErrors( cudaMemcpy (d_inbuf, inbuf, inbytes, cudaMemcpyHostToDevice));
