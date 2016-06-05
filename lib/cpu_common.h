@@ -1,5 +1,6 @@
 
 #define mymin(a,b)               ((a)<(b)? (a) : (b))
+#define mymax(a,b)               ((a)>(b)? (a) : (b))
 
 // Parse boolean option with names for enabling & disabling, return true if option was recognized
 static inline bool ParseBool (char *argv, char *enable, char *disable, bool *option)
@@ -47,4 +48,3 @@ static inline char* show3 (unsigned long long n, char *buf, const char *prepend=
     memcpy (p-strlen(prepend), prepend, strlen(prepend));
     return p-strlen(prepend);
 }
-

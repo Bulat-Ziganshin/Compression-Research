@@ -14,7 +14,9 @@ void mtf_shelwien (const byte* input, byte* output, int n)
     {
         auto c = *input++;
         auto d = Rank[c];
+#ifndef _MSC_BUILD  // MSC but not ICC
 #pragma unroll(16)
+#endif
         for (int j=0; j<ALPHABET_SIZE; j++)
             Rank[j] -= (Rank[j]<d)?ranktype(0xFF):ranktype(0);
         Rank[c] = -128;

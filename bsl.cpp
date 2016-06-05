@@ -178,10 +178,11 @@ int main (int argc, char **argv)
         if (apply_lzp) {
             lzp_cpu_bsc (inbuf, inbuf+inbytes, outbuf, outbuf+inbytes, lzpHashSize, lzpMinLen);   // "massage" data in order to provide equal conditions for the both following lzp routines
 
+#ifdef _OPENMP
             _num = 4;
             cpu_time_run ("lzp_cpu_rollhash (OpenMP)", [&] {
                 #pragma omp parallel
-                #pragma omp for
+                #pragma omp for schedule(dynamic, 1)
                 for (int64_t base=0; base<inbytes; base+=8 MB)
                 {
                     auto size = mymin(inbytes-base,8 MB);
@@ -189,6 +190,7 @@ int main (int argc, char **argv)
                 }
                 return inbytes;
             });
+#endif // _OPENMP
 
             _num = 1;
             cpu_time_run ("lzp_cpu_bsc     ", [&] {return lzp_cpu_bsc      (inbuf, inbuf+inbytes, outbuf, outbuf+inbytes, lzpHashSize, lzpMinLen);});
@@ -218,17 +220,17 @@ int main (int argc, char **argv)
                 cpu_time_run (cuda_st_name[i], [&] {memcpy (outbuf, inbuf, inbytes);  return bsc_st_encode_cuda (outbuf, inbytes, i, 0);});
 #endif // LIBBSC_CUDA_SUPPORT
 
-            char *cpu_st_name[] = {"st0-cpu ", "st1-cpu ", "st2-cpu ", "st3-cpu ", "st4-cpu ", "st5-cpu ", "st6-cpu ", "st7-cpu ", "st8-cpu "};
+            char *cpu_st_name[] = {"st0-cpu", "st1-cpu", "st2-cpu", "st3-cpu", "st4-cpu", "st5-cpu", "st6-cpu", "st7-cpu", "st8-cpu "};
             for (int i=3; i<=6; i++)
                 cpu_time_run (cpu_st_name[i], [&] {memcpy (outbuf, inbuf, inbytes);  return bsc_st_encode (outbuf, inbytes, i, 0);});
 
-            cpu_time_run ("OpenBWT ", [&] {return sais_bwt (inbuf, outbuf, bwt_tempbuf, inbytes);});
+            cpu_time_run ("OpenBWT", [&] {return sais_bwt (inbuf, outbuf, bwt_tempbuf, inbytes);});
             memcpy (inbuf, outbuf, inbytes);
         }
 
 
         if (apply_mtf  &&  (1 == num[MTF]  ||  num[MTF] < 0)) {
-            name[MTF][1] = "cpu (1 thread)    ";
+            name[MTF][1] = "mtf-bsc (1 thread)";
             StartTimer();
                 unsigned char MTFTable[ALPHABET_SIZE];
                 ptr = qlfc (inbuf, outbuf, inbytes, MTFTable);
@@ -247,17 +249,19 @@ int main (int argc, char **argv)
         stage = MTF,  insize[stage] += inbytes,  ret_outsize = false,  _num = 2;
         if (apply_mtf  &&  (1 != num[MTF]))
         {
-            cpu_time_run ("mtf_shelwien         ", [&] {mtf_shelwien (inbuf, outbuf, inbytes);  return inbytes;});
+            cpu_time_run ("mtf_shelwien (1 thread)", [&] {mtf_shelwien (inbuf, outbuf, inbytes);  return inbytes;});
 
+#ifdef _OPENMP
             cpu_time_run ("mtf_shelwien (OpenMP)", [&] {
                 #pragma omp parallel
-                #pragma omp for
+                #pragma omp for schedule(dynamic, 1)
                 for (int64_t base=0; base<inbytes; base+=1 MB)
                 {
                     mtf_shelwien (inbuf+base, outbuf+base, mymin(inbytes-base,1 MB));
                 }
                 return inbytes;
             });
+#endif // _OPENMP
 
 
 #ifdef LIBBSC_CUDA_SUPPORT
@@ -327,11 +331,11 @@ int main (int argc, char **argv)
 
 
     // The Analysis stage now is finished, we are going to display the collected data in fancy way
-    auto print_stage_stats = [&] (int _num, char *name, double _insize, double outsize, double duration) {
+    auto print_stage_stats = [&] (int _num, int name_width, char *name, double _insize, double outsize, double duration) {
         char extra[99], temp1[99], temp2[99];
         if (_num >= 0)
             printf ("[%2d] ", _num);
-        printf("%s: ", name);
+        printf("%-*s: ", name_width, name);
         if (outsize  &&  outsize != _insize) {
             sprintf (extra, " / %.2lf%%", outsize*100.0/insize[0]);
             printf ("%s => %s (%.2lf%%%s)",  show3(_insize,temp1),  show3(outsize,temp2),  outsize*100.0/_insize,  (insize[0]!=_insize? extra:""));
@@ -351,9 +355,15 @@ int main (int argc, char **argv)
     };
 
     for (int stage=0; stage<STAGES; stage++) {
+        int name_width = 0;
+        for (int i=0; i<100; i++) {
+            if (duration[stage][i] && name[stage][i]!=0) {
+                name_width = mymax(name_width, strlen(name[stage][i]));    // first, compute the width for the name column
+            }
+        }
         for (int i=0; i<100; i++) {
             if (duration[stage][i]) {
-                print_stage_stats (stage==RLE?-1:i, name[stage][i], insize[stage], size[stage][i], stage==RLE?0:duration[stage][i]);
+                print_stage_stats (stage==RLE?-1:i, name_width, name[stage][i], insize[stage], size[stage][i], stage==RLE?0:duration[stage][i]);
             }
         }
         // printf("\n");
