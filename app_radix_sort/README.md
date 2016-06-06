@@ -2,54 +2,55 @@ Benchmark CUB radix sort with various parameters.
 ```
 Usage: radix_sort [N] [full]
   where N is the number [of millions] of elements to test
-        "full" enables all benchmarks
+        "full" enables benchmarking of 8/16-bit elements which on my GPU shows the same speed as 32-bit ones
 ```
 
-### Current results with CUDA 7.5 and CUB 1.5.2
+### Current x86 results with CUDA 7.5 and CUB 1.5.2
+
+(x64 version is a few percents slower due to need to manage larger pointers)
+
 ```
 GeForce GTX 560 Ti, CC 2.1.  VRAM 1.0 GB, 2004 MHz * 256-bit = 128 GB/s.  8 SM * 48 alu * 1800 MHz * 2 = 1.38 TFLOPS
 Sorting 16M elements:
-1/4+0: Throughput = 3487.920 MElements/s, Time = 4.810 ms
-2/4+0: Throughput = 1745.233 MElements/s, Time = 9.613 ms
-3/4+0: Throughput = 1200.088 MElements/s, Time = 13.980 ms
-4/4+0: Throughput =  901.352 MElements/s, Time = 18.613 ms
+1/4  : Throughput = 3630.096 MElements/s, Time = 4.622 ms
+2/4  : Throughput = 1807.721 MElements/s, Time = 9.281 ms
+3/4  : Throughput = 1325.778 MElements/s, Time = 12.655 ms
+4/4  : Throughput =  941.682 MElements/s, Time = 17.816 ms
 
-1/8+0: Throughput = 1974.093 MElements/s, Time = 8.499 ms
-2/8+0: Throughput =  987.452 MElements/s, Time = 16.990 ms
-3/8+0: Throughput =  713.954 MElements/s, Time = 23.499 ms
-4/8+0: Throughput =  512.924 MElements/s, Time = 32.709 ms
-5/8+0: Throughput =  432.296 MElements/s, Time = 38.810 ms
-6/8+0: Throughput =  353.732 MElements/s, Time = 47.429 ms
-7/8+0: Throughput =  298.917 MElements/s, Time = 56.127 ms
-8/8+0: Throughput =  266.235 MElements/s, Time = 63.017 ms
+1/8  : Throughput = 2033.248 MElements/s, Time = 8.251 ms
+2/8  : Throughput = 1013.995 MElements/s, Time = 16.546 ms
+3/8  : Throughput =  729.117 MElements/s, Time = 23.010 ms
+4/8  : Throughput =  525.525 MElements/s, Time = 31.925 ms
+5/8  : Throughput =  442.132 MElements/s, Time = 37.946 ms
+6/8  : Throughput =  361.177 MElements/s, Time = 46.452 ms
+7/8  : Throughput =  305.574 MElements/s, Time = 54.904 ms
+8/8  : Throughput =  271.861 MElements/s, Time = 61.712 ms
 
-1/4+4: Throughput = 2354.350 MElements/s, Time = 7.126 ms
-2/4+4: Throughput = 1174.615 MElements/s, Time = 14.283 ms
-3/4+4: Throughput =  864.405 MElements/s, Time = 19.409 ms
-4/4+4: Throughput =  603.807 MElements/s, Time = 27.786 ms
+1/4+4: Throughput = 2345.812 MElements/s, Time = 7.152 ms
+2/4+4: Throughput = 1173.353 MElements/s, Time = 14.299 ms
+3/4+4: Throughput =  874.986 MElements/s, Time = 19.174 ms
+4/4+4: Throughput =  609.576 MElements/s, Time = 27.523 ms
 
-1/4+8: Throughput = 1678.648 MElements/s, Time = 9.994 ms
-2/4+8: Throughput =  832.958 MElements/s, Time = 20.142 ms
-3/4+8: Throughput =  571.701 MElements/s, Time = 29.346 ms
-4/4+8: Throughput =  419.946 MElements/s, Time = 39.951 ms
+1/4+8: Throughput = 1737.907 MElements/s, Time = 9.654 ms
+2/4+8: Throughput =  869.434 MElements/s, Time = 19.297 ms
+3/4+8: Throughput =  577.189 MElements/s, Time = 29.067 ms
+4/4+8: Throughput =  428.730 MElements/s, Time = 39.132 ms
 
-1/8+4: Throughput = 1446.440 MElements/s, Time = 11.599 ms
-2/8+4: Throughput =  723.684 MElements/s, Time = 23.183 ms
-3/8+4: Throughput =  501.736 MElements/s, Time = 33.438 ms
-4/8+4: Throughput =  368.421 MElements/s, Time = 45.538 ms
-5/8+4: Throughput =  305.185 MElements/s, Time = 54.974 ms
-6/8+4: Throughput =  251.235 MElements/s, Time = 66.779 ms
-7/8+4: Throughput =  214.403 MElements/s, Time = 78.251 ms
-8/8+4: Throughput =  189.606 MElements/s, Time = 88.485 ms
+1/8+4: Throughput = 1483.201 MElements/s, Time = 11.311 ms
+2/8+4: Throughput =  743.381 MElements/s, Time = 22.569 ms
+3/8+4: Throughput =  517.357 MElements/s, Time = 32.429 ms
+4/8+4: Throughput =  378.284 MElements/s, Time = 44.351 ms
+5/8+4: Throughput =  312.690 MElements/s, Time = 53.654 ms
+6/8+4: Throughput =  258.132 MElements/s, Time = 64.995 ms
+7/8+4: Throughput =  220.360 MElements/s, Time = 76.135 ms
+8/8+4: Throughput =  194.696 MElements/s, Time = 86.171 ms
 
-1/8+8: Throughput = 1250.835 MElements/s, Time = 13.413 ms
-2/8+8: Throughput =  623.788 MElements/s, Time = 26.896 ms
-3/8+8: Throughput =  416.163 MElements/s, Time = 40.314 ms
-4/8+8: Throughput =  310.980 MElements/s, Time = 53.950 ms
-5/8+8: Throughput =  253.448 MElements/s, Time = 66.196 ms
-6/8+8: Throughput =  210.652 MElements/s, Time = 79.644 ms
-7/8+8: Throughput =  181.395 MElements/s, Time = 92.490 ms
-8/8+8: Throughput =  159.199 MElements/s, Time = 105.385 ms
-
-Elapsed time = 20.352 seconds
+1/8+8: Throughput = 1261.976 MElements/s, Time = 13.294 ms
+2/8+8: Throughput =  630.888 MElements/s, Time = 26.593 ms
+3/8+8: Throughput =  421.866 MElements/s, Time = 39.769 ms
+4/8+8: Throughput =  315.385 MElements/s, Time = 53.196 ms
+5/8+8: Throughput =  256.326 MElements/s, Time = 65.453 ms
+6/8+8: Throughput =  213.615 MElements/s, Time = 78.539 ms
+7/8+8: Throughput =  183.989 MElements/s, Time = 91.186 ms
+8/8+8: Throughput =  161.552 MElements/s, Time = 103.851 ms
 ```

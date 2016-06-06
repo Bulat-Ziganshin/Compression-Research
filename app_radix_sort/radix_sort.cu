@@ -18,7 +18,6 @@
 #include "../util/wall_clock_timer.h"  // StartTimer() and GetTimer()
 #include "../util/cpu_common.h"        // my own helper functions
 #include "../util/libbsc.h"            // BSC common definitions
-#include "../util/lz4_common.h"        // Utility functions from LZ4
 
 
 // Parameters
@@ -151,7 +150,7 @@ int main (int argc, char **argv)
       (printf ("radix_sort: benchmark CUB Radix Sort with various parameters.  Part of https://github.com/Bulat-Ziganshin/Compression-Research\n"
                "Usage: radix_sort [N] [full]\n"
                "  where N is the number [of millions] of elements to test\n"
-               "        \"full\" enables all benchmarks\n"
+               "        \"full\" enables benchmarking of 8/16-bit elements which on my GPU shows the same speed as 32-bit ones\n"
               ),
        exit(1), 1);
     }
@@ -169,8 +168,10 @@ int main (int argc, char **argv)
     checkCudaErrors( cudaEventCreate(&stop));
 
     auto print = [&] (int bytes, int keysize, int valsize, double totalTime) {
-        printf("%d/%d+%d: Throughput =%9.3lf MElements/s, Time = %.3lf ms\n",
-               bytes, keysize, valsize, 1e-6 * numElements / totalTime, totalTime*1000);
+        char valsize_str[100];
+        sprintf(valsize_str, (valsize? "+%d": "  "), valsize);
+        printf("%d/%d%s: Throughput =%9.3lf MElements/s, Time = %.3lf ms\n",
+               bytes, keysize, valsize_str, 1e-6 * numElements / totalTime, totalTime*1000);
     };
 
     printf("Sorting %dM elements:\n", numElements>>20);
@@ -179,10 +180,10 @@ int main (int argc, char **argv)
                 {for(int i=1;i<=4;i++)  print (i, 4, 0, key_sort <uint32_t> (i, numElements, d_array, start, stop));  printf("\n");}
                 {for(int i=1;i<=8;i++)  print (i, 8, 0, key_sort <uint64_t> (i, numElements, d_array, start, stop));  printf("\n");}
 
-    if (full)   {for(int i=1;i<=1;i++)  print (i, 1, 1, keyval_sort <uint8_t,uint8_t>  (i, numElements, d_array, start, stop));  printf("\n");}
-    if (full)   {for(int i=1;i<=1;i++)  print (i, 1, 2, keyval_sort <uint8_t,uint16_t> (i, numElements, d_array, start, stop));  printf("\n");}
-    if (full)   {for(int i=1;i<=1;i++)  print (i, 1, 4, keyval_sort <uint8_t,uint32_t> (i, numElements, d_array, start, stop));  printf("\n");}
-    if (full)   {for(int i=1;i<=1;i++)  print (i, 1, 8, keyval_sort <uint8_t,uint64_t> (i, numElements, d_array, start, stop));  printf("\n");}
+    if (full)   {for(int i=1;i<=1;i++)  print (i, 1, 1, keyval_sort <uint8_t,uint8_t>   (i, numElements, d_array, start, stop));  printf("\n");}
+    if (full)   {for(int i=1;i<=1;i++)  print (i, 1, 2, keyval_sort <uint8_t,uint16_t>  (i, numElements, d_array, start, stop));  printf("\n");}
+    if (full)   {for(int i=1;i<=1;i++)  print (i, 1, 4, keyval_sort <uint8_t,uint32_t>  (i, numElements, d_array, start, stop));  printf("\n");}
+    if (full)   {for(int i=1;i<=1;i++)  print (i, 1, 8, keyval_sort <uint8_t,uint64_t>  (i, numElements, d_array, start, stop));  printf("\n");}
 
     if (full)   {for(int i=1;i<=2;i++)  print (i, 2, 1, keyval_sort <uint16_t,uint8_t>  (i, numElements, d_array, start, stop));  printf("\n");}
     if (full)   {for(int i=1;i<=2;i++)  print (i, 2, 2, keyval_sort <uint16_t,uint16_t> (i, numElements, d_array, start, stop));  printf("\n");}
