@@ -21,6 +21,8 @@
 #include "../util/lz4_common.h"        // Utility functions from LZ4
 
 
+// Parameters
+const int defaultNumElements = 32*1024*1024;
 double MIN_BENCH_TIME = 0.5;  // mimimum seconds to run each bechmark
 
 
@@ -90,14 +92,20 @@ double generic_sort (int SORT_BYTES, size_t n, void *d_array0, cudaEvent_t &star
 }
 
 
-typedef unsigned char byte;
-
-// Parameters
-const int numElements = 32*1024*1024;
-
 int main (int argc, char **argv)
 {
-    printf ("radix_sort: benchmark CUB Radix Sort with various parameters.  Part of https://github.com/Bulat-Ziganshin/Compression-Research\n");
+    int numElements = defaultNumElements;
+
+    if (argc > 1) {
+        char* endptr;
+        numElements = strtol (argv[1], &endptr, 10) << 20;
+        if (argc!=2 || *endptr) {
+            printf ("radix_sort: benchmark CUB Radix Sort with various parameters.  Part of https://github.com/Bulat-Ziganshin/Compression-Research\n");
+            printf ("  Usage: radix_sort [N]  where N is the number of millions of elements to test\n");
+            return 1;
+        }
+    }
+
     DisplayCudaDevice();
 
     void* d_array;
@@ -115,4 +123,5 @@ int main (int argc, char **argv)
     printf("Sorting %dM elements:\n", numElements>>20);
     for(int i=1;i<=4;i++)  print (i, 4, generic_sort <uint32_t> (i, numElements, d_array, start, stop));  printf("\n");
     for(int i=1;i<=8;i++)  print (i, 8, generic_sort <uint64_t> (i, numElements, d_array, start, stop));
+    return 0;
 }
