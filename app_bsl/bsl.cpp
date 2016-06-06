@@ -15,6 +15,11 @@
 #include "../util/cuda_common.h"       // my own cuda-specific helper functions
 #endif // LIBBSC_CUDA_SUPPORT
 
+#ifdef _OPENMP
+#include <omp.h>
+#define LIBBSC_OPENMP
+#endif // _OPENMP
+
 #include "../util/wall_clock_timer.h"  // StartTimer() and GetTimer()
 #include "../util/cpu_common.h"        // my own helper functions
 #include "../util/libbsc.h"            // BSC common definitions
@@ -229,6 +234,9 @@ int main (int argc, char **argv)
             unsigned char   num_indexes;
             cpu_time_run ("OpenBWT",             [&] {return sais_bwt (inbuf, outbuf, bwt_tempbuf, inbytes);});
             cpu_time_run ("divsufsort",          [&] {return divbwt(inbuf, outbuf, bwt_tempbuf, inbytes, &num_indexes, indexes, 0);});
+#ifdef _OPENMP
+            cpu_time_run ("divsufsort (OpenMP)", [&] {return divbwt(inbuf, outbuf, bwt_tempbuf, inbytes, &num_indexes, indexes, 1);});
+#endif // _OPENMP
 
             memcpy (inbuf, outbuf, inbytes);
         }
