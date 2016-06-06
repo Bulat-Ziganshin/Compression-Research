@@ -23,7 +23,10 @@ template <typename T>
 static inline bool ParseInt (char *argv, char *prefix, T *option)
 {
     if (memcmp (argv, prefix, strlen(prefix)))  return false;
-    *option  =  atoll (argv + strlen(prefix));
+    char* endptr;
+    auto res = strtoll (argv + strlen(prefix), &endptr, 10);
+    if (*endptr)  return false;
+    *option  =  T(res);
     return true;
 }
 

@@ -145,15 +145,19 @@ int main (int argc, char **argv)
     bool full = false;
     int numElements = defaultNumElements;
 
-    if (argc > 1) {
-        char* endptr;
-        numElements = strtol (argv[1], &endptr, 10) << 20;
-        if (argc!=2 || *endptr) {
-            printf ("radix_sort: benchmark CUB Radix Sort with various parameters.  Part of https://github.com/Bulat-Ziganshin/Compression-Research\n");
-            printf ("  Usage: radix_sort [N]  where N is the number of millions of elements to test\n");
-            return 1;
-        }
+    while (*++argv) {
+      ParseBool (*argv, "full", "", &full) ||
+      ParseInt  (*argv, "",         &numElements) ||
+      (printf ("radix_sort: benchmark CUB Radix Sort with various parameters.  Part of https://github.com/Bulat-Ziganshin/Compression-Research\n"
+               "Usage: radix_sort [N] [full]\n"
+               "  where N is the number [of millions] of elements to test\n"
+               "        \"full\" enables all benchmarks\n"
+              ),
+       exit(1), 1);
     }
+
+    if (numElements < 16384)
+        numElements <<= 20;
 
     DisplayCudaDevice();
 
@@ -193,6 +197,6 @@ int main (int argc, char **argv)
     if (full)   {for(int i=1;i<=8;i++)  print (i, 8, 1, keyval_sort <uint64_t,uint8_t>  (i, numElements, d_array, start, stop));  printf("\n");}
     if (full)   {for(int i=1;i<=8;i++)  print (i, 8, 2, keyval_sort <uint64_t,uint16_t> (i, numElements, d_array, start, stop));  printf("\n");}
                 {for(int i=1;i<=8;i++)  print (i, 8, 4, keyval_sort <uint64_t,uint32_t> (i, numElements, d_array, start, stop));  printf("\n");}
-                {for(int i=1;i<=8;i++)  print (i, 8, 8, keyval_sort <uint64_t,uint64_t> (i, numElements, d_array, start, stop));  printf("\n");}
+                {for(int i=1;i<=8;i++)  print (i, 8, 8, keyval_sort <uint64_t,uint64_t> (i, numElements, d_array, start, stop));}
     return 0;
 }

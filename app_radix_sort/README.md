@@ -1,4 +1,9 @@
 Benchmark CUB radix sort with various parameters.
+```
+Usage: radix_sort [N] [full]
+  where N is the number [of millions] of elements to test
+        "full" enables all benchmarks
+```
 
 ### Current results with CUDA 7.5 and CUB 1.5.2
 ```
