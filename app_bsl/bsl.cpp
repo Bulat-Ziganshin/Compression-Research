@@ -33,6 +33,7 @@ const int CHUNK = 4*1024;
 #include "../algo_lzp/lzp-cpu-rollhash.cpp"
 
 #include "../algo_bwt/sais.c"              // OpenBWT implementation
+#include "../algo_bwt/divsufsort.c"        // divsufsort
 #define LIBBSC_SORT_TRANSFORM_SUPPORT
 #include "../algo_st/st.cpp"               // BSC CPU Sort Transform implementation
 #include "../algo_st/st.cu"                // BSC GPU Sort Transform implementation
@@ -224,7 +225,11 @@ int main (int argc, char **argv)
             for (int i=3; i<=6; i++)
                 cpu_time_run (cpu_st_name[i], [&] {memcpy (outbuf, inbuf, inbytes);  return bsc_st_encode (outbuf, inbytes, i, 0);});
 
-            cpu_time_run ("OpenBWT", [&] {return sais_bwt (inbuf, outbuf, bwt_tempbuf, inbytes);});
+            int             indexes[256];
+            unsigned char   num_indexes;
+            cpu_time_run ("OpenBWT",             [&] {return sais_bwt (inbuf, outbuf, bwt_tempbuf, inbytes);});
+            cpu_time_run ("divsufsort",          [&] {return divbwt(inbuf, outbuf, bwt_tempbuf, inbytes, &num_indexes, indexes, 0);});
+
             memcpy (inbuf, outbuf, inbytes);
         }
 
