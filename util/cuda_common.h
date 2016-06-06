@@ -50,9 +50,9 @@ inline void DisplayCudaDevice()
                                 : _ConvertSMVer2Cores(deviceProp.major, deviceProp.minor);
 
     // printf("Device %d", dev);
-    printf("%s, CC %d.%d.  %.1lf GB VRAM", deviceProp.name, deviceProp.major, deviceProp.minor, deviceProp.totalGlobalMem/double(1<<30));
-    printf(" (%.0lf MHz * %d-bit = %.0lf GB/s)", memoryClock*0.001, memBusWidth, 1e-6*memoryClock*memBusWidth/4);
-    printf(".  %d SM * %d alu * %.0lf MHz = %.0lf GIOPS\n", deviceProp.multiProcessorCount, sm_per_multiproc, deviceProp.clockRate*0.001,
-                                                     1e-6 * deviceProp.multiProcessorCount * sm_per_multiproc * deviceProp.clockRate);
+    printf("%s, CC %d.%d.  VRAM %.1lf GB,", deviceProp.name, deviceProp.major, deviceProp.minor, deviceProp.totalGlobalMem/double(1<<30));
+    printf(" %.0lf MHz * %d-bit = %.0lf GB/s.", memoryClock*0.001, memBusWidth, 1e-6*memoryClock*memBusWidth/4);
+    printf("  %d SM * %d alu * %.0lf MHz * 2 = %.2lf TFLOPS\n", deviceProp.multiProcessorCount, sm_per_multiproc, deviceProp.clockRate*0.001,
+                                                     1e-9 * deviceProp.multiProcessorCount * sm_per_multiproc * deviceProp.clockRate * 2);
 
 }
