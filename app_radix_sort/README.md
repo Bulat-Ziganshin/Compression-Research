@@ -1,11 +1,9 @@
-### radix_sort: benchmark radix sort with various parameters
+Benchmark CUB radix sort with various parameters.
 
-The implementation is CUB-based and was tested with CUDA 7.5 and CUB 1.5.2
-
-### Current results
+### Current results with CUDA 7.5 and CUB 1.5.2
 ```
 GeForce GTX 560 Ti, CC 2.1.  1.0 GB VRAM (2004 MHz * 256-bit = 128 GB/s).  8 SM * 48 alu * 1800 MHz = 691 GIOPS
-Sorting 33554432 elements:
+Sorting 32M elements:
 1 of 4: Throughput = 3529.1539 MElements/s, Time = 0.00951 s
 2 of 4: Throughput = 1762.2191 MElements/s, Time = 0.01904 s
 3 of 4: Throughput = 1248.6999 MElements/s, Time = 0.02687 s
