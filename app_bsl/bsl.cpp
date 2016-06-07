@@ -69,35 +69,50 @@ int rle (byte* buf, int size)
 
 int main (int argc, char **argv)
 {
+    const int MANY = 100;
     bool display_gpu = true;
     bool apply_lzp = true;
     bool apply_bwt = true;
     bool apply_rle = true;
     bool apply_mtf = true;
     enum STAGE {LZP, BWT, RLE, MTF, STAGES};
-    int num[] = {-1,-1,-1,-1},  lzpHashSize = 15,  lzpMinLen = 32;
+    bool enabled[STAGES][MANY];
+    int lzpHashSize = 15,  lzpMinLen = 32;
     size_t bufsize = DEFAULT_BUFSIZE;
     char *comment;
     int error = 0;
-
+    for (int stage=0; stage<STAGES; stage++) 
+        for (int i=0; i<MANY; i++) 
+            enabled[stage][i] = true;
+    
     auto src_argv = argv,  dst_argv = argv;
     while (*++src_argv) {
-      ParseBool (*src_argv, "-gpu", "-nogpu", &display_gpu) ||
-      ParseBool (*src_argv, "-lzp", "-nolzp", &apply_lzp) ||
-      ParseBool (*src_argv, "-bwt", "-nobwt", &apply_bwt) ||
-      ParseBool (*src_argv, "-rle", "-norle", &apply_rle) ||
-      ParseBool (*src_argv, "-mtf", "-nomtf", &apply_mtf) ||
-      ParseInt  (*src_argv, "-lzp",           &num[LZP]) ||
-      ParseInt  (*src_argv, "-bwt",           &num[BWT]) ||
-      ParseInt  (*src_argv, "-mtf",           &num[MTF]) ||
-      ParseInt  (*src_argv, "-b",             &bufsize) ||
-      ParseInt  (*src_argv, "-h",             &lzpHashSize) ||
-      ParseInt  (*src_argv, "-l",             &lzpMinLen) ||
-      ParseStr  (*src_argv, "-rem",           &comment) ||
+      ParseBool    (*src_argv, "-gpu", "-nogpu", &display_gpu) ||
+      ParseBool    (*src_argv, "-lzp", "-nolzp", &apply_lzp)            ||
+      ParseBool    (*src_argv, "-bwt", "-nobwt", &apply_bwt)            ||
+      ParseBool    (*src_argv, "-rle", "-norle", &apply_rle)            ||
+      ParseBool    (*src_argv, "-mtf", "-nomtf", &apply_mtf)            ||
+      ParseIntList (*src_argv, "-lzp",           enabled[LZP], MANY)    ||
+      ParseIntList (*src_argv, "-bwt",           enabled[BWT], MANY)    ||
+      ParseIntList (*src_argv, "-mtf",           enabled[MTF], MANY)    ||
+      ParseInt     (*src_argv, "-b",             &bufsize)              ||
+      ParseInt     (*src_argv, "-h",             &lzpHashSize)          ||
+      ParseInt     (*src_argv, "-l",             &lzpMinLen)            ||
+      ParseStr     (*src_argv, "-rem",           &comment)              ||
       UnknownOption (*src_argv, &error) ||
       (*++dst_argv = *src_argv);
     }
     *++dst_argv = 0;  argc = dst_argv - argv;
+
+    for (int stage=0; stage<STAGES; stage++) {
+        char *a[] = {"LZP", "BWT", "RLE", "MTF"};
+        printf("%s: ",a[stage]);
+        for (int i=0; i<MANY; i++) 
+            if (enabled[stage][i])
+                printf(" %d", i);
+        printf("\n");
+    }            
+    
 
     if (bufsize < 100*1000)
         bufsize <<= 20;  // if value is small enough, consider it as mebibytes
@@ -105,18 +120,19 @@ int main (int argc, char **argv)
     if (!(argc==2 || argc==3) || error) {
         printf ("BSL: the block-sorting lab.  Part of https://github.com/Bulat-Ziganshin/Compression-Research\n"
                 "Usage: bsl [options] infile [outfile]\n"
-                "  -bN      buffer N (mebi)bytes (default %d MiB)\n"
+                "  -bN      buffer N (mebi)bytes (default %d MiB - reduce if program fails)\n"
                 "  -nogpu   skip GPU name output\n"
                 "  -nolzp   skip LZP transform\n"
-                "  -nobwt   skip BWT/ST transform\n"
+                "  -nobwt   skip BWT/ST\n"
                 "  -norle   skip RLE transform\n"
                 "  -nomtf   skip MTF transform\n"
-                "  -lzpN    perform only LZP transform number N\n"
-                "  -hN      set LZP hash size (default 2^%d hash entries)\n"
+                "  -lzpLIST perform only LZP transforms specified by the LIST\n"
+                "  -hN      set LZP hash size log (default 2^%d hash entries)\n"
                 "  -lN      set LZP minLen (default %d)\n"
-                "  -bwtN    perform only sorting transform number N\n"
-                "  -mtfN    perform only MTF transform number N\n"
+                "  -bwtLIST perform only sorting transforms specified by the LIST\n"
+                "  -mtfLIST perform only MTF transforms specified by the LIST\n"
                 "  -rem...  ignored by the program\n"
+                "LIST has format \"[+/-]n,m-k...\" which means enable/disable/enable_only transforms number n and m..k\n"
                 , DEFAULT_BUFSIZE>>20, lzpHashSize, lzpMinLen);
         return argc==1 && !error?  0 : 1;
     }
@@ -137,12 +153,12 @@ int main (int argc, char **argv)
     int*      bwt_tempbuf = apply_bwt? new int[bufsize] : 0;
 
     int _num, stage, retval;  int64_t inbytes;  bool ret_outsize;
-    uint64_t outsize = 0,  insize[STAGES] = {0},  size[STAGES][100] = {0};
-    char *name[STAGES][100] = {0};  double duration[STAGES][100] = {0};
+    uint64_t outsize = 0,  insize[STAGES] = {0},  size[STAGES][MANY] = {0};
+    char *name[STAGES][MANY] = {0};  double duration[STAGES][MANY] = {0};
 
     auto cpu_time_run = [&] (char *_name, std::function<int64_t(void)> stage_f) {
-        name[stage][_num] = _name;
-        if (_num == num[stage]  ||  num[stage] < 0)
+        name[stage][_num] = _name;        
+        if (enabled[stage][_num])
         {
             StartTimer();
             retval  =  stage_f();
@@ -217,8 +233,8 @@ int main (int argc, char **argv)
             }
 
 #ifdef LIBBSC_CUDA_SUPPORT
-            if (num[BWT] <= 4) {  // CUDA will be used, so we need to warm it up
-                memcpy (outbuf, inbuf, inbytes);  bsc_st_encode_cuda (outbuf, inbytes, 5, 0);
+            if (enabled[stage][1] || enabled[stage][2] || enabled[stage][3] || enabled[stage][4]) {  // CUDA will be used, so we need to warm it up
+                memcpy (outbuf, inbuf, inbytes);  bsc_st_encode_cuda (outbuf, inbytes, 8, 0);
             }
 
             char *cuda_st_name[] = {"st0-cuda", "st1-cuda", "st2-cuda", "st3-cuda", "st4-cuda", "st5-cuda", "st6-cuda", "st7-cuda", "st8-cuda"};
@@ -242,13 +258,14 @@ int main (int argc, char **argv)
         }
 
 
-        if (apply_mtf  &&  (1 == num[MTF]  ||  num[MTF] < 0)) {
-            name[MTF][1] = "mtf_cpu_bsc";
+        stage = MTF,  _num = 1;
+        if (apply_mtf  &&  enabled[stage][_num]) {
+            name[stage][_num] = "mtf_cpu_bsc";
             StartTimer();
                 unsigned char MTFTable[ALPHABET_SIZE];
                 ptr = mtf_cpu_bsc (inbuf, outbuf, inbytes, MTFTable);
                 outbytes = outbuf+inbytes - ptr;
-            duration[MTF][1] += GetTimer();
+            duration[stage][_num] += GetTimer();
         }
 
 
@@ -260,7 +277,7 @@ int main (int argc, char **argv)
 
 
         stage = MTF,  insize[stage] += inbytes,  ret_outsize = false,  _num = 2;
-        if (apply_mtf  &&  (1 != num[MTF]))
+        if (apply_mtf)
         {
             cpu_time_run ("mtf_cpu_shelwien", [&] {mtf_cpu_shelwien (inbuf, outbuf, inbytes);  return inbytes;});
 
@@ -282,15 +299,15 @@ int main (int argc, char **argv)
             checkCudaErrors( cudaDeviceSynchronize());
 
             auto time_run = [&] (char *_name, std::function<void(void)> f) {
-                name[MTF][_num] = _name;
-                if (_num == num[MTF]  ||  num[MTF] < 0)
+                name[stage][_num] = _name;
+                if (enabled[stage][_num])
                 {
                     checkCudaErrors( cudaEventRecord (start, nullptr));
                     f();
                     checkCudaErrors( cudaEventRecord (stop, nullptr));
                     checkCudaErrors( cudaDeviceSynchronize());
 
-                    if (_num == num[MTF]) {
+                    if (enabled[stage][_num]) {
                         checkCudaErrors( cudaMemcpy (outbuf, d_outbuf, inbytes, cudaMemcpyDeviceToHost));
                         checkCudaErrors( cudaDeviceSynchronize());
                         ptr = outbuf;
@@ -299,7 +316,7 @@ int main (int argc, char **argv)
 
                     float start_stop;
                     checkCudaErrors( cudaEventElapsedTime (&start_stop, start, stop));
-                    duration[MTF][_num] += start_stop;
+                    duration[stage][_num] += start_stop;
                 }
                 _num++;
             };
@@ -369,12 +386,12 @@ int main (int argc, char **argv)
 
     for (int stage=0; stage<STAGES; stage++) {
         int name_width = 0;
-        for (int i=0; i<100; i++) {
+        for (int i=0; i<MANY; i++) {
             if (duration[stage][i] && name[stage][i]!=0) {
                 name_width = mymax(name_width, strlen(name[stage][i]));    // first, compute the width for the name column
             }
         }
-        for (int i=0; i<100; i++) {
+        for (int i=0; i<MANY; i++) {
             if (duration[stage][i]) {
                 print_stage_stats (stage==RLE?-1:i, name_width, name[stage][i], insize[stage], size[stage][i], stage==RLE?0:duration[stage][i]);
             }
