@@ -121,7 +121,7 @@ void bsc_st567_encode_cuda_presort(unsigned char * RESTRICT T_device, unsigned l
             if (threadIdx.x < 7 ) thread_staging[1 + CUDA_NUM_THREADS_IN_BLOCK] = T_device[index + CUDA_NUM_THREADS_IN_BLOCK]; else
             if (threadIdx.x == 7) thread_staging[-7                           ] = T_device[index - 8                        ];
 
-            syncthreads();
+            __syncthreads();
         }
 
         {
@@ -135,7 +135,7 @@ void bsc_st567_encode_cuda_presort(unsigned char * RESTRICT T_device, unsigned l
 
             K_device[index] = (((unsigned long long)hi) << 32) | ((unsigned long long)lo);
 
-            syncthreads();
+            __syncthreads();
         }
     }
 }
@@ -155,7 +155,7 @@ void bsc_st8_encode_cuda_presort(unsigned char * RESTRICT T_device, unsigned lon
             if (threadIdx.x < 8 ) thread_staging[1 + CUDA_NUM_THREADS_IN_BLOCK] = T_device[index + CUDA_NUM_THREADS_IN_BLOCK]; else
             if (threadIdx.x == 8) thread_staging[-8                           ] = T_device[index - 9                        ];
 
-            syncthreads();
+            __syncthreads();
         }
 
         {
@@ -169,7 +169,7 @@ void bsc_st8_encode_cuda_presort(unsigned char * RESTRICT T_device, unsigned lon
 
             K_device[index] = (((unsigned long long)hi) << 32) | ((unsigned long long)lo); V_device[index] = thread_staging[0];
 
-            syncthreads();
+            __syncthreads();
         }
     }
 }
@@ -190,7 +190,7 @@ void bsc_st567_encode_cuda_postsort(unsigned char * RESTRICT T_device, unsigned 
         }
     }
 
-    syncthreads(); if (min_index != n) atomicMin(I_device, min_index);
+    __syncthreads(); if (min_index != n) atomicMin(I_device, min_index);
 }
 
 __global__ __launch_bounds__(CUDA_NUM_THREADS_IN_BLOCK, CUDA_CTA_OCCUPANCY(CUDA_DEVICE_ARCH))
@@ -205,7 +205,7 @@ void bsc_st8_encode_cuda_postsort(unsigned long long * RESTRICT K_device, int n,
         }
     }
 
-    syncthreads(); if (min_index != n) atomicMin(I_device, min_index);
+    __syncthreads(); if (min_index != n) atomicMin(I_device, min_index);
 }
 
 int bsc_st567_encode_cuda(unsigned char * T, unsigned char * T_device, int n, int num_blocks, int k)

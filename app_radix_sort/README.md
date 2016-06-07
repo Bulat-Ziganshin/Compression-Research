@@ -5,6 +5,11 @@ Usage: radix_sort [N] [full]
         "full" enables benchmarking of 8/16-bit elements which on my GPU shows the same speed as 32-bit ones
 ```
 
+The program displays perfromance of radix sort for rather large arrays (16M elements by default).
+First column has the format "N/K" for sorting K-byte keys by N bytes.
+It has format "N/K+V" for sorting with extra V-byte values attached to the keys.
+
+
 ### Current x86 results with CUDA 7.5 and CUB 1.5.2
 
 (x64 version is a few percents slower due to need to manage larger pointers)
