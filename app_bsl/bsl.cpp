@@ -104,16 +104,6 @@ int main (int argc, char **argv)
     }
     *++dst_argv = 0;  argc = dst_argv - argv;
 
-    for (int stage=0; stage<STAGES; stage++) {
-        char *a[] = {"LZP", "BWT", "RLE", "MTF"};
-        printf("%s: ",a[stage]);
-        for (int i=0; i<MANY; i++) 
-            if (enabled[stage][i])
-                printf(" %d", i);
-        printf("\n");
-    }            
-    
-
     if (bufsize < 100*1000)
         bufsize <<= 20;  // if value is small enough, consider it as mebibytes
 
@@ -152,25 +142,25 @@ int main (int argc, char **argv)
     unsigned char* outbuf = new unsigned char[bufsize];
     int*      bwt_tempbuf = apply_bwt? new int[bufsize] : 0;
 
-    int _num, stage, retval;  int64_t inbytes;  bool ret_outsize;
+    int num, stage, retval;  int64_t inbytes;  bool ret_outsize;
     uint64_t outsize = 0,  insize[STAGES] = {0},  size[STAGES][MANY] = {0};
     char *name[STAGES][MANY] = {0};  double duration[STAGES][MANY] = {0};
 
-    auto cpu_time_run = [&] (char *_name, std::function<int64_t(void)> stage_f) {
-        name[stage][_num] = _name;        
-        if (enabled[stage][_num])
+    auto cpu_time_run = [&] (char *this_name, std::function<int64_t(void)> stage_f) {
+        name[stage][num] = this_name;        
+        if (enabled[stage][num])
         {
             StartTimer();
             retval  =  stage_f();
-            duration[stage][_num] += GetTimer();
+            duration[stage][num] += GetTimer();
 
             if (retval < 0  &&  retval != LIBBSC_NOT_COMPRESSIBLE) {
-                printf ("%s failed with errcode %d\n", _name, retval);
+                printf ("%s failed with errcode %d\n", this_name, retval);
                 exit(4);
             }
-            size[stage][_num]  +=  (ret_outsize && retval != LIBBSC_NOT_COMPRESSIBLE?  retval : inbytes);
+            size[stage][num]  +=  (ret_outsize && retval != LIBBSC_NOT_COMPRESSIBLE?  retval : inbytes);
         }
-        _num++;
+        num++;
     };
 
 
@@ -196,15 +186,14 @@ int main (int argc, char **argv)
         byte *ptr = inbuf;  size_t outbytes = inbytes;  // output buffer
 
 
-        stage = LZP,  insize[stage] += inbytes,  ret_outsize = true,  _num = 1;
+        stage = LZP,  insize[stage] += inbytes,  ret_outsize = true,  num = 1;
         if (apply_lzp) {
             lzp_cpu_bsc (inbuf, inbuf+inbytes, outbuf, outbuf+inbytes, lzpHashSize, lzpMinLen);   // "massage" data in order to provide equal conditions for the both following lzp routines
 
 #ifdef _OPENMP
-            _num = 4;
+            num = 4;
             cpu_time_run ("lzp_cpu_rollhash (OpenMP)", [&] {
-                #pragma omp parallel
-                #pragma omp for schedule(dynamic, 1)
+                #pragma omp parallel for schedule(dynamic, 1)
                 for (int64_t base=0; base<inbytes; base+=8 MB)
                 {
                     auto size = mymin(inbytes-base,8 MB);
@@ -214,7 +203,7 @@ int main (int argc, char **argv)
             });
 #endif // _OPENMP
 
-            _num = 1;
+            num = 1;
             cpu_time_run ("lzp_cpu_bsc     ", [&] {return lzp_cpu_bsc      (inbuf, inbuf+inbytes, outbuf, outbuf+inbytes, lzpHashSize, lzpMinLen);});
             cpu_time_run ("lzp_cpu_bsc_mod ", [&] {return lzp_cpu_bsc_mod  (inbuf, inbuf+inbytes, outbuf, outbuf+inbytes, lzpHashSize, lzpMinLen);});
             cpu_time_run ("lzp_cpu_rollhash", [&] {return lzp_cpu_rollhash (inbuf, inbuf+inbytes, outbuf, outbuf+inbytes, lzpHashSize, lzpMinLen);});
@@ -224,7 +213,7 @@ int main (int argc, char **argv)
         }
 
 
-        stage = BWT,  insize[stage] += inbytes,  ret_outsize = false,  _num = 1;
+        stage = BWT,  insize[stage] += inbytes,  ret_outsize = false,  num = 1;
         if (apply_bwt) {
             int retval = bsc_st_init(0);
             if (retval != LIBBSC_NO_ERROR) {
@@ -258,33 +247,32 @@ int main (int argc, char **argv)
         }
 
 
-        stage = MTF,  _num = 1;
-        if (apply_mtf  &&  enabled[stage][_num]) {
-            name[stage][_num] = "mtf_cpu_bsc";
+        stage = MTF,  num = 1;
+        if (apply_mtf  &&  enabled[stage][num]) {
+            name[stage][num] = "mtf_cpu_bsc";
             StartTimer();
                 unsigned char MTFTable[ALPHABET_SIZE];
                 ptr = mtf_cpu_bsc (inbuf, outbuf, inbytes, MTFTable);
                 outbytes = outbuf+inbytes - ptr;
-            duration[stage][_num] += GetTimer();
+            duration[stage][num] += GetTimer();
         }
 
 
-        stage = RLE,  insize[stage] += inbytes,  ret_outsize = true,  _num = 1;
+        stage = RLE,  insize[stage] += inbytes,  ret_outsize = true,  num = 1;
         if (apply_rle) {
             cpu_time_run ("rle", [&] {return rle(inbuf,inbytes);});
             inbytes = retval;
         }
 
 
-        stage = MTF,  insize[stage] += inbytes,  ret_outsize = false,  _num = 2;
+        stage = MTF,  insize[stage] += inbytes,  ret_outsize = false,  num = 2;
         if (apply_mtf)
         {
             cpu_time_run ("mtf_cpu_shelwien", [&] {mtf_cpu_shelwien (inbuf, outbuf, inbytes);  return inbytes;});
 
 #ifdef _OPENMP
             cpu_time_run ("mtf_cpu_shelwien (OpenMP)", [&] {
-                #pragma omp parallel
-                #pragma omp for schedule(dynamic, 1)
+                #pragma omp parallel for schedule(dynamic, 1)
                 for (int64_t base=0; base<inbytes; base+=1 MB)
                 {
                     mtf_cpu_shelwien (inbuf+base, outbuf+base, mymin(inbytes-base,1 MB));
@@ -298,16 +286,16 @@ int main (int argc, char **argv)
             checkCudaErrors( cudaMemcpy (d_inbuf, inbuf, inbytes, cudaMemcpyHostToDevice));
             checkCudaErrors( cudaDeviceSynchronize());
 
-            auto time_run = [&] (char *_name, std::function<void(void)> f) {
-                name[stage][_num] = _name;
-                if (enabled[stage][_num])
+            auto time_run = [&] (char *this_name, std::function<void(void)> f) {
+                name[stage][num] = this_name;
+                if (enabled[stage][num])
                 {
                     checkCudaErrors( cudaEventRecord (start, nullptr));
                     f();
                     checkCudaErrors( cudaEventRecord (stop, nullptr));
                     checkCudaErrors( cudaDeviceSynchronize());
 
-                    if (enabled[stage][_num]) {
+                    if (enabled[stage][num]) {
                         checkCudaErrors( cudaMemcpy (outbuf, d_outbuf, inbytes, cudaMemcpyDeviceToHost));
                         checkCudaErrors( cudaDeviceSynchronize());
                         ptr = outbuf;
@@ -316,9 +304,9 @@ int main (int argc, char **argv)
 
                     float start_stop;
                     checkCudaErrors( cudaEventElapsedTime (&start_stop, start, stop));
-                    duration[stage][_num] += start_stop;
+                    duration[stage][num] += start_stop;
                 }
-                _num++;
+                num++;
             };
 
 
@@ -361,10 +349,10 @@ int main (int argc, char **argv)
 
 
     // The Analysis stage now is finished, we are going to display the collected data in fancy way
-    auto print_stage_stats = [&] (int _num, int name_width, char *name, double _insize, double outsize, double duration) {
+    auto print_stage_stats = [&] (int num, int name_width, char *name, double _insize, double outsize, double duration) {
         char extra[99], temp1[99], temp2[99];
-        if (_num >= 0)
-            printf ("[%2d] ", _num);
+        if (num >= 0)
+            printf ("[%2d] ", num);
         printf("%-*s: ", name_width, name);
         if (outsize  &&  outsize != _insize) {
             sprintf (extra, " / %.2lf%%", outsize*100.0/insize[0]);
@@ -374,7 +362,7 @@ int main (int argc, char **argv)
             auto print_speed = [&] (double insize, double duration, char *suffix) {
                 auto speed = ((1000/duration) *  insize) / (1 << 20);
                 int digits = speed<10?2:speed<100?1:0;
-                printf ("%*.*lf%s", (_num>=0?5:0), digits, speed, suffix);
+                printf ("%*.*lf%s", (num>=0?5:0), digits, speed, suffix);
             };
             if (insize[0] != _insize)    // if incoming data are already compacted, print both raw and effective speeds
                 print_speed (insize[0], duration, " /");
