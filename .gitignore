@@ -7,13 +7,13 @@
 
 *.exe
 
-app_bsl/0/*
-app_bsl/1/*
-app_bsl/2/*
-app_bsl/3/*
-app_bsl/4/*
-app_bsl/5/*
-app_bsl/6/*
-app_bsl/7/*
-app_bsl/8/*
-app_bsl/9/*
+app_bslab/0/*
+app_bslab/1/*
+app_bslab/2/*
+app_bslab/3/*
+app_bslab/4/*
+app_bslab/5/*
+app_bslab/6/*
+app_bslab/7/*
+app_bslab/8/*
+app_bslab/9/*

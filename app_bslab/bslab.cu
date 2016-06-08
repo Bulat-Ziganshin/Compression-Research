@@ -5,4 +5,4 @@
 // Compile CUDA-enabled BSL version
 
 #define LIBBSC_CUDA_SUPPORT
-#include "bsl.cpp"
+#include "bslab.cpp"
