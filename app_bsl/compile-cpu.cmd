@@ -30,8 +30,12 @@ start /BELOWNORMAL /B g++ %options_gcc% -m32        -obsl-gcc.exe %*
 start /BELOWNORMAL /B g++ %options_gcc% -m32 -mavx2 -obsl-gcc-avx2.exe %*
 
 ::clang x64
-start /BELOWNORMAL /B cmd /c C:\Base\Compiler\LLVM\compile-llvm-cl.cmd -O2 -Wno-write-strings -Wno-deprecated-declarations bsl.cpp -Febsl-clang-x64.exe
-start /BELOWNORMAL /B cmd /c C:\Base\Compiler\LLVM\compile-llvm-cl.cmd -O2 -Wno-write-strings -Wno-deprecated-declarations bsl.cpp -Febsl-clang-x64-avx2.exe -arch:AVX2
+start /BELOWNORMAL /B cmd /c C:\Base\Compiler\LLVM-3.8-x64\compile-llvm-cl.cmd -O2 -Wno-write-strings -Wno-deprecated-declarations bsl.cpp -Febsl-clang-x64.exe
+start /BELOWNORMAL /B cmd /c C:\Base\Compiler\LLVM-3.8-x64\compile-llvm-cl.cmd -O2 -Wno-write-strings -Wno-deprecated-declarations bsl.cpp -Febsl-clang-x64-avx2.exe -arch:AVX2
+
+::clang x86
+start /BELOWNORMAL /B cmd /c C:\Base\Compiler\LLVM-3.8\compile-llvm-cl.cmd -O2 -Wno-write-strings -Wno-deprecated-declarations bsl.cpp -Febsl-clang.exe
+start /BELOWNORMAL /B cmd /c C:\Base\Compiler\LLVM-3.8\compile-llvm-cl.cmd -O2 -Wno-write-strings -Wno-deprecated-declarations bsl.cpp -Febsl-clang-avx2.exe -arch:AVX2
 
 ::msvc x86
 call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" x86
