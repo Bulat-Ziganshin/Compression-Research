@@ -9,7 +9,7 @@ call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" x86_
 "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v8.0\bin\nvcc" %defines% %opts% %includes% bslab.cu cuda.lib -m64 -o bslab-cuda-x64.exe %*
 
 call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" x86
-"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v8.0\bin\nvcc" %defines% %opts% %includes% bslab.cu cuda.lib -m32 -o bslab-cuda.exe %*
+"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v8.0\bin\nvcc" %defines% %opts% %includes% bslab.cu cuda.lib -m32 -o bslab-cuda.exe -Xcompiler -arch:SSE2 %*
 
 del *.exp *.lib 2>nul
 ::"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v8.0\bin\ptxas" -arch sm_52 mtf.ptx

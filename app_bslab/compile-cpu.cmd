@@ -27,7 +27,7 @@ start /BELOWNORMAL /B g++ %options_gcc% -m64 -mavx2 -obslab-gcc-x64-avx2.exe %*
 
 ::gcc x86
 PATH C:\Base\Compiler\MinGW-5.3\mingw32\bin;%PATH%
-start /BELOWNORMAL /B g++ %options_gcc% -m32        -obslab-gcc.exe %*
+start /BELOWNORMAL /B g++ %options_gcc% -m32 -msse2 -obslab-gcc.exe %*
 start /BELOWNORMAL /B g++ %options_gcc% -m32 -mavx2 -obslab-gcc-avx2.exe %*
 
 ::clang x64
@@ -35,12 +35,12 @@ start /BELOWNORMAL /B cmd /c C:\Base\Compiler\LLVM-3.8-x64\compile-llvm-cl.cmd %
 start /BELOWNORMAL /B cmd /c C:\Base\Compiler\LLVM-3.8-x64\compile-llvm-cl.cmd %options_clang% -Febslab-clang-x64-avx2.exe -arch:AVX2
 
 ::clang x86
-start /BELOWNORMAL /B cmd /c C:\Base\Compiler\LLVM-3.8\compile-llvm-cl.cmd -O2 %options_clang% -Febslab-clang.exe
+start /BELOWNORMAL /B cmd /c C:\Base\Compiler\LLVM-3.8\compile-llvm-cl.cmd -O2 %options_clang% -Febslab-clang.exe      -arch:SSE2
 start /BELOWNORMAL /B cmd /c C:\Base\Compiler\LLVM-3.8\compile-llvm-cl.cmd -O2 %options_clang% -Febslab-clang-avx2.exe -arch:AVX2
 
 ::msvc x86
 call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" x86
-cl -Febslab-msvc.exe                 %options_ms_cl% %options_ms_x86%
+cl -Febslab-msvc.exe      -arch:SSE2 %options_ms_cl% %options_ms_x86%
 cl -Febslab-msvc-avx2.exe -arch:AVX2 %options_ms_cl% %options_ms_x86%
 
 ::icl x64
