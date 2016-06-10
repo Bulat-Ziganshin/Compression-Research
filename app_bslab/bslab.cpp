@@ -45,6 +45,7 @@ const int CHUNK = 4*1024;
 
 #include "../algo_mtf/mtf_cpu_bsc.cpp"
 #include "../algo_mtf/mtf_cpu_shelwien.cpp"
+#include "../algo_mtf/mtf_cpu_shelwien2.cpp"
 #ifdef LIBBSC_CUDA_SUPPORT
 #include "../algo_mtf/mtf_cuda_scalar.cu"
 #include "../algo_mtf/mtf_cuda_2symbols.cu"
@@ -275,14 +276,15 @@ int main (int argc, char **argv)
         stage = MTF,  insize[stage] += inbytes,  ret_outsize = false,  num = 2;
         if (apply_mtf)
         {
-            cpu_time_run ("mtf_cpu_shelwien", [&] {mtf_cpu_shelwien (inbuf, outbuf, inbytes);  return inbytes;});
+            cpu_time_run ("mtf_cpu_shelwien",  [&] {mtf_cpu_shelwien  (inbuf, outbuf, inbytes);  return inbytes;});
+            cpu_time_run ("mtf_cpu_shelwien2", [&] {mtf_cpu_shelwien2 (inbuf, outbuf, inbytes);  return inbytes;});
 
 #ifdef _OPENMP
-            cpu_time_run ("mtf_cpu_shelwien (OpenMP)", [&] {
+            cpu_time_run ("mtf_cpu_shelwien2 (OpenMP)", [&] {
                 #pragma omp parallel for schedule(dynamic, 1)
                 for (int64_t base=0; base<inbytes; base+=1 MB)
                 {
-                    mtf_cpu_shelwien (inbuf+base, outbuf+base, mymin(inbytes-base,1 MB));
+                    mtf_cpu_shelwien2 (inbuf+base, outbuf+base, mymin(inbytes-base,1 MB));
                 }
                 return inbytes;
             });
