@@ -11,6 +11,9 @@ void mtf_cpu_shelwien2 (const byte* input, byte* output, int n)
     for (int i = 0; i < ALPHABET_SIZE; ++i)
         Rank[i] = i-128;
 
+#ifndef _MSC_BUILD  // MSC but not ICC
+#pragma unroll(4)
+#endif
     for (int i=0; i<n; i+=2)
     {
         auto c1 = *input++;
