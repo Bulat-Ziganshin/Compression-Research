@@ -56,13 +56,19 @@ const int CHUNK = 4*1024;
 #endif // LIBBSC_CUDA_SUPPORT
 
 // In-place RLE transformation (run lengths are dropped!)
-int rle (byte* buf, int size)
+int rle (byte* buf, int size, uint64_t &big_runs)
 {
     int c = -1,  run = 0;
     auto out = buf;
     for (size_t i = 0; i < size; i++)
     {
-        buf[i]==c?  run++  :  (run=1, c = *out++ = buf[i]);
+        if (buf[i]==c) {
+            run++;
+        } else {
+            if (run>255)  big_runs++;
+            run = 1;
+            c = *out++ = buf[i];
+        }
     }
     return out-buf;
 }
@@ -79,6 +85,7 @@ int main (int argc, char **argv)
     bool enabled[STAGES][MANY];
     int lzpHashSize = 15,  lzpMinLen = 32;
     size_t bufsize = DEFAULT_BUFSIZE;
+    uint64_t big_runs = 0;
     char *comment;
     int error = 0;
     for (int stage=0; stage<STAGES; stage++) 
@@ -260,7 +267,7 @@ int main (int argc, char **argv)
 
         stage = RLE,  insize[stage] += inbytes,  ret_outsize = true,  num = 1;
         if (apply_rle) {
-            cpu_time_run ("rle", [&] {return rle(inbuf,inbytes);});
+            cpu_time_run ("rle", [&] {return rle(inbuf,inbytes,big_runs);});
             inbytes = retval;
         }
 
@@ -349,12 +356,12 @@ int main (int argc, char **argv)
 
 
     // The Analysis stage now is finished, we are going to display the collected data in fancy way
-    auto print_stage_stats = [&] (int num, int name_width, char *name, double _insize, double outsize, double duration) {
-        char extra[99], temp1[99], temp2[99];
+    auto print_stage_stats = [&] (int num, int name_width, char *name, double _insize, double outsize, double duration, const char *extra) {
         if (num >= 0)
             printf ("[%2d] ", num);
         printf("%-*s: ", name_width, name);
         if (outsize  &&  outsize != _insize) {
+            char extra[99], temp1[99], temp2[99];
             sprintf (extra, " / %.2lf%%", outsize*100.0/insize[0]);
             printf ("%s => %s (%.2lf%%%s)",  show3(_insize,temp1),  show3(outsize,temp2),  outsize*100.0/_insize,  (insize[0]!=_insize? extra:""));
         }
@@ -369,7 +376,7 @@ int main (int argc, char **argv)
             print_speed (_insize, duration, " MiB/s");
             printf (",  %.3lf ms", duration);
         }
-        printf("\n");
+        printf("%s\n", extra);
     };
 
     for (int stage=0; stage<STAGES; stage++) {
@@ -381,7 +388,9 @@ int main (int argc, char **argv)
         }
         for (int i=0; i<MANY; i++) {
             if (duration[stage][i]) {
-                print_stage_stats (stage==RLE?-1:i, name_width, name[stage][i], insize[stage], size[stage][i], stage==RLE?0:duration[stage][i]);
+                char extra[99], temp1[99];
+                sprintf (extra, "   >255: %s", show3(big_runs,temp1));
+                print_stage_stats (stage==RLE?-1:i, name_width, name[stage][i], insize[stage], size[stage][i], stage==RLE?0:duration[stage][i], stage==RLE?extra:"");
             }
         }
         // printf("\n");
