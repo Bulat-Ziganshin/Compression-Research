@@ -1,0 +1,1719 @@
+Haswell i7-4770
+
+C:\app_bslab>for %a in (boost e8 e9 100m 1g 1g.tor3) do for %x in (-x64-avx2.exe -x64.exe -avx2.exe .exe) do for %c in (icl clang gcc msvc) do bslab-%c%x z:\%a
+
+C:\app_bslab>for %x in (-x64-avx2.exe -x64.exe -avx2.exe .exe) do for %c in (icl clang gcc msvc) do bslab-%c%x z:\boost
+
+C:\app_bslab>for %c in (icl clang gcc msvc) do bslab-%c-x64-avx2.exe z:\boost
+
+C:\app_bslab>bslab-icl-x64-avx2.exe z:\boost
+[ 1] lzp_cpu_bsc              : 64,704,870 => 26,176,887 (40.46%)  280 MiB/s,  220.430 ms
+[ 2] lzp_cpu_bsc_mod          : 64,704,870 => 26,150,982 (40.42%)  538 MiB/s,  114.715 ms
+[ 3] lzp_cpu_rollhash         : 64,704,870 => 26,139,056 (40.40%)  767 MiB/s,  80.488 ms
+[ 4] lzp_cpu_rollhash (OpenMP):   607 MiB/s,  101.661 ms
+[ 1] st3-cpu            :   444 /  179 MiB/s,  139.120 ms
+[ 2] st4-cpu            :   355 /  144 MiB/s,  173.630 ms
+[ 3] st5-cpu            :   169 / 68.2 MiB/s,  365.263 ms
+[ 4] st6-cpu            :   118 / 47.9 MiB/s,  520.874 ms
+[ 5] OpenBWT            :  23.2 / 9.37 MiB/s,  2661.498 ms
+[ 6] divsufsort         :  36.3 / 14.7 MiB/s,  1699.680 ms
+[ 7] divsufsort (OpenMP):  45.0 / 18.2 MiB/s,  1371.484 ms
+rle: 26,139,056 => 6,794,303 (25.99% / 10.50%)   >255: 6,724
+[ 1] mtf_cpu_bsc               :   485 / 50.9 MiB/s,  127.190 ms
+[ 2] mtf_cpu_shelwien          :  1216 /  128 MiB/s,  50.741 ms
+[ 3] mtf_cpu_shelwien2         :  1997 /  210 MiB/s,  30.892 ms
+[ 4] mtf_cpu_shelwien2 (OpenMP):  6422 /  674 MiB/s,  9.608 ms
+
+C:\app_bslab>bslab-clang-x64-avx2.exe z:\boost
+[ 1] lzp_cpu_bsc     : 64,704,870 => 26,176,887 (40.46%)  594 MiB/s,  103.902 ms
+[ 2] lzp_cpu_bsc_mod : 64,704,870 => 26,150,982 (40.42%)  642 MiB/s,  96.082 ms
+[ 3] lzp_cpu_rollhash: 64,704,870 => 26,139,056 (40.40%)  793 MiB/s,  77.769 ms
+[ 1] st3-cpu   :   433 /  175 MiB/s,  142.418 ms
+[ 2] st4-cpu   :   395 /  160 MiB/s,  156.248 ms
+[ 3] st5-cpu   :   183 / 74.1 MiB/s,  336.462 ms
+[ 4] st6-cpu   :   131 / 53.1 MiB/s,  469.350 ms
+[ 5] OpenBWT   :  21.4 / 8.66 MiB/s,  2879.542 ms
+[ 6] divsufsort:  36.9 / 14.9 MiB/s,  1674.022 ms
+rle: 26,139,056 => 6,794,303 (25.99% / 10.50%)   >255: 6,724
+[ 1] mtf_cpu_bsc      :   515 / 54.1 MiB/s,  119.777 ms
+[ 2] mtf_cpu_shelwien :  1293 /  136 MiB/s,  47.717 ms
+[ 3] mtf_cpu_shelwien2:  1850 /  194 MiB/s,  33.354 ms
+
+C:\app_bslab>bslab-gcc-x64-avx2.exe z:\boost
+[ 1] lzp_cpu_bsc              : 64,704,870 => 26,176,887 (40.46%)  627 MiB/s,  98.451 ms
+[ 2] lzp_cpu_bsc_mod          : 64,704,870 => 26,150,982 (40.42%)  674 MiB/s,  91.616 ms
+[ 3] lzp_cpu_rollhash         : 64,704,870 => 26,139,056 (40.40%)  711 MiB/s,  86.757 ms
+[ 4] lzp_cpu_rollhash (OpenMP):  2224 MiB/s,  27.746 ms
+[ 1] st3-cpu            :   446 /  180 MiB/s,  138.256 ms
+[ 2] st4-cpu            :   382 /  154 MiB/s,  161.521 ms
+[ 3] st5-cpu            :   177 / 71.4 MiB/s,  348.965 ms
+[ 4] st6-cpu            :   127 / 51.4 MiB/s,  485.017 ms
+[ 5] OpenBWT            :  23.8 / 9.61 MiB/s,  2595.162 ms
+[ 6] divsufsort         :  36.9 / 14.9 MiB/s,  1670.720 ms
+[ 7] divsufsort (OpenMP):  47.8 / 19.3 MiB/s,  1291.226 ms
+rle: 26,139,056 => 6,794,303 (25.99% / 10.50%)   >255: 6,724
+[ 1] mtf_cpu_bsc               :   510 / 53.5 MiB/s,  121.113 ms
+[ 2] mtf_cpu_shelwien          :  1117 /  117 MiB/s,  55.222 ms
+[ 3] mtf_cpu_shelwien2         :  1734 /  182 MiB/s,  35.590 ms
+[ 4] mtf_cpu_shelwien2 (OpenMP):  1415 /  149 MiB/s,  43.614 ms
+
+C:\app_bslab>bslab-msvc-x64-avx2.exe z:\boost
+[ 1] lzp_cpu_bsc              : 64,704,870 => 26,176,887 (40.46%)  511 MiB/s,  120.741 ms
+[ 2] lzp_cpu_bsc_mod          : 64,704,870 => 26,150,982 (40.42%)  710 MiB/s,  86.959 ms
+[ 3] lzp_cpu_rollhash         : 64,704,870 => 26,139,056 (40.40%)  806 MiB/s,  76.559 ms
+[ 4] lzp_cpu_rollhash (OpenMP):  1612 MiB/s,  38.282 ms
+[ 1] st3-cpu            :   460 /  186 MiB/s,  134.159 ms
+[ 2] st4-cpu            :   352 /  142 MiB/s,  175.406 ms
+[ 3] st5-cpu            :   170 / 68.7 MiB/s,  362.899 ms
+[ 4] st6-cpu            :   119 / 48.1 MiB/s,  518.091 ms
+[ 5] OpenBWT            :  22.1 / 8.94 MiB/s,  2789.908 ms
+[ 6] divsufsort         :  36.1 / 14.6 MiB/s,  1710.111 ms
+[ 7] divsufsort (OpenMP):  45.6 / 18.4 MiB/s,  1352.488 ms
+rle: 26,139,056 => 6,794,303 (25.99% / 10.50%)   >255: 6,724
+[ 1] mtf_cpu_bsc               :   524 / 55.0 MiB/s,  117.844 ms
+[ 2] mtf_cpu_shelwien          :  1024 /  108 MiB/s,  60.236 ms
+[ 3] mtf_cpu_shelwien2         :  1462 /  154 MiB/s,  42.194 ms
+[ 4] mtf_cpu_shelwien2 (OpenMP):  4387 /  461 MiB/s,  14.066 ms
+
+C:\app_bslab>for %c in (icl clang gcc msvc) do bslab-%c-x64.exe z:\boost
+
+C:\app_bslab>bslab-icl-x64.exe z:\boost
+[ 1] lzp_cpu_bsc              : 64,704,870 => 26,176,887 (40.46%)  438 MiB/s,  140.960 ms
+[ 2] lzp_cpu_bsc_mod          : 64,704,870 => 26,150,982 (40.42%)  466 MiB/s,  132.381 ms
+[ 3] lzp_cpu_rollhash         : 64,704,870 => 26,139,056 (40.40%)  635 MiB/s,  97.177 ms
+[ 4] lzp_cpu_rollhash (OpenMP):   943 MiB/s,  65.463 ms
+[ 1] st3-cpu            :   455 /  184 MiB/s,  135.708 ms
+[ 2] st4-cpu            :   379 /  153 MiB/s,  162.740 ms
+[ 3] st5-cpu            :   180 / 72.6 MiB/s,  343.342 ms
+[ 4] st6-cpu            :   123 / 49.7 MiB/s,  501.584 ms
+[ 5] OpenBWT            :  23.4 / 9.43 MiB/s,  2642.327 ms
+[ 6] divsufsort         :  36.3 / 14.7 MiB/s,  1697.869 ms
+[ 7] divsufsort (OpenMP):  46.9 / 18.9 MiB/s,  1315.837 ms
+rle: 26,139,056 => 6,794,303 (25.99% / 10.50%)   >255: 6,724
+[ 1] mtf_cpu_bsc               :   471 / 49.5 MiB/s,  130.894 ms
+[ 2] mtf_cpu_shelwien          :  1005 /  106 MiB/s,  61.382 ms
+[ 3] mtf_cpu_shelwien2         :  1350 /  142 MiB/s,  45.720 ms
+[ 4] mtf_cpu_shelwien2 (OpenMP):  4037 /  424 MiB/s,  15.287 ms
+
+C:\app_bslab>bslab-clang-x64.exe z:\boost
+[ 1] lzp_cpu_bsc     : 64,704,870 => 26,176,887 (40.46%)  577 MiB/s,  107.011 ms
+[ 2] lzp_cpu_bsc_mod : 64,704,870 => 26,150,982 (40.42%)  611 MiB/s,  100.934 ms
+[ 3] lzp_cpu_rollhash: 64,704,870 => 26,139,056 (40.40%)  737 MiB/s,  83.783 ms
+[ 1] st3-cpu   :   472 /  191 MiB/s,  130.653 ms
+[ 2] st4-cpu   :   395 /  160 MiB/s,  156.076 ms
+[ 3] st5-cpu   :   189 / 76.2 MiB/s,  327.269 ms
+[ 4] st6-cpu   :   131 / 52.7 MiB/s,  472.656 ms
+[ 5] OpenBWT   :  21.2 / 8.58 MiB/s,  2905.443 ms
+[ 6] divsufsort:  36.7 / 14.8 MiB/s,  1682.465 ms
+rle: 26,139,056 => 6,794,303 (25.99% / 10.50%)   >255: 6,724
+[ 1] mtf_cpu_bsc      :   431 / 45.3 MiB/s,  143.161 ms
+[ 2] mtf_cpu_shelwien :   999 /  105 MiB/s,  61.758 ms
+[ 3] mtf_cpu_shelwien2:  1288 /  135 MiB/s,  47.897 ms
+
+C:\app_bslab>bslab-gcc-x64.exe z:\boost
+[ 1] lzp_cpu_bsc              : 64,704,870 => 26,176,887 (40.46%)  643 MiB/s,  95.983 ms
+[ 2] lzp_cpu_bsc_mod          : 64,704,870 => 26,150,982 (40.42%)  696 MiB/s,  88.683 ms
+[ 3] lzp_cpu_rollhash         : 64,704,870 => 26,139,056 (40.40%)  710 MiB/s,  86.909 ms
+[ 4] lzp_cpu_rollhash (OpenMP):  1665 MiB/s,  37.057 ms
+[ 1] st3-cpu            :   446 /  180 MiB/s,  138.342 ms
+[ 2] st4-cpu            :   371 /  150 MiB/s,  166.469 ms
+[ 3] st5-cpu            :   176 / 71.1 MiB/s,  350.395 ms
+[ 4] st6-cpu            :   129 / 52.2 MiB/s,  477.465 ms
+[ 5] OpenBWT            :  24.3 / 9.82 MiB/s,  2538.986 ms
+[ 6] divsufsort         :  37.2 / 15.0 MiB/s,  1659.662 ms
+[ 7] divsufsort (OpenMP):  48.7 / 19.7 MiB/s,  1268.223 ms
+rle: 26,139,056 => 6,794,303 (25.99% / 10.50%)   >255: 6,724
+[ 1] mtf_cpu_bsc               :   502 / 52.8 MiB/s,  122.822 ms
+[ 2] mtf_cpu_shelwien          :   909 / 95.4 MiB/s,  67.916 ms
+[ 3] mtf_cpu_shelwien2         :  1188 /  125 MiB/s,  51.928 ms
+[ 4] mtf_cpu_shelwien2 (OpenMP):  3912 /  411 MiB/s,  15.775 ms
+
+C:\app_bslab>bslab-msvc-x64.exe z:\boost
+[ 1] lzp_cpu_bsc              : 64,704,870 => 26,176,887 (40.46%)  633 MiB/s,  97.430 ms
+[ 2] lzp_cpu_bsc_mod          : 64,704,870 => 26,150,982 (40.42%)  659 MiB/s,  93.600 ms
+[ 3] lzp_cpu_rollhash         : 64,704,870 => 26,139,056 (40.40%)  733 MiB/s,  84.210 ms
+[ 4] lzp_cpu_rollhash (OpenMP):  1967 MiB/s,  31.371 ms
+[ 1] st3-cpu            :   464 /  187 MiB/s,  132.962 ms
+[ 2] st4-cpu            :   357 /  144 MiB/s,  173.069 ms
+[ 3] st5-cpu            :   173 / 69.8 MiB/s,  357.240 ms
+[ 4] st6-cpu            :   120 / 48.5 MiB/s,  514.145 ms
+[ 5] OpenBWT            :  22.3 / 9.02 MiB/s,  2765.101 ms
+[ 6] divsufsort         :  36.0 / 14.5 MiB/s,  1714.142 ms
+[ 7] divsufsort (OpenMP):  47.3 / 19.1 MiB/s,  1303.220 ms
+rle: 26,139,056 => 6,794,303 (25.99% / 10.50%)   >255: 6,724
+[ 1] mtf_cpu_bsc               :   516 / 54.2 MiB/s,  119.501 ms
+[ 2] mtf_cpu_shelwien          :   658 / 69.1 MiB/s,  93.817 ms
+[ 3] mtf_cpu_shelwien2         :   809 / 84.9 MiB/s,  76.312 ms
+[ 4] mtf_cpu_shelwien2 (OpenMP):  2559 /  269 MiB/s,  24.113 ms
+
+C:\app_bslab>for %c in (icl clang gcc msvc) do bslab-%c-avx2.exe z:\boost
+
+C:\app_bslab>bslab-icl-avx2.exe z:\boost
+[ 1] lzp_cpu_bsc              : 64,704,870 => 26,176,887 (40.46%)  375 MiB/s,  164.766 ms
+[ 2] lzp_cpu_bsc_mod          : 64,704,870 => 26,150,982 (40.42%)  449 MiB/s,  137.470 ms
+[ 3] lzp_cpu_rollhash         : 64,704,870 => 26,139,056 (40.40%)  525 MiB/s,  117.480 ms
+[ 4] lzp_cpu_rollhash (OpenMP):  1439 MiB/s,  42.871 ms
+[ 1] st3-cpu            :   377 /  152 MiB/s,  163.470 ms
+[ 2] st4-cpu            :   369 /  149 MiB/s,  167.392 ms
+[ 3] st5-cpu            :   180 / 72.7 MiB/s,  342.669 ms
+[ 4] st6-cpu            :   120 / 48.6 MiB/s,  513.281 ms
+[ 5] OpenBWT            :  22.0 / 8.87 MiB/s,  2809.139 ms
+[ 6] divsufsort         :  32.9 / 13.3 MiB/s,  1877.235 ms
+[ 7] divsufsort (OpenMP):  42.4 / 17.1 MiB/s,  1454.516 ms
+rle: 26,139,056 => 6,794,303 (25.99% / 10.50%)   >255: 6,724
+[ 1] mtf_cpu_bsc               :   481 / 50.6 MiB/s,  128.172 ms
+[ 2] mtf_cpu_shelwien          :  1220 /  128 MiB/s,  50.589 ms
+[ 3] mtf_cpu_shelwien2         :  2078 /  218 MiB/s,  29.699 ms
+[ 4] mtf_cpu_shelwien2 (OpenMP):  6669 /  700 MiB/s,  9.253 ms
+
+C:\app_bslab>bslab-clang-avx2.exe z:\boost
+[ 1] lzp_cpu_bsc     : 64,704,870 => 26,176,887 (40.46%)  501 MiB/s,  123.104 ms
+[ 2] lzp_cpu_bsc_mod : 64,704,870 => 26,150,982 (40.42%)  616 MiB/s,  100.204 ms
+[ 3] lzp_cpu_rollhash: 64,704,870 => 26,139,056 (40.40%)  636 MiB/s,  96.957 ms
+[ 1] st3-cpu   :   437 /  177 MiB/s,  141.106 ms
+[ 2] st4-cpu   :   335 /  135 MiB/s,  184.065 ms
+[ 3] st5-cpu   :   171 / 69.2 MiB/s,  360.202 ms
+[ 4] st6-cpu   :   126 / 51.1 MiB/s,  487.866 ms
+[ 5] OpenBWT   :  20.9 / 8.44 MiB/s,  2953.203 ms
+[ 6] divsufsort:  34.6 / 14.0 MiB/s,  1782.316 ms
+rle: 26,139,056 => 6,794,303 (25.99% / 10.50%)   >255: 6,724
+[ 1] mtf_cpu_bsc      :   404 / 42.5 MiB/s,  152.556 ms
+[ 2] mtf_cpu_shelwien :  1112 /  117 MiB/s,  55.506 ms
+[ 3] mtf_cpu_shelwien2:  1775 /  186 MiB/s,  34.768 ms
+
+C:\app_bslab>bslab-gcc-avx2.exe z:\boost
+[ 1] lzp_cpu_bsc              : 64,704,870 => 26,176,887 (40.46%)  638 MiB/s,  96.678 ms
+[ 2] lzp_cpu_bsc_mod          : 64,704,870 => 26,150,982 (40.42%)  663 MiB/s,  93.128 ms
+[ 3] lzp_cpu_rollhash         : 64,704,870 => 26,139,056 (40.40%)  497 MiB/s,  124.181 ms
+[ 4] lzp_cpu_rollhash (OpenMP):  1357 MiB/s,  45.468 ms
+[ 1] st3-cpu            :   438 /  177 MiB/s,  140.833 ms
+[ 2] st4-cpu            :   375 /  152 MiB/s,  164.542 ms
+[ 3] st5-cpu            :   177 / 71.5 MiB/s,  348.528 ms
+[ 4] st6-cpu            :   125 / 50.4 MiB/s,  494.532 ms
+[ 5] OpenBWT            :  23.2 / 9.38 MiB/s,  2656.514 ms
+[ 6] divsufsort         :  35.1 / 14.2 MiB/s,  1756.450 ms
+[ 7] divsufsort (OpenMP):  46.5 / 18.8 MiB/s,  1326.830 ms
+rle: 26,139,056 => 6,794,303 (25.99% / 10.50%)   >255: 6,724
+[ 1] mtf_cpu_bsc               :   371 / 38.9 MiB/s,  166.531 ms
+[ 2] mtf_cpu_shelwien          :  1195 /  125 MiB/s,  51.644 ms
+[ 3] mtf_cpu_shelwien2         :  1792 /  188 MiB/s,  34.440 ms
+[ 4] mtf_cpu_shelwien2 (OpenMP):  5904 /  620 MiB/s,  10.451 ms
+
+C:\app_bslab>bslab-msvc-avx2.exe z:\boost
+[ 1] lzp_cpu_bsc              : 64,704,870 => 26,176,887 (40.46%)  438 MiB/s,  140.750 ms
+[ 2] lzp_cpu_bsc_mod          : 64,704,870 => 26,150,982 (40.42%)  643 MiB/s,  95.919 ms
+[ 3] lzp_cpu_rollhash         : 64,704,870 => 26,139,056 (40.40%)  605 MiB/s,  101.916 ms
+[ 4] lzp_cpu_rollhash (OpenMP):  1910 MiB/s,  32.303 ms
+[ 1] st3-cpu            :   400 /  162 MiB/s,  154.303 ms
+[ 2] st4-cpu            :   332 /  134 MiB/s,  185.992 ms
+[ 3] st5-cpu            :   161 / 64.9 MiB/s,  384.166 ms
+[ 4] st6-cpu            :   118 / 47.7 MiB/s,  522.580 ms
+[ 5] OpenBWT            :  22.3 / 9.02 MiB/s,  2764.984 ms
+[ 6] divsufsort         :  33.8 / 13.7 MiB/s,  1823.173 ms
+[ 7] divsufsort (OpenMP):  45.3 / 18.3 MiB/s,  1362.504 ms
+rle: 26,139,056 => 6,794,303 (25.99% / 10.50%)   >255: 6,724
+[ 1] mtf_cpu_bsc               :   437 / 45.9 MiB/s,  141.124 ms
+[ 2] mtf_cpu_shelwien          :  1031 /  108 MiB/s,  59.827 ms
+[ 3] mtf_cpu_shelwien2         :  1311 /  138 MiB/s,  47.074 ms
+[ 4] mtf_cpu_shelwien2 (OpenMP):  4303 /  452 MiB/s,  14.341 ms
+
+C:\app_bslab>for %c in (icl clang gcc msvc) do bslab-%c.exe z:\boost
+
+C:\app_bslab>bslab-icl.exe z:\boost
+[ 1] lzp_cpu_bsc              : 64,704,870 => 26,176,887 (40.46%)  288 MiB/s,  214.545 ms
+[ 2] lzp_cpu_bsc_mod          : 64,704,870 => 26,150,982 (40.42%)  435 MiB/s,  141.779 ms
+[ 3] lzp_cpu_rollhash         : 64,704,870 => 26,139,056 (40.40%)  612 MiB/s,  100.792 ms
+[ 4] lzp_cpu_rollhash (OpenMP):  1235 MiB/s,  49.969 ms
+[ 1] st3-cpu            :   384 /  155 MiB/s,  160.500 ms
+[ 2] st4-cpu            :   366 /  148 MiB/s,  168.648 ms
+[ 3] st5-cpu            :   180 / 72.5 MiB/s,  343.665 ms
+[ 4] st6-cpu            :   119 / 48.1 MiB/s,  517.789 ms
+[ 5] OpenBWT            :  21.9 / 8.85 MiB/s,  2817.049 ms
+[ 6] divsufsort         :  32.5 / 13.1 MiB/s,  1900.143 ms
+[ 7] divsufsort (OpenMP):  43.0 / 17.4 MiB/s,  1435.019 ms
+rle: 26,139,056 => 6,794,303 (25.99% / 10.50%)   >255: 6,724
+[ 1] mtf_cpu_bsc               :   467 / 49.0 MiB/s,  132.162 ms
+[ 2] mtf_cpu_shelwien          :   971 /  102 MiB/s,  63.541 ms
+[ 3] mtf_cpu_shelwien2         :  1368 /  144 MiB/s,  45.123 ms
+[ 4] mtf_cpu_shelwien2 (OpenMP):  4558 /  479 MiB/s,  13.538 ms
+
+C:\app_bslab>bslab-clang.exe z:\boost
+[ 1] lzp_cpu_bsc     : 64,704,870 => 26,176,887 (40.46%)  493 MiB/s,  125.160 ms
+[ 2] lzp_cpu_bsc_mod : 64,704,870 => 26,150,982 (40.42%)  594 MiB/s,  103.845 ms
+[ 3] lzp_cpu_rollhash: 64,704,870 => 26,139,056 (40.40%)  593 MiB/s,  104.089 ms
+[ 1] st3-cpu   :   431 /  174 MiB/s,  143.241 ms
+[ 2] st4-cpu   :   352 /  142 MiB/s,  175.283 ms
+[ 3] st5-cpu   :   155 / 62.8 MiB/s,  397.261 ms
+[ 4] st6-cpu   :   125 / 50.6 MiB/s,  493.030 ms
+[ 5] OpenBWT   :  20.5 / 8.29 MiB/s,  3007.012 ms
+[ 6] divsufsort:  34.5 / 13.9 MiB/s,  1790.478 ms
+rle: 26,139,056 => 6,794,303 (25.99% / 10.50%)   >255: 6,724
+[ 1] mtf_cpu_bsc      :   404 / 42.4 MiB/s,  152.770 ms
+[ 2] mtf_cpu_shelwien :   995 /  104 MiB/s,  62.030 ms
+[ 3] mtf_cpu_shelwien2:  1165 /  122 MiB/s,  52.957 ms
+
+C:\app_bslab>bslab-gcc.exe z:\boost
+[ 1] lzp_cpu_bsc              : 64,704,870 => 26,176,887 (40.46%)  623 MiB/s,  99.055 ms
+[ 2] lzp_cpu_bsc_mod          : 64,704,870 => 26,150,982 (40.42%)  606 MiB/s,  101.895 ms
+[ 3] lzp_cpu_rollhash         : 64,704,870 => 26,139,056 (40.40%)  500 MiB/s,  123.411 ms
+[ 4] lzp_cpu_rollhash (OpenMP):  1539 MiB/s,  40.103 ms
+[ 1] st3-cpu            :   438 /  177 MiB/s,  140.771 ms
+[ 2] st4-cpu            :   376 /  152 MiB/s,  164.276 ms
+[ 3] st5-cpu            :   179 / 72.2 MiB/s,  345.212 ms
+[ 4] st6-cpu            :   127 / 51.2 MiB/s,  487.018 ms
+[ 5] OpenBWT            :  23.9 / 9.65 MiB/s,  2583.588 ms
+[ 6] divsufsort         :  35.6 / 14.4 MiB/s,  1732.035 ms
+[ 7] divsufsort (OpenMP):  46.9 / 19.0 MiB/s,  1314.410 ms
+rle: 26,139,056 => 6,794,303 (25.99% / 10.50%)   >255: 6,724
+[ 1] mtf_cpu_bsc               :   384 / 40.4 MiB/s,  160.571 ms
+[ 2] mtf_cpu_shelwien          :   925 / 97.2 MiB/s,  66.676 ms
+[ 3] mtf_cpu_shelwien2         :  1180 /  124 MiB/s,  52.306 ms
+[ 4] mtf_cpu_shelwien2 (OpenMP):  3759 /  395 MiB/s,  16.417 ms
+
+C:\app_bslab>bslab-msvc.exe z:\boost
+[ 1] lzp_cpu_bsc              : 64,704,870 => 26,176,887 (40.46%)  565 MiB/s,  109.137 ms
+[ 2] lzp_cpu_bsc_mod          : 64,704,870 => 26,150,982 (40.42%)  607 MiB/s,  101.713 ms
+[ 3] lzp_cpu_rollhash         : 64,704,870 => 26,139,056 (40.40%)  573 MiB/s,  107.697 ms
+[ 4] lzp_cpu_rollhash (OpenMP):  1827 MiB/s,  33.767 ms
+[ 1] st3-cpu            :   396 /  160 MiB/s,  155.664 ms
+[ 2] st4-cpu            :   327 /  132 MiB/s,  188.647 ms
+[ 3] st5-cpu            :   163 / 65.8 MiB/s,  378.693 ms
+[ 4] st6-cpu            :   120 / 48.4 MiB/s,  514.999 ms
+[ 5] OpenBWT            :  22.0 / 8.90 MiB/s,  2800.300 ms
+[ 6] divsufsort         :  33.8 / 13.7 MiB/s,  1823.022 ms
+[ 7] divsufsort (OpenMP):  44.4 / 17.9 MiB/s,  1390.534 ms
+rle: 26,139,056 => 6,794,303 (25.99% / 10.50%)   >255: 6,724
+[ 1] mtf_cpu_bsc               :   447 / 46.9 MiB/s,  138.182 ms
+[ 2] mtf_cpu_shelwien          :   616 / 64.6 MiB/s,  100.232 ms
+[ 3] mtf_cpu_shelwien2         :   758 / 79.6 MiB/s,  81.438 ms
+[ 4] mtf_cpu_shelwien2 (OpenMP):  2458 /  258 MiB/s,  25.102 ms
+
+C:\app_bslab>for %x in (-x64-avx2.exe -x64.exe -avx2.exe .exe) do for %c in (icl clang gcc msvc) do bslab-%c%x z:\e8
+
+C:\app_bslab>for %c in (icl clang gcc msvc) do bslab-%c-x64-avx2.exe z:\e8
+
+C:\app_bslab>bslab-icl-x64-avx2.exe z:\e8
+[ 1] lzp_cpu_bsc              : 100,000,000 => 95,006,102 (95.01%)  238 MiB/s,  401.423 ms
+[ 2] lzp_cpu_bsc_mod          : 100,000,000 => 95,012,381 (95.01%)  388 MiB/s,  245.730 ms
+[ 3] lzp_cpu_rollhash         : 100,000,000 => 95,025,330 (95.03%)  471 MiB/s,  202.492 ms
+[ 4] lzp_cpu_rollhash (OpenMP):  1232 MiB/s,  77.404 ms
+[ 1] st3-cpu            :   194 /  185 MiB/s,  490.581 ms
+[ 2] st4-cpu            :   160 /  152 MiB/s,  596.196 ms
+[ 3] st5-cpu            :  61.9 / 58.8 MiB/s,  1541.065 ms
+[ 4] st6-cpu            :  43.5 / 41.3 MiB/s,  2192.925 ms
+[ 5] OpenBWT            :  5.98 / 5.68 MiB/s,  15951.735 ms
+[ 6] divsufsort         :  10.2 / 9.65 MiB/s,  9393.790 ms
+[ 7] divsufsort (OpenMP):  13.4 / 12.8 MiB/s,  7096.052 ms
+rle: 95,025,330 => 36,703,797 (38.63% / 36.70%)   >255: 15,164
+[ 1] mtf_cpu_bsc               :   173 / 63.5 MiB/s,  550.864 ms
+[ 2] mtf_cpu_shelwien          :   345 /  127 MiB/s,  276.547 ms
+[ 3] mtf_cpu_shelwien2         :   551 /  202 MiB/s,  173.113 ms
+[ 4] mtf_cpu_shelwien2 (OpenMP):  2841 / 1043 MiB/s,  33.564 ms
+
+C:\app_bslab>bslab-clang-x64-avx2.exe z:\e8
+[ 1] lzp_cpu_bsc     : 100,000,000 => 95,006,102 (95.01%)  307 MiB/s,  311.107 ms
+[ 2] lzp_cpu_bsc_mod : 100,000,000 => 95,012,381 (95.01%)  328 MiB/s,  290.454 ms
+[ 3] lzp_cpu_rollhash: 100,000,000 => 95,025,330 (95.03%)  455 MiB/s,  209.679 ms
+[ 1] st3-cpu   :   187 /  178 MiB/s,  509.151 ms
+[ 2] st4-cpu   :   162 /  154 MiB/s,  587.188 ms
+[ 3] st5-cpu   :  61.6 / 58.5 MiB/s,  1549.371 ms
+[ 4] st6-cpu   :  45.1 / 42.9 MiB/s,  2113.477 ms
+[ 5] OpenBWT   :  5.45 / 5.18 MiB/s,  17497.599 ms
+[ 6] divsufsort:  10.3 / 9.76 MiB/s,  9286.634 ms
+rle: 95,025,330 => 36,703,797 (38.63% / 36.70%)   >255: 15,164
+[ 1] mtf_cpu_bsc      :   181 / 66.5 MiB/s,  526.415 ms
+[ 2] mtf_cpu_shelwien :   380 /  140 MiB/s,  250.876 ms
+[ 3] mtf_cpu_shelwien2:   537 /  197 MiB/s,  177.458 ms
+
+C:\app_bslab>bslab-gcc-x64-avx2.exe z:\e8
+[ 1] lzp_cpu_bsc              : 100,000,000 => 95,006,102 (95.01%)  348 MiB/s,  273.669 ms
+[ 2] lzp_cpu_bsc_mod          : 100,000,000 => 95,012,381 (95.01%)  374 MiB/s,  255.037 ms
+[ 3] lzp_cpu_rollhash         : 100,000,000 => 95,025,330 (95.03%)  405 MiB/s,  235.217 ms
+[ 4] lzp_cpu_rollhash (OpenMP):  1413 MiB/s,  67.490 ms
+[ 1] st3-cpu            :   185 /  176 MiB/s,  515.716 ms
+[ 2] st4-cpu            :   159 /  151 MiB/s,  599.416 ms
+[ 3] st5-cpu            :  62.3 / 59.2 MiB/s,  1531.553 ms
+[ 4] st6-cpu            :  44.9 / 42.6 MiB/s,  2125.858 ms
+[ 5] OpenBWT            :  5.93 / 5.64 MiB/s,  16074.347 ms
+[ 6] divsufsort         :  10.0 / 9.54 MiB/s,  9504.190 ms
+[ 7] divsufsort (OpenMP):  13.2 / 12.6 MiB/s,  7215.425 ms
+rle: 95,025,330 => 36,703,797 (38.63% / 36.70%)   >255: 15,164
+[ 1] mtf_cpu_bsc               :   178 / 65.4 MiB/s,  534.915 ms
+[ 2] mtf_cpu_shelwien          :   317 /  116 MiB/s,  301.000 ms
+[ 3] mtf_cpu_shelwien2         :   507 /  186 MiB/s,  187.938 ms
+[ 4] mtf_cpu_shelwien2 (OpenMP):   572 /  210 MiB/s,  166.788 ms
+
+C:\app_bslab>bslab-msvc-x64-avx2.exe z:\e8
+[ 1] lzp_cpu_bsc              : 100,000,000 => 95,006,102 (95.01%)  310 MiB/s,  307.313 ms
+[ 2] lzp_cpu_bsc_mod          : 100,000,000 => 95,012,381 (95.01%)  391 MiB/s,  244.048 ms
+[ 3] lzp_cpu_rollhash         : 100,000,000 => 95,025,330 (95.03%)  460 MiB/s,  207.133 ms
+[ 4] lzp_cpu_rollhash (OpenMP):  1556 MiB/s,  61.303 ms
+[ 1] st3-cpu            :   191 /  182 MiB/s,  498.042 ms
+[ 2] st4-cpu            :   147 /  139 MiB/s,  650.890 ms
+[ 3] st5-cpu            :  58.9 / 55.9 MiB/s,  1620.292 ms
+[ 4] st6-cpu            :  42.2 / 40.1 MiB/s,  2260.165 ms
+[ 5] OpenBWT            :  5.62 / 5.34 MiB/s,  16966.598 ms
+[ 6] divsufsort         :  9.93 / 9.44 MiB/s,  9604.175 ms
+[ 7] divsufsort (OpenMP):  13.0 / 12.4 MiB/s,  7332.321 ms
+rle: 95,025,330 => 36,703,797 (38.63% / 36.70%)   >255: 15,164
+[ 1] mtf_cpu_bsc               :   179 / 65.5 MiB/s,  534.072 ms
+[ 2] mtf_cpu_shelwien          :   300 /  110 MiB/s,  317.566 ms
+[ 3] mtf_cpu_shelwien2         :   412 /  151 MiB/s,  231.687 ms
+[ 4] mtf_cpu_shelwien2 (OpenMP):  1575 /  578 MiB/s,  60.539 ms
+
+C:\app_bslab>for %c in (icl clang gcc msvc) do bslab-%c-x64.exe z:\e8
+
+C:\app_bslab>bslab-icl-x64.exe z:\e8
+[ 1] lzp_cpu_bsc              : 100,000,000 => 95,006,102 (95.01%)  237 MiB/s,  402.893 ms
+[ 2] lzp_cpu_bsc_mod          : 100,000,000 => 95,012,381 (95.01%)  364 MiB/s,  261.788 ms
+[ 3] lzp_cpu_rollhash         : 100,000,000 => 95,025,330 (95.03%)  472 MiB/s,  202.260 ms
+[ 4] lzp_cpu_rollhash (OpenMP):  1757 MiB/s,  54.267 ms
+[ 1] st3-cpu            :   192 /  182 MiB/s,  497.566 ms
+[ 2] st4-cpu            :   156 /  148 MiB/s,  611.165 ms
+[ 3] st5-cpu            :  61.6 / 58.5 MiB/s,  1549.197 ms
+[ 4] st6-cpu            :  42.5 / 40.4 MiB/s,  2244.947 ms
+[ 5] OpenBWT            :  5.89 / 5.59 MiB/s,  16197.841 ms
+[ 6] divsufsort         :  10.2 / 9.65 MiB/s,  9395.159 ms
+[ 7] divsufsort (OpenMP):  13.5 / 12.9 MiB/s,  7049.921 ms
+rle: 95,025,330 => 36,703,797 (38.63% / 36.70%)   >255: 15,164
+[ 1] mtf_cpu_bsc               :   165 / 60.5 MiB/s,  578.452 ms
+[ 2] mtf_cpu_shelwien          :   295 /  108 MiB/s,  323.098 ms
+[ 3] mtf_cpu_shelwien2         :   418 /  153 MiB/s,  228.392 ms
+[ 4] mtf_cpu_shelwien2 (OpenMP):  1296 /  476 MiB/s,  73.559 ms
+
+C:\app_bslab>bslab-clang-x64.exe z:\e8
+[ 1] lzp_cpu_bsc     : 100,000,000 => 95,006,102 (95.01%)  309 MiB/s,  309.109 ms
+[ 2] lzp_cpu_bsc_mod : 100,000,000 => 95,012,381 (95.01%)  331 MiB/s,  288.348 ms
+[ 3] lzp_cpu_rollhash: 100,000,000 => 95,025,330 (95.03%)  435 MiB/s,  219.373 ms
+[ 1] st3-cpu   :   201 /  191 MiB/s,  475.575 ms
+[ 2] st4-cpu   :   167 /  159 MiB/s,  569.792 ms
+[ 3] st5-cpu   :  65.5 / 62.2 MiB/s,  1456.221 ms
+[ 4] st6-cpu   :  46.8 / 44.5 MiB/s,  2037.470 ms
+[ 5] OpenBWT   :  5.45 / 5.18 MiB/s,  17496.672 ms
+[ 6] divsufsort:  10.1 / 9.63 MiB/s,  9410.880 ms
+rle: 95,025,330 => 36,703,797 (38.63% / 36.70%)   >255: 15,164
+[ 1] mtf_cpu_bsc      :   163 / 59.9 MiB/s,  584.800 ms
+[ 2] mtf_cpu_shelwien :   301 /  111 MiB/s,  316.382 ms
+[ 3] mtf_cpu_shelwien2:   369 /  135 MiB/s,  258.748 ms
+
+C:\app_bslab>bslab-gcc-x64.exe z:\e8
+[ 1] lzp_cpu_bsc              : 100,000,000 => 95,006,102 (95.01%)  348 MiB/s,  273.660 ms
+[ 2] lzp_cpu_bsc_mod          : 100,000,000 => 95,012,381 (95.01%)  371 MiB/s,  256.978 ms
+[ 3] lzp_cpu_rollhash         : 100,000,000 => 95,025,330 (95.03%)  406 MiB/s,  234.693 ms
+[ 4] lzp_cpu_rollhash (OpenMP):  1360 MiB/s,  70.119 ms
+[ 1] st3-cpu            :   186 /  177 MiB/s,  511.917 ms
+[ 2] st4-cpu            :   157 /  150 MiB/s,  605.558 ms
+[ 3] st5-cpu            :  61.8 / 58.7 MiB/s,  1543.189 ms
+[ 4] st6-cpu            :  45.6 / 43.3 MiB/s,  2090.738 ms
+[ 5] OpenBWT            :  6.02 / 5.72 MiB/s,  15848.801 ms
+[ 6] divsufsort         :  10.3 / 9.76 MiB/s,  9286.366 ms
+[ 7] divsufsort (OpenMP):  13.5 / 12.8 MiB/s,  7053.147 ms
+rle: 95,025,330 => 36,703,797 (38.63% / 36.70%)   >255: 15,164
+[ 1] mtf_cpu_bsc               :   177 / 65.0 MiB/s,  538.189 ms
+[ 2] mtf_cpu_shelwien          :   266 / 97.5 MiB/s,  359.029 ms
+[ 3] mtf_cpu_shelwien2         :   348 /  128 MiB/s,  274.264 ms
+[ 4] mtf_cpu_shelwien2 (OpenMP):  1290 /  474 MiB/s,  73.901 ms
+
+C:\app_bslab>bslab-msvc-x64.exe z:\e8
+[ 1] lzp_cpu_bsc              : 100,000,000 => 95,006,102 (95.01%)  310 MiB/s,  307.576 ms
+[ 2] lzp_cpu_bsc_mod          : 100,000,000 => 95,012,381 (95.01%)  373 MiB/s,  255.452 ms
+[ 3] lzp_cpu_rollhash         : 100,000,000 => 95,025,330 (95.03%)  421 MiB/s,  226.705 ms
+[ 4] lzp_cpu_rollhash (OpenMP):  1185 MiB/s,  80.450 ms
+[ 1] st3-cpu            :   197 /  187 MiB/s,  484.867 ms
+[ 2] st4-cpu            :   147 /  140 MiB/s,  649.275 ms
+[ 3] st5-cpu            :  60.0 / 57.0 MiB/s,  1589.409 ms
+[ 4] st6-cpu            :  42.4 / 40.2 MiB/s,  2251.517 ms
+[ 5] OpenBWT            :  5.69 / 5.41 MiB/s,  16763.330 ms
+[ 6] divsufsort         :  10.2 / 9.66 MiB/s,  9376.930 ms
+[ 7] divsufsort (OpenMP):  13.2 / 12.6 MiB/s,  7219.699 ms
+rle: 95,025,330 => 36,703,797 (38.63% / 36.70%)   >255: 15,164
+[ 1] mtf_cpu_bsc               :   181 / 66.5 MiB/s,  526.546 ms
+[ 2] mtf_cpu_shelwien          :   192 / 70.6 MiB/s,  495.841 ms
+[ 3] mtf_cpu_shelwien2         :   229 / 83.9 MiB/s,  417.170 ms
+[ 4] mtf_cpu_shelwien2 (OpenMP):   778 /  286 MiB/s,  122.522 ms
+
+C:\app_bslab>for %c in (icl clang gcc msvc) do bslab-%c-avx2.exe z:\e8
+
+C:\app_bslab>bslab-icl-avx2.exe z:\e8
+[ 1] lzp_cpu_bsc              : 100,000,000 => 95,006,102 (95.01%)  224 MiB/s,  426.224 ms
+[ 2] lzp_cpu_bsc_mod          : 100,000,000 => 95,012,381 (95.01%)  362 MiB/s,  263.469 ms
+[ 3] lzp_cpu_rollhash         : 100,000,000 => 95,025,330 (95.03%)  349 MiB/s,  273.027 ms
+[ 4] lzp_cpu_rollhash (OpenMP):   953 MiB/s,  100.122 ms
+[ 1] st3-cpu            :   158 /  150 MiB/s,  604.077 ms
+[ 2] st4-cpu            :   154 /  147 MiB/s,  617.932 ms
+[ 3] st5-cpu            :  62.0 / 58.9 MiB/s,  1538.365 ms
+[ 4] st6-cpu            :  41.8 / 39.7 MiB/s,  2283.594 ms
+[ 5] OpenBWT            :  5.69 / 5.40 MiB/s,  16770.963 ms
+[ 6] divsufsort         :  9.18 / 8.72 MiB/s,  10390.519 ms
+[ 7] divsufsort (OpenMP):  12.6 / 12.0 MiB/s,  7559.342 ms
+rle: 95,025,330 => 36,703,797 (38.63% / 36.70%)   >255: 15,164
+[ 1] mtf_cpu_bsc               :   165 / 60.7 MiB/s,  576.506 ms
+[ 2] mtf_cpu_shelwien          :   356 /  131 MiB/s,  267.521 ms
+[ 3] mtf_cpu_shelwien2         :   593 /  218 MiB/s,  160.745 ms
+[ 4] mtf_cpu_shelwien2 (OpenMP):  1328 /  487 MiB/s,  71.822 ms
+
+C:\app_bslab>bslab-clang-avx2.exe z:\e8
+[ 1] lzp_cpu_bsc     : 100,000,000 => 95,006,102 (95.01%)  251 MiB/s,  380.393 ms
+[ 2] lzp_cpu_bsc_mod : 100,000,000 => 95,012,381 (95.01%)  331 MiB/s,  287.904 ms
+[ 3] lzp_cpu_rollhash: 100,000,000 => 95,025,330 (95.03%)  353 MiB/s,  269.861 ms
+[ 1] st3-cpu   :   186 /  176 MiB/s,  513.791 ms
+[ 2] st4-cpu   :   141 /  134 MiB/s,  676.314 ms
+[ 3] st5-cpu   :  58.8 / 55.9 MiB/s,  1620.655 ms
+[ 4] st6-cpu   :  45.9 / 43.6 MiB/s,  2078.392 ms
+[ 5] OpenBWT   :  5.31 / 5.04 MiB/s,  17976.066 ms
+[ 6] divsufsort:  9.62 / 9.14 MiB/s,  9915.895 ms
+rle: 95,025,330 => 36,703,797 (38.63% / 36.70%)   >255: 15,164
+[ 1] mtf_cpu_bsc      :   145 / 53.4 MiB/s,  655.814 ms
+[ 2] mtf_cpu_shelwien :   310 /  114 MiB/s,  307.796 ms
+[ 3] mtf_cpu_shelwien2:   510 /  187 MiB/s,  187.017 ms
+
+C:\app_bslab>bslab-gcc-avx2.exe z:\e8
+[ 1] lzp_cpu_bsc              : 100,000,000 => 95,006,102 (95.01%)  312 MiB/s,  305.735 ms
+[ 2] lzp_cpu_bsc_mod          : 100,000,000 => 95,012,381 (95.01%)  337 MiB/s,  283.256 ms
+[ 3] lzp_cpu_rollhash         : 100,000,000 => 95,025,330 (95.03%)  249 MiB/s,  383.585 ms
+[ 4] lzp_cpu_rollhash (OpenMP):   918 MiB/s,  103.939 ms
+[ 1] st3-cpu            :   182 /  173 MiB/s,  524.895 ms
+[ 2] st4-cpu            :   153 /  146 MiB/s,  621.940 ms
+[ 3] st5-cpu            :  60.7 / 57.7 MiB/s,  1570.401 ms
+[ 4] st6-cpu            :  43.4 / 41.3 MiB/s,  2196.642 ms
+[ 5] OpenBWT            :  5.80 / 5.51 MiB/s,  16441.920 ms
+[ 6] divsufsort         :  9.79 / 9.31 MiB/s,  9738.907 ms
+[ 7] divsufsort (OpenMP):  13.0 / 12.4 MiB/s,  7322.395 ms
+rle: 95,025,330 => 36,703,797 (38.63% / 36.70%)   >255: 15,164
+[ 1] mtf_cpu_bsc               :   143 / 52.4 MiB/s,  668.179 ms
+[ 2] mtf_cpu_shelwien          :   347 /  127 MiB/s,  274.956 ms
+[ 3] mtf_cpu_shelwien2         :   514 /  189 MiB/s,  185.532 ms
+[ 4] mtf_cpu_shelwien2 (OpenMP):  1777 /  652 MiB/s,  53.654 ms
+
+C:\app_bslab>bslab-msvc-avx2.exe z:\e8
+[ 1] lzp_cpu_bsc              : 100,000,000 => 95,006,102 (95.01%)  265 MiB/s,  359.239 ms
+[ 2] lzp_cpu_bsc_mod          : 100,000,000 => 95,012,381 (95.01%)  336 MiB/s,  284.065 ms
+[ 3] lzp_cpu_rollhash         : 100,000,000 => 95,025,330 (95.03%)  323 MiB/s,  295.114 ms
+[ 4] lzp_cpu_rollhash (OpenMP):   851 MiB/s,  112.121 ms
+[ 1] st3-cpu            :   168 /  160 MiB/s,  568.002 ms
+[ 2] st4-cpu            :   139 /  132 MiB/s,  687.510 ms
+[ 3] st5-cpu            :  57.6 / 54.7 MiB/s,  1655.550 ms
+[ 4] st6-cpu            :  42.2 / 40.1 MiB/s,  2258.932 ms
+[ 5] OpenBWT            :  5.66 / 5.37 MiB/s,  16861.833 ms
+[ 6] divsufsort         :  9.57 / 9.09 MiB/s,  9966.473 ms
+[ 7] divsufsort (OpenMP):  12.8 / 12.1 MiB/s,  7465.539 ms
+rle: 95,025,330 => 36,703,797 (38.63% / 36.70%)   >255: 15,164
+[ 1] mtf_cpu_bsc               :   163 / 59.9 MiB/s,  584.161 ms
+[ 2] mtf_cpu_shelwien          :   288 /  106 MiB/s,  330.646 ms
+[ 3] mtf_cpu_shelwien2         :   369 /  135 MiB/s,  258.650 ms
+[ 4] mtf_cpu_shelwien2 (OpenMP):  1370 /  503 MiB/s,  69.587 ms
+
+C:\app_bslab>for %c in (icl clang gcc msvc) do bslab-%c.exe z:\e8
+
+C:\app_bslab>bslab-icl.exe z:\e8
+[ 1] lzp_cpu_bsc              : 100,000,000 => 95,006,102 (95.01%)  205 MiB/s,  465.398 ms
+[ 2] lzp_cpu_bsc_mod          : 100,000,000 => 95,012,381 (95.01%)  332 MiB/s,  286.949 ms
+[ 3] lzp_cpu_rollhash         : 100,000,000 => 95,025,330 (95.03%)  343 MiB/s,  278.361 ms
+[ 4] lzp_cpu_rollhash (OpenMP):   980 MiB/s,  97.339 ms
+[ 1] st3-cpu            :   167 /  159 MiB/s,  570.653 ms
+[ 2] st4-cpu            :   154 /  147 MiB/s,  617.737 ms
+[ 3] st5-cpu            :  62.1 / 59.1 MiB/s,  1534.670 ms
+[ 4] st6-cpu            :  42.6 / 40.4 MiB/s,  2241.195 ms
+[ 5] OpenBWT            :  5.70 / 5.42 MiB/s,  16735.550 ms
+[ 6] divsufsort         :  9.18 / 8.72 MiB/s,  10393.719 ms
+[ 7] divsufsort (OpenMP):  12.6 / 12.0 MiB/s,  7561.180 ms
+rle: 95,025,330 => 36,703,797 (38.63% / 36.70%)   >255: 15,164
+[ 1] mtf_cpu_bsc               :   167 / 61.2 MiB/s,  572.337 ms
+[ 2] mtf_cpu_shelwien          :   283 /  104 MiB/s,  337.208 ms
+[ 3] mtf_cpu_shelwien2         :   394 /  145 MiB/s,  241.914 ms
+[ 4] mtf_cpu_shelwien2 (OpenMP):  1536 /  564 MiB/s,  62.097 ms
+
+C:\app_bslab>bslab-clang.exe z:\e8
+[ 1] lzp_cpu_bsc     : 100,000,000 => 95,006,102 (95.01%)  248 MiB/s,  384.342 ms
+[ 2] lzp_cpu_bsc_mod : 100,000,000 => 95,012,381 (95.01%)  309 MiB/s,  308.344 ms
+[ 3] lzp_cpu_rollhash: 100,000,000 => 95,025,330 (95.03%)  316 MiB/s,  302.137 ms
+[ 1] st3-cpu   :   182 /  173 MiB/s,  522.751 ms
+[ 2] st4-cpu   :   151 /  143 MiB/s,  632.690 ms
+[ 3] st5-cpu   :  56.9 / 54.1 MiB/s,  1674.730 ms
+[ 4] st6-cpu   :  46.2 / 43.9 MiB/s,  2066.415 ms
+[ 5] OpenBWT   :  5.34 / 5.08 MiB/s,  17853.746 ms
+[ 6] divsufsort:  9.60 / 9.12 MiB/s,  9932.368 ms
+rle: 95,025,330 => 36,703,797 (38.63% / 36.70%)   >255: 15,164
+[ 1] mtf_cpu_bsc      :   147 / 53.8 MiB/s,  650.613 ms
+[ 2] mtf_cpu_shelwien :   282 /  104 MiB/s,  338.046 ms
+[ 3] mtf_cpu_shelwien2:   334 /  122 MiB/s,  285.933 ms
+
+C:\app_bslab>bslab-gcc.exe z:\e8
+[ 1] lzp_cpu_bsc              : 100,000,000 => 95,006,102 (95.01%)  320 MiB/s,  298.069 ms
+[ 2] lzp_cpu_bsc_mod          : 100,000,000 => 95,012,381 (95.01%)  339 MiB/s,  281.580 ms
+[ 3] lzp_cpu_rollhash         : 100,000,000 => 95,025,330 (95.03%)  256 MiB/s,  373.050 ms
+[ 4] lzp_cpu_rollhash (OpenMP):   847 MiB/s,  112.650 ms
+[ 1] st3-cpu            :   184 /  175 MiB/s,  517.924 ms
+[ 2] st4-cpu            :   153 /  145 MiB/s,  623.665 ms
+[ 3] st5-cpu            :  61.7 / 58.6 MiB/s,  1545.853 ms
+[ 4] st6-cpu            :  44.5 / 42.3 MiB/s,  2141.547 ms
+[ 5] OpenBWT            :  5.86 / 5.57 MiB/s,  16264.723 ms
+[ 6] divsufsort         :  9.81 / 9.32 MiB/s,  9719.480 ms
+[ 7] divsufsort (OpenMP):  12.9 / 12.3 MiB/s,  7366.328 ms
+rle: 95,025,330 => 36,703,797 (38.63% / 36.70%)   >255: 15,164
+[ 1] mtf_cpu_bsc               :   144 / 52.9 MiB/s,  662.154 ms
+[ 2] mtf_cpu_shelwien          :   268 / 98.5 MiB/s,  355.419 ms
+[ 3] mtf_cpu_shelwien2         :   326 /  120 MiB/s,  292.775 ms
+[ 4] mtf_cpu_shelwien2 (OpenMP):  1283 /  471 MiB/s,  74.353 ms
+
+C:\app_bslab>bslab-msvc.exe z:\e8
+[ 1] lzp_cpu_bsc              : 100,000,000 => 95,006,102 (95.01%)  256 MiB/s,  372.963 ms
+[ 2] lzp_cpu_bsc_mod          : 100,000,000 => 95,012,381 (95.01%)  306 MiB/s,  311.568 ms
+[ 3] lzp_cpu_rollhash         : 100,000,000 => 95,025,330 (95.03%)  290 MiB/s,  328.872 ms
+[ 4] lzp_cpu_rollhash (OpenMP):   790 MiB/s,  120.697 ms
+[ 1] st3-cpu            :   166 /  158 MiB/s,  574.720 ms
+[ 2] st4-cpu            :   140 /  133 MiB/s,  682.540 ms
+[ 3] st5-cpu            :  57.3 / 54.4 MiB/s,  1664.350 ms
+[ 4] st6-cpu            :  42.2 / 40.1 MiB/s,  2258.005 ms
+[ 5] OpenBWT            :  5.60 / 5.32 MiB/s,  17027.350 ms
+[ 6] divsufsort         :  9.44 / 8.97 MiB/s,  10106.786 ms
+[ 7] divsufsort (OpenMP):  12.6 / 11.9 MiB/s,  7587.447 ms
+rle: 95,025,330 => 36,703,797 (38.63% / 36.70%)   >255: 15,164
+[ 1] mtf_cpu_bsc               :   164 / 60.4 MiB/s,  579.986 ms
+[ 2] mtf_cpu_shelwien          :   172 / 63.1 MiB/s,  554.881 ms
+[ 3] mtf_cpu_shelwien2         :   217 / 79.5 MiB/s,  440.476 ms
+[ 4] mtf_cpu_shelwien2 (OpenMP):   822 /  302 MiB/s,  116.052 ms
+
+C:\app_bslab>for %x in (-x64-avx2.exe -x64.exe -avx2.exe .exe) do for %c in (icl clang gcc msvc) do bslab-%c%x z:\e9
+
+C:\app_bslab>for %c in (icl clang gcc msvc) do bslab-%c-x64-avx2.exe z:\e9
+
+C:\app_bslab>bslab-icl-x64-avx2.exe z:\e9
+[ 1] lzp_cpu_bsc              : 1,000,000,000 => 855,183,966 (85.52%)  267 MiB/s,  3574.753 ms
+[ 2] lzp_cpu_bsc_mod          : 1,000,000,000 => 855,168,159 (85.52%)  385 MiB/s,  2477.366 ms
+[ 3] lzp_cpu_rollhash         : 1,000,000,000 => 855,369,315 (85.54%)  494 MiB/s,  1929.248 ms
+[ 4] lzp_cpu_rollhash (OpenMP):  1433 MiB/s,  665.456 ms
+[ 1] st3-cpu            :   208 /  178 MiB/s,  4589.694 ms
+[ 2] st4-cpu            :   171 /  146 MiB/s,  5571.210 ms
+[ 3] st5-cpu            :  66.9 / 57.3 MiB/s,  14246.911 ms
+[ 4] st6-cpu            :  46.8 / 40.1 MiB/s,  20366.536 ms
+[ 5] OpenBWT            :  6.65 / 5.68 MiB/s,  143500.278 ms
+[ 6] divsufsort         :  11.2 / 9.55 MiB/s,  85425.175 ms
+[ 7] divsufsort (OpenMP):  14.9 / 12.7 MiB/s,  64208.480 ms
+rle: 855,369,315 => 317,196,734 (37.08% / 31.72%)   >255: 142,036
+[ 1] mtf_cpu_bsc               :   196 / 62.2 MiB/s,  4865.566 ms
+[ 2] mtf_cpu_shelwien          :   398 /  126 MiB/s,  2397.888 ms
+[ 3] mtf_cpu_shelwien2         :   657 /  208 MiB/s,  1451.915 ms
+[ 4] mtf_cpu_shelwien2 (OpenMP):  2585 /  820 MiB/s,  368.958 ms
+
+C:\app_bslab>bslab-clang-x64-avx2.exe z:\e9
+[ 1] lzp_cpu_bsc     : 1,000,000,000 => 855,183,966 (85.52%)  319 MiB/s,  2993.569 ms
+[ 2] lzp_cpu_bsc_mod : 1,000,000,000 => 855,168,159 (85.52%)  342 MiB/s,  2788.717 ms
+[ 3] lzp_cpu_rollhash: 1,000,000,000 => 855,369,315 (85.54%)  474 MiB/s,  2013.244 ms
+[ 1] st3-cpu   :   202 /  173 MiB/s,  4717.631 ms
+[ 2] st4-cpu   :   177 /  152 MiB/s,  5380.825 ms
+[ 3] st5-cpu   :  67.8 / 58.0 MiB/s,  14068.530 ms
+[ 4] st6-cpu   :  49.4 / 42.2 MiB/s,  19320.847 ms
+[ 5] OpenBWT   :  6.11 / 5.22 MiB/s,  156194.630 ms
+[ 6] divsufsort:  11.2 / 9.59 MiB/s,  85081.560 ms
+rle: 855,369,315 => 317,196,734 (37.08% / 31.72%)   >255: 142,036
+[ 1] mtf_cpu_bsc      :   204 / 64.6 MiB/s,  4681.593 ms
+[ 2] mtf_cpu_shelwien :   428 /  136 MiB/s,  2226.224 ms
+[ 3] mtf_cpu_shelwien2:   596 /  189 MiB/s,  1599.048 ms
+
+C:\app_bslab>bslab-gcc-x64-avx2.exe z:\e9
+[ 1] lzp_cpu_bsc              : 1,000,000,000 => 855,183,966 (85.52%)  348 MiB/s,  2741.644 ms
+[ 2] lzp_cpu_bsc_mod          : 1,000,000,000 => 855,168,159 (85.52%)  370 MiB/s,  2575.218 ms
+[ 3] lzp_cpu_rollhash         : 1,000,000,000 => 855,369,315 (85.54%)  422 MiB/s,  2259.566 ms
+[ 4] lzp_cpu_rollhash (OpenMP):  1509 MiB/s,  631.816 ms
+[ 1] st3-cpu            :   195 /  167 MiB/s,  4886.311 ms
+[ 2] st4-cpu            :   167 /  143 MiB/s,  5700.178 ms
+[ 3] st5-cpu            :  65.9 / 56.3 MiB/s,  14477.258 ms
+[ 4] st6-cpu            :  48.7 / 41.6 MiB/s,  19601.068 ms
+[ 5] OpenBWT            :  6.70 / 5.73 MiB/s,  142252.630 ms
+[ 6] divsufsort         :  11.3 / 9.66 MiB/s,  84437.663 ms
+[ 7] divsufsort (OpenMP):  14.8 / 12.6 MiB/s,  64585.689 ms
+rle: 855,369,315 => 317,196,734 (37.08% / 31.72%)   >255: 142,036
+[ 1] mtf_cpu_bsc               :   204 / 64.7 MiB/s,  4674.444 ms
+[ 2] mtf_cpu_shelwien          :   370 /  117 MiB/s,  2578.636 ms
+[ 3] mtf_cpu_shelwien2         :   584 /  185 MiB/s,  1633.116 ms
+[ 4] mtf_cpu_shelwien2 (OpenMP):   682 /  216 MiB/s,  1398.273 ms
+
+C:\app_bslab>bslab-msvc-x64-avx2.exe z:\e9
+[ 1] lzp_cpu_bsc              : 1,000,000,000 => 855,183,966 (85.52%)  323 MiB/s,  2953.422 ms
+[ 2] lzp_cpu_bsc_mod          : 1,000,000,000 => 855,168,159 (85.52%)  395 MiB/s,  2412.415 ms
+[ 3] lzp_cpu_rollhash         : 1,000,000,000 => 855,369,315 (85.54%)  487 MiB/s,  1957.971 ms
+[ 4] lzp_cpu_rollhash (OpenMP):  1456 MiB/s,  654.810 ms
+[ 1] st3-cpu            :   208 /  178 MiB/s,  4585.095 ms
+[ 2] st4-cpu            :   160 /  137 MiB/s,  5973.117 ms
+[ 3] st5-cpu            :  64.0 / 54.8 MiB/s,  14895.018 ms
+[ 4] st6-cpu            :  45.4 / 38.8 MiB/s,  21006.887 ms
+[ 5] OpenBWT            :  6.32 / 5.40 MiB/s,  150980.002 ms
+[ 6] divsufsort         :  11.1 / 9.50 MiB/s,  85855.856 ms
+[ 7] divsufsort (OpenMP):  14.5 / 12.4 MiB/s,  65565.929 ms
+rle: 855,369,315 => 317,196,734 (37.08% / 31.72%)   >255: 142,036
+[ 1] mtf_cpu_bsc               :   204 / 64.6 MiB/s,  4679.318 ms
+[ 2] mtf_cpu_shelwien          :   345 /  110 MiB/s,  2761.411 ms
+[ 3] mtf_cpu_shelwien2         :   471 /  150 MiB/s,  2023.082 ms
+[ 4] mtf_cpu_shelwien2 (OpenMP):  1740 /  552 MiB/s,  548.175 ms
+
+C:\app_bslab>for %c in (icl clang gcc msvc) do bslab-%c-x64.exe z:\e9
+
+C:\app_bslab>bslab-icl-x64.exe z:\e9
+[ 1] lzp_cpu_bsc              : 1,000,000,000 => 855,183,966 (85.52%)  274 MiB/s,  3475.590 ms
+[ 2] lzp_cpu_bsc_mod          : 1,000,000,000 => 855,168,159 (85.52%)  367 MiB/s,  2595.310 ms
+[ 3] lzp_cpu_rollhash         : 1,000,000,000 => 855,369,315 (85.54%)  488 MiB/s,  1952.647 ms
+[ 4] lzp_cpu_rollhash (OpenMP):  1501 MiB/s,  635.485 ms
+[ 1] st3-cpu            :   206 /  177 MiB/s,  4620.462 ms
+[ 2] st4-cpu            :   169 /  145 MiB/s,  5640.893 ms
+[ 3] st5-cpu            :  66.5 / 56.9 MiB/s,  14338.477 ms
+[ 4] st6-cpu            :  46.5 / 39.8 MiB/s,  20519.435 ms
+[ 5] OpenBWT            :  6.61 / 5.65 MiB/s,  144384.098 ms
+[ 6] divsufsort         :  11.1 / 9.51 MiB/s,  85773.096 ms
+[ 7] divsufsort (OpenMP):  14.8 / 12.6 MiB/s,  64529.215 ms
+rle: 855,369,315 => 317,196,734 (37.08% / 31.72%)   >255: 142,036
+[ 1] mtf_cpu_bsc               :   186 / 58.8 MiB/s,  5140.753 ms
+[ 2] mtf_cpu_shelwien          :   333 /  106 MiB/s,  2860.983 ms
+[ 3] mtf_cpu_shelwien2         :   470 /  149 MiB/s,  2028.455 ms
+[ 4] mtf_cpu_shelwien2 (OpenMP):  1349 /  428 MiB/s,  706.969 ms
+
+C:\app_bslab>bslab-clang-x64.exe z:\e9
+[ 1] lzp_cpu_bsc     : 1,000,000,000 => 855,183,966 (85.52%)  304 MiB/s,  3137.567 ms
+[ 2] lzp_cpu_bsc_mod : 1,000,000,000 => 855,168,159 (85.52%)  332 MiB/s,  2874.934 ms
+[ 3] lzp_cpu_rollhash: 1,000,000,000 => 855,369,315 (85.54%)  441 MiB/s,  2162.498 ms
+[ 1] st3-cpu   :   213 /  182 MiB/s,  4472.288 ms
+[ 2] st4-cpu   :   176 /  151 MiB/s,  5411.800 ms
+[ 3] st5-cpu   :  69.5 / 59.4 MiB/s,  13725.082 ms
+[ 4] st6-cpu   :  49.5 / 42.3 MiB/s,  19276.635 ms
+[ 5] OpenBWT   :  6.07 / 5.19 MiB/s,  157086.258 ms
+[ 6] divsufsort:  11.2 / 9.58 MiB/s,  85140.112 ms
+rle: 855,369,315 => 317,196,734 (37.08% / 31.72%)   >255: 142,036
+[ 1] mtf_cpu_bsc      :   184 / 58.3 MiB/s,  5188.215 ms
+[ 2] mtf_cpu_shelwien :   342 /  108 MiB/s,  2792.466 ms
+[ 3] mtf_cpu_shelwien2:   423 /  134 MiB/s,  2254.285 ms
+
+C:\app_bslab>bslab-gcc-x64.exe z:\e9
+[ 1] lzp_cpu_bsc              : 1,000,000,000 => 855,183,966 (85.52%)  354 MiB/s,  2696.836 ms
+[ 2] lzp_cpu_bsc_mod          : 1,000,000,000 => 855,168,159 (85.52%)  373 MiB/s,  2554.002 ms
+[ 3] lzp_cpu_rollhash         : 1,000,000,000 => 855,369,315 (85.54%)  421 MiB/s,  2267.833 ms
+[ 4] lzp_cpu_rollhash (OpenMP):  1518 MiB/s,  628.178 ms
+[ 1] st3-cpu            :   195 /  167 MiB/s,  4888.422 ms
+[ 2] st4-cpu            :   168 /  144 MiB/s,  5673.103 ms
+[ 3] st5-cpu            :  66.0 / 56.4 MiB/s,  14456.062 ms
+[ 4] st6-cpu            :  48.4 / 41.4 MiB/s,  19711.391 ms
+[ 5] OpenBWT            :  6.70 / 5.73 MiB/s,  142299.922 ms
+[ 6] divsufsort         :  11.3 / 9.64 MiB/s,  84606.538 ms
+[ 7] divsufsort (OpenMP):  14.8 / 12.6 MiB/s,  64547.011 ms
+rle: 855,369,315 => 317,196,734 (37.08% / 31.72%)   >255: 142,036
+[ 1] mtf_cpu_bsc               :   201 / 63.8 MiB/s,  4740.943 ms
+[ 2] mtf_cpu_shelwien          :   304 / 96.3 MiB/s,  3139.756 ms
+[ 3] mtf_cpu_shelwien2         :   397 /  126 MiB/s,  2400.751 ms
+[ 4] mtf_cpu_shelwien2 (OpenMP):  1491 /  473 MiB/s,  639.427 ms
+
+C:\app_bslab>bslab-msvc-x64.exe z:\e9
+[ 1] lzp_cpu_bsc              : 1,000,000,000 => 855,183,966 (85.52%)  324 MiB/s,  2940.935 ms
+[ 2] lzp_cpu_bsc_mod          : 1,000,000,000 => 855,168,159 (85.52%)  375 MiB/s,  2545.016 ms
+[ 3] lzp_cpu_rollhash         : 1,000,000,000 => 855,369,315 (85.54%)  437 MiB/s,  2180.726 ms
+[ 4] lzp_cpu_rollhash (OpenMP):  1427 MiB/s,  668.212 ms
+[ 1] st3-cpu            :   207 /  177 MiB/s,  4609.756 ms
+[ 2] st4-cpu            :   159 /  136 MiB/s,  5993.778 ms
+[ 3] st5-cpu            :  64.5 / 55.2 MiB/s,  14789.159 ms
+[ 4] st6-cpu            :  45.7 / 39.1 MiB/s,  20852.813 ms
+[ 5] OpenBWT            :  6.31 / 5.40 MiB/s,  151031.599 ms
+[ 6] divsufsort         :  11.1 / 9.51 MiB/s,  85737.547 ms
+[ 7] divsufsort (OpenMP):  14.6 / 12.5 MiB/s,  65394.498 ms
+rle: 855,369,315 => 317,196,734 (37.08% / 31.72%)   >255: 142,036
+[ 1] mtf_cpu_bsc               :   206 / 65.3 MiB/s,  4630.286 ms
+[ 2] mtf_cpu_shelwien          :   218 / 69.2 MiB/s,  4370.042 ms
+[ 3] mtf_cpu_shelwien2         :   260 / 82.3 MiB/s,  3673.714 ms
+[ 4] mtf_cpu_shelwien2 (OpenMP):   889 /  282 MiB/s,  1072.247 ms
+
+C:\app_bslab>for %c in (icl clang gcc msvc) do bslab-%c-avx2.exe z:\e9
+
+C:\app_bslab>bslab-icl-avx2.exe z:\e9
+[ 1] lzp_cpu_bsc              : 1,000,000,000 => 855,183,966 (85.52%)  249 MiB/s,  3837.484 ms
+[ 2] lzp_cpu_bsc_mod          : 1,000,000,000 => 855,168,159 (85.52%)  344 MiB/s,  2774.339 ms
+[ 3] lzp_cpu_rollhash         : 1,000,000,000 => 855,369,315 (85.54%)  355 MiB/s,  2685.809 ms
+[ 4] lzp_cpu_rollhash (OpenMP):   873 MiB/s,  1092.807 ms
+[ 1] st3-cpu            :   168 /  144 MiB/s,  5679.891 ms
+[ 2] st4-cpu            :   161 /  138 MiB/s,  5912.052 ms
+[ 3] st5-cpu            :  65.9 / 56.4 MiB/s,  14474.459 ms
+[ 4] st6-cpu            :  45.5 / 38.9 MiB/s,  20945.373 ms
+[ 5] OpenBWT            :  6.30 / 5.39 MiB/s,  151280.514 ms
+[ 6] divsufsort         :  10.1 / 8.66 MiB/s,  94217.858 ms
+[ 7] divsufsort (OpenMP):  13.9 / 11.9 MiB/s,  68433.745 ms
+rle: 855,369,315 => 317,196,734 (37.08% / 31.72%)   >255: 142,036
+[ 1] mtf_cpu_bsc               :   185 / 58.8 MiB/s,  5141.777 ms
+[ 2] mtf_cpu_shelwien          :   403 /  128 MiB/s,  2364.206 ms
+[ 3] mtf_cpu_shelwien2         :   657 /  209 MiB/s,  1450.569 ms
+[ 4] mtf_cpu_shelwien2 (OpenMP):  2697 /  856 MiB/s,  353.565 ms
+
+C:\app_bslab>bslab-clang-avx2.exe z:\e9
+[ 1] lzp_cpu_bsc     : 1,000,000,000 => 855,183,966 (85.52%)  258 MiB/s,  3692.564 ms
+[ 2] lzp_cpu_bsc_mod : 1,000,000,000 => 855,168,159 (85.52%)  337 MiB/s,  2832.505 ms
+[ 3] lzp_cpu_rollhash: 1,000,000,000 => 855,369,315 (85.54%)  363 MiB/s,  2626.436 ms
+[ 1] st3-cpu   :   195 /  167 MiB/s,  4899.113 ms
+[ 2] st4-cpu   :   149 /  127 MiB/s,  6405.967 ms
+[ 3] st5-cpu   :  64.1 / 54.8 MiB/s,  14884.048 ms
+[ 4] st6-cpu   :  48.8 / 41.8 MiB/s,  19532.508 ms
+[ 5] OpenBWT   :  6.06 / 5.18 MiB/s,  157347.269 ms
+[ 6] divsufsort:  10.7 / 9.12 MiB/s,  89403.953 ms
+rle: 855,369,315 => 317,196,734 (37.08% / 31.72%)   >255: 142,036
+[ 1] mtf_cpu_bsc      :   167 / 53.1 MiB/s,  5700.957 ms
+[ 2] mtf_cpu_shelwien :   388 /  123 MiB/s,  2454.869 ms
+[ 3] mtf_cpu_shelwien2:   630 /  200 MiB/s,  1513.012 ms
+
+C:\app_bslab>bslab-gcc-avx2.exe z:\e9
+[ 1] lzp_cpu_bsc              : 1,000,000,000 => 855,183,966 (85.52%)  327 MiB/s,  2920.195 ms
+[ 2] lzp_cpu_bsc_mod          : 1,000,000,000 => 855,168,159 (85.52%)  347 MiB/s,  2747.990 ms
+[ 3] lzp_cpu_rollhash         : 1,000,000,000 => 855,369,315 (85.54%)  267 MiB/s,  3569.878 ms
+[ 4] lzp_cpu_rollhash (OpenMP):   941 MiB/s,  1013.968 ms
+[ 1] st3-cpu            :   195 /  167 MiB/s,  4889.787 ms
+[ 2] st4-cpu            :   168 /  144 MiB/s,  5684.603 ms
+[ 3] st5-cpu            :  66.6 / 57.0 MiB/s,  14314.359 ms
+[ 4] st6-cpu            :  48.2 / 41.2 MiB/s,  19788.905 ms
+[ 5] OpenBWT            :  6.54 / 5.59 MiB/s,  145806.064 ms
+[ 6] divsufsort         :  10.8 / 9.21 MiB/s,  88546.491 ms
+[ 7] divsufsort (OpenMP):  14.3 / 12.3 MiB/s,  66557.197 ms
+rle: 855,369,315 => 317,196,734 (37.08% / 31.72%)   >255: 142,036
+[ 1] mtf_cpu_bsc               :   159 / 50.5 MiB/s,  5993.364 ms
+[ 2] mtf_cpu_shelwien          :   398 /  126 MiB/s,  2397.285 ms
+[ 3] mtf_cpu_shelwien2         :   586 /  186 MiB/s,  1626.653 ms
+[ 4] mtf_cpu_shelwien2 (OpenMP):  2412 /  765 MiB/s,  395.455 ms
+
+C:\app_bslab>bslab-msvc-avx2.exe z:\e9
+[ 1] lzp_cpu_bsc              : 1,000,000,000 => 855,183,966 (85.52%)  270 MiB/s,  3534.401 ms
+[ 2] lzp_cpu_bsc_mod          : 1,000,000,000 => 855,168,159 (85.52%)  337 MiB/s,  2833.368 ms
+[ 3] lzp_cpu_rollhash         : 1,000,000,000 => 855,369,315 (85.54%)  328 MiB/s,  2910.037 ms
+[ 4] lzp_cpu_rollhash (OpenMP):  1028 MiB/s,  927.624 ms
+[ 1] st3-cpu            :   177 /  151 MiB/s,  5385.475 ms
+[ 2] st4-cpu            :   150 /  129 MiB/s,  6341.742 ms
+[ 3] st5-cpu            :  62.2 / 53.2 MiB/s,  15330.055 ms
+[ 4] st6-cpu            :  45.3 / 38.7 MiB/s,  21070.697 ms
+[ 5] OpenBWT            :  6.28 / 5.37 MiB/s,  151796.584 ms
+[ 6] divsufsort         :  10.5 / 8.99 MiB/s,  90722.581 ms
+[ 7] divsufsort (OpenMP):  14.1 / 12.1 MiB/s,  67514.095 ms
+rle: 855,369,315 => 317,196,734 (37.08% / 31.72%)   >255: 142,036
+[ 1] mtf_cpu_bsc               :   184 / 58.2 MiB/s,  5195.065 ms
+[ 2] mtf_cpu_shelwien          :   312 / 98.9 MiB/s,  3057.609 ms
+[ 3] mtf_cpu_shelwien2         :   422 /  134 MiB/s,  2261.083 ms
+[ 4] mtf_cpu_shelwien2 (OpenMP):  1502 /  476 MiB/s,  634.988 ms
+
+C:\app_bslab>for %c in (icl clang gcc msvc) do bslab-%c.exe z:\e9
+
+C:\app_bslab>bslab-icl.exe z:\e9
+[ 1] lzp_cpu_bsc              : 1,000,000,000 => 855,183,966 (85.52%)  247 MiB/s,  3860.045 ms
+[ 2] lzp_cpu_bsc_mod          : 1,000,000,000 => 855,168,159 (85.52%)  341 MiB/s,  2797.712 ms
+[ 3] lzp_cpu_rollhash         : 1,000,000,000 => 855,369,315 (85.54%)  363 MiB/s,  2629.060 ms
+[ 4] lzp_cpu_rollhash (OpenMP):  1086 MiB/s,  878.130 ms
+[ 1] st3-cpu            :   179 /  153 MiB/s,  5328.586 ms
+[ 2] st4-cpu            :   166 /  142 MiB/s,  5750.610 ms
+[ 3] st5-cpu            :  66.5 / 56.9 MiB/s,  14347.955 ms
+[ 4] st6-cpu            :  45.9 / 39.2 MiB/s,  20786.048 ms
+[ 5] OpenBWT            :  6.33 / 5.42 MiB/s,  150542.874 ms
+[ 6] divsufsort         :  10.1 / 8.64 MiB/s,  94372.929 ms
+[ 7] divsufsort (OpenMP):  13.8 / 11.8 MiB/s,  68977.150 ms
+rle: 855,369,315 => 317,196,734 (37.08% / 31.72%)   >255: 142,036
+[ 1] mtf_cpu_bsc               :   188 / 59.7 MiB/s,  5069.979 ms
+[ 2] mtf_cpu_shelwien          :   321 /  102 MiB/s,  2968.044 ms
+[ 3] mtf_cpu_shelwien2         :   456 /  145 MiB/s,  2091.740 ms
+[ 4] mtf_cpu_shelwien2 (OpenMP):  1744 /  553 MiB/s,  546.876 ms
+
+C:\app_bslab>bslab-clang.exe z:\e9
+[ 1] lzp_cpu_bsc     : 1,000,000,000 => 855,183,966 (85.52%)  256 MiB/s,  3729.963 ms
+[ 2] lzp_cpu_bsc_mod : 1,000,000,000 => 855,168,159 (85.52%)  317 MiB/s,  3009.263 ms
+[ 3] lzp_cpu_rollhash: 1,000,000,000 => 855,369,315 (85.54%)  331 MiB/s,  2880.477 ms
+[ 1] st3-cpu   :   194 /  166 MiB/s,  4911.067 ms
+[ 2] st4-cpu   :   161 /  137 MiB/s,  5940.137 ms
+[ 3] st5-cpu   :  61.1 / 52.3 MiB/s,  15596.482 ms
+[ 4] st6-cpu   :  49.0 / 41.9 MiB/s,  19467.051 ms
+[ 5] OpenBWT   :  5.99 / 5.13 MiB/s,  159132.435 ms
+[ 6] divsufsort:  10.7 / 9.14 MiB/s,  89265.834 ms
+rle: 855,369,315 => 317,196,734 (37.08% / 31.72%)   >255: 142,036
+[ 1] mtf_cpu_bsc      :   168 / 53.2 MiB/s,  5681.889 ms
+[ 2] mtf_cpu_shelwien :   326 /  103 MiB/s,  2924.950 ms
+[ 3] mtf_cpu_shelwien2:   384 /  122 MiB/s,  2481.482 ms
+
+C:\app_bslab>bslab-gcc.exe z:\e9
+[ 1] lzp_cpu_bsc              : 1,000,000,000 => 855,183,966 (85.52%)  327 MiB/s,  2916.846 ms
+[ 2] lzp_cpu_bsc_mod          : 1,000,000,000 => 855,168,159 (85.52%)  347 MiB/s,  2750.913 ms
+[ 3] lzp_cpu_rollhash         : 1,000,000,000 => 855,369,315 (85.54%)  267 MiB/s,  3571.909 ms
+[ 4] lzp_cpu_rollhash (OpenMP):   962 MiB/s,  991.701 ms
+[ 1] st3-cpu            :   195 /  167 MiB/s,  4894.216 ms
+[ 2] st4-cpu            :   168 /  143 MiB/s,  5685.279 ms
+[ 3] st5-cpu            :  66.3 / 56.8 MiB/s,  14374.321 ms
+[ 4] st6-cpu            :  48.0 / 41.0 MiB/s,  19886.724 ms
+[ 5] OpenBWT            :  6.60 / 5.65 MiB/s,  144394.867 ms
+[ 6] divsufsort         :  10.9 / 9.32 MiB/s,  87517.253 ms
+[ 7] divsufsort (OpenMP):  14.4 / 12.3 MiB/s,  66168.578 ms
+rle: 855,369,315 => 317,196,734 (37.08% / 31.72%)   >255: 142,036
+[ 1] mtf_cpu_bsc               :   166 / 52.5 MiB/s,  5761.789 ms
+[ 2] mtf_cpu_shelwien          :   310 / 98.4 MiB/s,  3074.285 ms
+[ 3] mtf_cpu_shelwien2         :   379 /  120 MiB/s,  2516.163 ms
+[ 4] mtf_cpu_shelwien2 (OpenMP):  1451 /  460 MiB/s,  657.268 ms
+
+C:\app_bslab>bslab-msvc.exe z:\e9
+[ 1] lzp_cpu_bsc              : 1,000,000,000 => 855,183,966 (85.52%)  270 MiB/s,  3536.347 ms
+[ 2] lzp_cpu_bsc_mod          : 1,000,000,000 => 855,168,159 (85.52%)  321 MiB/s,  2973.858 ms
+[ 3] lzp_cpu_rollhash         : 1,000,000,000 => 855,369,315 (85.54%)  310 MiB/s,  3076.848 ms
+[ 4] lzp_cpu_rollhash (OpenMP):   888 MiB/s,  1073.687 ms
+[ 1] st3-cpu            :   178 /  152 MiB/s,  5368.169 ms
+[ 2] st4-cpu            :   150 /  128 MiB/s,  6378.860 ms
+[ 3] st5-cpu            :  62.3 / 53.3 MiB/s,  15305.884 ms
+[ 4] st6-cpu            :  45.6 / 39.0 MiB/s,  20931.471 ms
+[ 5] OpenBWT            :  6.28 / 5.37 MiB/s,  151806.084 ms
+[ 6] divsufsort         :  10.5 / 9.00 MiB/s,  90675.118 ms
+[ 7] divsufsort (OpenMP):  14.1 / 12.1 MiB/s,  67472.835 ms
+rle: 855,369,315 => 317,196,734 (37.08% / 31.72%)   >255: 142,036
+[ 1] mtf_cpu_bsc               :   187 / 59.4 MiB/s,  5088.755 ms
+[ 2] mtf_cpu_shelwien          :   199 / 63.1 MiB/s,  4795.755 ms
+[ 3] mtf_cpu_shelwien2         :   250 / 79.2 MiB/s,  3817.562 ms
+[ 4] mtf_cpu_shelwien2 (OpenMP):   898 /  285 MiB/s,  1061.792 ms
+
+C:\app_bslab>for %x in (-x64-avx2.exe -x64.exe -avx2.exe .exe) do for %c in (icl clang gcc msvc) do bslab-%c%x z:\100m
+
+C:\app_bslab>for %c in (icl clang gcc msvc) do bslab-%c-x64-avx2.exe z:\100m
+
+C:\app_bslab>bslab-icl-x64-avx2.exe z:\100m
+[ 1] lzp_cpu_bsc              : 100,000,000 => 79,801,322 (79.80%)  245 MiB/s,  389.414 ms
+[ 2] lzp_cpu_bsc_mod          : 100,000,000 => 79,719,157 (79.72%)  379 MiB/s,  251.788 ms
+[ 3] lzp_cpu_rollhash         : 100,000,000 => 79,706,174 (79.71%)  519 MiB/s,  183.843 ms
+[ 4] lzp_cpu_rollhash (OpenMP):  1189 MiB/s,  80.205 ms
+[ 1] st3-cpu            :   139 /  110 MiB/s,  687.912 ms
+[ 2] st4-cpu            :  99.6 / 79.4 MiB/s,  957.732 ms
+[ 3] st5-cpu            :  38.1 / 30.4 MiB/s,  2501.185 ms
+[ 4] st6-cpu            :  20.3 / 16.2 MiB/s,  4697.225 ms
+[ 5] OpenBWT            :  7.33 / 5.84 MiB/s,  13018.449 ms
+[ 6] divsufsort         :  14.9 / 11.9 MiB/s,  6384.447 ms
+[ 7] divsufsort (OpenMP):  21.1 / 16.8 MiB/s,  4530.350 ms
+rle: 79,706,174 => 34,340,061 (43.08% / 34.34%)   >255: 7,964
+[ 1] mtf_cpu_bsc               :  85.0 / 29.2 MiB/s,  1122.305 ms
+[ 2] mtf_cpu_shelwien          :   382 /  131 MiB/s,  249.597 ms
+[ 3] mtf_cpu_shelwien2         :   602 /  207 MiB/s,  158.381 ms
+[ 4] mtf_cpu_shelwien2 (OpenMP):  1970 /  677 MiB/s,  48.402 ms
+
+C:\app_bslab>bslab-clang-x64-avx2.exe z:\100m
+[ 1] lzp_cpu_bsc     : 100,000,000 => 79,801,322 (79.80%)  320 MiB/s,  298.229 ms
+[ 2] lzp_cpu_bsc_mod : 100,000,000 => 79,719,157 (79.72%)  344 MiB/s,  277.566 ms
+[ 3] lzp_cpu_rollhash: 100,000,000 => 79,706,174 (79.71%)  500 MiB/s,  190.819 ms
+[ 1] st3-cpu   :   139 /  110 MiB/s,  688.194 ms
+[ 2] st4-cpu   :   101 / 80.8 MiB/s,  940.952 ms
+[ 3] st5-cpu   :  39.0 / 31.1 MiB/s,  2445.652 ms
+[ 4] st6-cpu   :  21.3 / 17.0 MiB/s,  4476.267 ms
+[ 5] OpenBWT   :  6.80 / 5.42 MiB/s,  14016.851 ms
+[ 6] divsufsort:  15.1 / 12.0 MiB/s,  6330.120 ms
+rle: 79,706,174 => 34,340,061 (43.08% / 34.34%)   >255: 7,964
+[ 1] mtf_cpu_bsc      :  95.0 / 32.6 MiB/s,  1003.476 ms
+[ 2] mtf_cpu_shelwien :   397 /  136 MiB/s,  239.938 ms
+[ 3] mtf_cpu_shelwien2:   562 /  193 MiB/s,  169.754 ms
+
+C:\app_bslab>bslab-gcc-x64-avx2.exe z:\100m
+[ 1] lzp_cpu_bsc              : 100,000,000 => 79,801,322 (79.80%)  339 MiB/s,  281.733 ms
+[ 2] lzp_cpu_bsc_mod          : 100,000,000 => 79,719,157 (79.72%)  369 MiB/s,  258.389 ms
+[ 3] lzp_cpu_rollhash         : 100,000,000 => 79,706,174 (79.71%)  434 MiB/s,  219.945 ms
+[ 4] lzp_cpu_rollhash (OpenMP):  1607 MiB/s,  59.346 ms
+[ 1] st3-cpu            :   136 /  108 MiB/s,  702.303 ms
+[ 2] st4-cpu            :   100 / 79.8 MiB/s,  952.242 ms
+[ 3] st5-cpu            :  37.8 / 30.1 MiB/s,  2521.476 ms
+[ 4] st6-cpu            :  21.1 / 16.8 MiB/s,  4523.854 ms
+[ 5] OpenBWT            :  7.42 / 5.91 MiB/s,  12859.076 ms
+[ 6] divsufsort         :  15.4 / 12.2 MiB/s,  6211.325 ms
+[ 7] divsufsort (OpenMP):  21.3 / 17.0 MiB/s,  4479.670 ms
+rle: 79,706,174 => 34,340,061 (43.08% / 34.34%)   >255: 7,964
+[ 1] mtf_cpu_bsc               :  94.2 / 32.3 MiB/s,  1012.560 ms
+[ 2] mtf_cpu_shelwien          :   353 /  121 MiB/s,  269.882 ms
+[ 3] mtf_cpu_shelwien2         :   524 /  180 MiB/s,  182.150 ms
+[ 4] mtf_cpu_shelwien2 (OpenMP):   618 /  212 MiB/s,  154.400 ms
+
+C:\app_bslab>bslab-msvc-x64-avx2.exe z:\100m
+[ 1] lzp_cpu_bsc              : 100,000,000 => 79,801,322 (79.80%)  324 MiB/s,  294.241 ms
+[ 2] lzp_cpu_bsc_mod          : 100,000,000 => 79,719,157 (79.72%)  392 MiB/s,  243.286 ms
+[ 3] lzp_cpu_rollhash         : 100,000,000 => 79,706,174 (79.71%)  519 MiB/s,  183.756 ms
+[ 4] lzp_cpu_rollhash (OpenMP):  1639 MiB/s,  58.182 ms
+[ 1] st3-cpu            :   139 /  111 MiB/s,  685.564 ms
+[ 2] st4-cpu            :  98.5 / 78.5 MiB/s,  968.625 ms
+[ 3] st5-cpu            :  36.3 / 28.9 MiB/s,  2626.350 ms
+[ 4] st6-cpu            :  19.8 / 15.8 MiB/s,  4818.083 ms
+[ 5] OpenBWT            :  7.05 / 5.62 MiB/s,  13531.055 ms
+[ 6] divsufsort         :  14.8 / 11.8 MiB/s,  6440.511 ms
+[ 7] divsufsort (OpenMP):  20.8 / 16.6 MiB/s,  4589.055 ms
+rle: 79,706,174 => 34,340,061 (43.08% / 34.34%)   >255: 7,964
+[ 1] mtf_cpu_bsc               :   103 / 35.5 MiB/s,  922.852 ms
+[ 2] mtf_cpu_shelwien          :   326 /  112 MiB/s,  292.617 ms
+[ 3] mtf_cpu_shelwien2         :   427 /  146 MiB/s,  223.554 ms
+[ 4] mtf_cpu_shelwien2 (OpenMP):  1488 /  511 MiB/s,  64.110 ms
+
+C:\app_bslab>for %c in (icl clang gcc msvc) do bslab-%c-x64.exe z:\100m
+
+C:\app_bslab>bslab-icl-x64.exe z:\100m
+[ 1] lzp_cpu_bsc              : 100,000,000 => 79,801,322 (79.80%)  245 MiB/s,  389.696 ms
+[ 2] lzp_cpu_bsc_mod          : 100,000,000 => 79,719,157 (79.72%)  355 MiB/s,  268.860 ms
+[ 3] lzp_cpu_rollhash         : 100,000,000 => 79,706,174 (79.71%)  536 MiB/s,  177.771 ms
+[ 4] lzp_cpu_rollhash (OpenMP):  1056 MiB/s,  90.329 ms
+[ 1] st3-cpu            :   139 /  111 MiB/s,  684.361 ms
+[ 2] st4-cpu            :   101 / 80.2 MiB/s,  947.631 ms
+[ 3] st5-cpu            :  38.5 / 30.7 MiB/s,  2479.508 ms
+[ 4] st6-cpu            :  20.2 / 16.1 MiB/s,  4724.943 ms
+[ 5] OpenBWT            :  7.30 / 5.82 MiB/s,  13059.004 ms
+[ 6] divsufsort         :  14.9 / 11.8 MiB/s,  6418.678 ms
+[ 7] divsufsort (OpenMP):  20.9 / 16.7 MiB/s,  4553.820 ms
+rle: 79,706,174 => 34,340,061 (43.08% / 34.34%)   >255: 7,964
+[ 1] mtf_cpu_bsc               :  79.5 / 27.3 MiB/s,  1199.570 ms
+[ 2] mtf_cpu_shelwien          :   304 /  104 MiB/s,  313.650 ms
+[ 3] mtf_cpu_shelwien2         :   394 /  135 MiB/s,  242.150 ms
+[ 4] mtf_cpu_shelwien2 (OpenMP):  1503 /  516 MiB/s,  63.439 ms
+
+C:\app_bslab>bslab-clang-x64.exe z:\100m
+[ 1] lzp_cpu_bsc     : 100,000,000 => 79,801,322 (79.80%)  316 MiB/s,  301.572 ms
+[ 2] lzp_cpu_bsc_mod : 100,000,000 => 79,719,157 (79.72%)  333 MiB/s,  286.217 ms
+[ 3] lzp_cpu_rollhash: 100,000,000 => 79,706,174 (79.71%)  471 MiB/s,  202.395 ms
+[ 1] st3-cpu   :   142 /  113 MiB/s,  670.907 ms
+[ 2] st4-cpu   :   102 / 81.0 MiB/s,  937.936 ms
+[ 3] st5-cpu   :  39.5 / 31.5 MiB/s,  2415.089 ms
+[ 4] st6-cpu   :  21.1 / 16.8 MiB/s,  4516.265 ms
+[ 5] OpenBWT   :  6.76 / 5.39 MiB/s,  14103.163 ms
+[ 6] divsufsort:  15.0 / 11.9 MiB/s,  6363.698 ms
+rle: 79,706,174 => 34,340,061 (43.08% / 34.34%)   >255: 7,964
+[ 1] mtf_cpu_bsc      :  63.0 / 21.6 MiB/s,  1513.391 ms
+[ 2] mtf_cpu_shelwien :   318 /  109 MiB/s,  299.615 ms
+[ 3] mtf_cpu_shelwien2:   371 /  127 MiB/s,  256.929 ms
+
+C:\app_bslab>bslab-gcc-x64.exe z:\100m
+[ 1] lzp_cpu_bsc              : 100,000,000 => 79,801,322 (79.80%)  346 MiB/s,  275.658 ms
+[ 2] lzp_cpu_bsc_mod          : 100,000,000 => 79,719,157 (79.72%)  372 MiB/s,  256.233 ms
+[ 3] lzp_cpu_rollhash         : 100,000,000 => 79,706,174 (79.71%)  435 MiB/s,  219.028 ms
+[ 4] lzp_cpu_rollhash (OpenMP):  1602 MiB/s,  59.538 ms
+[ 1] st3-cpu            :   136 /  109 MiB/s,  699.365 ms
+[ 2] st4-cpu            :   101 / 80.2 MiB/s,  947.624 ms
+[ 3] st5-cpu            :  37.9 / 30.2 MiB/s,  2518.375 ms
+[ 4] st6-cpu            :  21.1 / 16.8 MiB/s,  4512.037 ms
+[ 5] OpenBWT            :  7.43 / 5.92 MiB/s,  12835.062 ms
+[ 6] divsufsort         :  15.2 / 12.1 MiB/s,  6270.913 ms
+[ 7] divsufsort (OpenMP):  21.1 / 16.8 MiB/s,  4512.523 ms
+rle: 79,706,174 => 34,340,061 (43.08% / 34.34%)   >255: 7,964
+[ 1] mtf_cpu_bsc               :  95.8 / 32.9 MiB/s,  995.216 ms
+[ 2] mtf_cpu_shelwien          :   279 / 95.7 MiB/s,  342.094 ms
+[ 3] mtf_cpu_shelwien2         :   348 /  120 MiB/s,  273.746 ms
+[ 4] mtf_cpu_shelwien2 (OpenMP):  1325 /  455 MiB/s,  71.954 ms
+
+C:\app_bslab>bslab-msvc-x64.exe z:\100m
+[ 1] lzp_cpu_bsc              : 100,000,000 => 79,801,322 (79.80%)  311 MiB/s,  306.334 ms
+[ 2] lzp_cpu_bsc_mod          : 100,000,000 => 79,719,157 (79.72%)  375 MiB/s,  254.352 ms
+[ 3] lzp_cpu_rollhash         : 100,000,000 => 79,706,174 (79.71%)  475 MiB/s,  200.681 ms
+[ 4] lzp_cpu_rollhash (OpenMP):  1100 MiB/s,  86.727 ms
+[ 1] st3-cpu            :   140 /  111 MiB/s,  683.479 ms
+[ 2] st4-cpu            :  98.3 / 78.3 MiB/s,  970.601 ms
+[ 3] st5-cpu            :  36.8 / 29.4 MiB/s,  2589.686 ms
+[ 4] st6-cpu            :  19.5 / 15.6 MiB/s,  4882.185 ms
+[ 5] OpenBWT            :  7.05 / 5.62 MiB/s,  13527.834 ms
+[ 6] divsufsort         :  14.9 / 11.8 MiB/s,  6421.447 ms
+[ 7] divsufsort (OpenMP):  20.7 / 16.5 MiB/s,  4605.252 ms
+rle: 79,706,174 => 34,340,061 (43.08% / 34.34%)   >255: 7,964
+[ 1] mtf_cpu_bsc               :   103 / 35.5 MiB/s,  923.180 ms
+[ 2] mtf_cpu_shelwien          :   195 / 67.0 MiB/s,  488.878 ms
+[ 3] mtf_cpu_shelwien2         :   236 / 81.0 MiB/s,  404.285 ms
+[ 4] mtf_cpu_shelwien2 (OpenMP):   785 /  269 MiB/s,  121.562 ms
+
+C:\app_bslab>for %c in (icl clang gcc msvc) do bslab-%c-avx2.exe z:\100m
+
+C:\app_bslab>bslab-icl-avx2.exe z:\100m
+[ 1] lzp_cpu_bsc              : 100,000,000 => 79,801,322 (79.80%)  225 MiB/s,  424.387 ms
+[ 2] lzp_cpu_bsc_mod          : 100,000,000 => 79,719,157 (79.72%)  347 MiB/s,  275.198 ms
+[ 3] lzp_cpu_rollhash         : 100,000,000 => 79,706,174 (79.71%)  386 MiB/s,  247.035 ms
+[ 4] lzp_cpu_rollhash (OpenMP):  1328 MiB/s,  71.810 ms
+[ 1] st3-cpu            :   125 / 99.9 MiB/s,  760.632 ms
+[ 2] st4-cpu            :  99.1 / 79.0 MiB/s,  962.781 ms
+[ 3] st5-cpu            :  37.8 / 30.1 MiB/s,  2523.966 ms
+[ 4] st6-cpu            :  19.6 / 15.7 MiB/s,  4853.738 ms
+[ 5] OpenBWT            :  6.94 / 5.53 MiB/s,  13749.483 ms
+[ 6] divsufsort         :  13.4 / 10.6 MiB/s,  7142.800 ms
+[ 7] divsufsort (OpenMP):  20.1 / 16.0 MiB/s,  4737.032 ms
+rle: 79,706,174 => 34,340,061 (43.08% / 34.34%)   >255: 7,964
+[ 1] mtf_cpu_bsc               :  94.3 / 32.4 MiB/s,  1011.840 ms
+[ 2] mtf_cpu_shelwien          :   384 /  132 MiB/s,  248.619 ms
+[ 3] mtf_cpu_shelwien2         :   613 /  211 MiB/s,  155.449 ms
+[ 4] mtf_cpu_shelwien2 (OpenMP):  2362 /  811 MiB/s,  40.370 ms
+
+C:\app_bslab>bslab-clang-avx2.exe z:\100m
+[ 1] lzp_cpu_bsc     : 100,000,000 => 79,801,322 (79.80%)  260 MiB/s,  367.216 ms
+[ 2] lzp_cpu_bsc_mod : 100,000,000 => 79,719,157 (79.72%)  340 MiB/s,  280.526 ms
+[ 3] lzp_cpu_rollhash: 100,000,000 => 79,706,174 (79.71%)  392 MiB/s,  243.178 ms
+[ 1] st3-cpu   :   137 /  109 MiB/s,  698.113 ms
+[ 2] st4-cpu   :  94.0 / 74.9 MiB/s,  1014.661 ms
+[ 3] st5-cpu   :  37.5 / 29.9 MiB/s,  2540.093 ms
+[ 4] st6-cpu   :  20.9 / 16.6 MiB/s,  4572.982 ms
+[ 5] OpenBWT   :  6.73 / 5.36 MiB/s,  14170.345 ms
+[ 6] divsufsort:  14.3 / 11.4 MiB/s,  6649.824 ms
+rle: 79,706,174 => 34,340,061 (43.08% / 34.34%)   >255: 7,964
+[ 1] mtf_cpu_bsc      :  59.0 / 20.3 MiB/s,  1617.188 ms
+[ 2] mtf_cpu_shelwien :   122 / 42.0 MiB/s,  779.442 ms
+[ 3] mtf_cpu_shelwien2:   214 / 73.3 MiB/s,  446.613 ms
+
+C:\app_bslab>bslab-gcc-avx2.exe z:\100m
+[ 1] lzp_cpu_bsc              : 100,000,000 => 79,801,322 (79.80%)  319 MiB/s,  299.288 ms
+[ 2] lzp_cpu_bsc_mod          : 100,000,000 => 79,719,157 (79.72%)  341 MiB/s,  279.800 ms
+[ 3] lzp_cpu_rollhash         : 100,000,000 => 79,706,174 (79.71%)  280 MiB/s,  340.385 ms
+[ 4] lzp_cpu_rollhash (OpenMP):   843 MiB/s,  113.152 ms
+[ 1] st3-cpu            :   135 /  108 MiB/s,  706.450 ms
+[ 2] st4-cpu            :  99.4 / 79.2 MiB/s,  959.403 ms
+[ 3] st5-cpu            :  38.3 / 30.5 MiB/s,  2491.105 ms
+[ 4] st6-cpu            :  20.3 / 16.2 MiB/s,  4688.766 ms
+[ 5] OpenBWT            :  7.28 / 5.80 MiB/s,  13098.542 ms
+[ 6] divsufsort         :  14.3 / 11.4 MiB/s,  6646.992 ms
+[ 7] divsufsort (OpenMP):  20.6 / 16.4 MiB/s,  4636.134 ms
+rle: 79,706,174 => 34,340,061 (43.08% / 34.34%)   >255: 7,964
+[ 1] mtf_cpu_bsc               :  49.3 / 16.9 MiB/s,  1935.943 ms
+[ 2] mtf_cpu_shelwien          :   371 /  127 MiB/s,  256.964 ms
+[ 3] mtf_cpu_shelwien2         :   534 /  183 MiB/s,  178.495 ms
+[ 4] mtf_cpu_shelwien2 (OpenMP):  2077 /  713 MiB/s,  45.922 ms
+
+C:\app_bslab>bslab-msvc-avx2.exe z:\100m
+[ 1] lzp_cpu_bsc              : 100,000,000 => 79,801,322 (79.80%)  259 MiB/s,  368.234 ms
+[ 2] lzp_cpu_bsc_mod          : 100,000,000 => 79,719,157 (79.72%)  324 MiB/s,  294.190 ms
+[ 3] lzp_cpu_rollhash         : 100,000,000 => 79,706,174 (79.71%)  351 MiB/s,  271.867 ms
+[ 4] lzp_cpu_rollhash (OpenMP):   903 MiB/s,  105.630 ms
+[ 1] st3-cpu            :   129 /  103 MiB/s,  737.807 ms
+[ 2] st4-cpu            :  95.1 / 75.8 MiB/s,  1003.250 ms
+[ 3] st5-cpu            :  36.2 / 28.8 MiB/s,  2636.358 ms
+[ 4] st6-cpu            :  19.5 / 15.6 MiB/s,  4887.900 ms
+[ 5] OpenBWT            :  6.97 / 5.56 MiB/s,  13673.925 ms
+[ 6] divsufsort         :  13.8 / 11.0 MiB/s,  6914.482 ms
+[ 7] divsufsort (OpenMP):  19.7 / 15.7 MiB/s,  4848.702 ms
+rle: 79,706,174 => 34,340,061 (43.08% / 34.34%)   >255: 7,964
+[ 1] mtf_cpu_bsc               :  63.4 / 21.8 MiB/s,  1504.482 ms
+[ 2] mtf_cpu_shelwien          :   302 /  104 MiB/s,  315.880 ms
+[ 3] mtf_cpu_shelwien2         :   388 /  133 MiB/s,  245.888 ms
+[ 4] mtf_cpu_shelwien2 (OpenMP):  1171 /  402 MiB/s,  81.458 ms
+
+C:\app_bslab>for %c in (icl clang gcc msvc) do bslab-%c.exe z:\100m
+
+C:\app_bslab>bslab-icl.exe z:\100m
+[ 1] lzp_cpu_bsc              : 100,000,000 => 79,801,322 (79.80%)  225 MiB/s,  423.212 ms
+[ 2] lzp_cpu_bsc_mod          : 100,000,000 => 79,719,157 (79.72%)  331 MiB/s,  288.486 ms
+[ 3] lzp_cpu_rollhash         : 100,000,000 => 79,706,174 (79.71%)  391 MiB/s,  244.189 ms
+[ 4] lzp_cpu_rollhash (OpenMP):   863 MiB/s,  110.489 ms
+[ 1] st3-cpu            :   131 /  105 MiB/s,  726.577 ms
+[ 2] st4-cpu            :  98.9 / 78.9 MiB/s,  963.807 ms
+[ 3] st5-cpu            :  37.4 / 29.8 MiB/s,  2546.608 ms
+[ 4] st6-cpu            :  19.6 / 15.7 MiB/s,  4853.456 ms
+[ 5] OpenBWT            :  7.02 / 5.60 MiB/s,  13580.367 ms
+[ 6] divsufsort         :  13.4 / 10.6 MiB/s,  7139.525 ms
+[ 7] divsufsort (OpenMP):  19.8 / 15.8 MiB/s,  4812.752 ms
+rle: 79,706,174 => 34,340,061 (43.08% / 34.34%)   >255: 7,964
+[ 1] mtf_cpu_bsc               :  89.5 / 30.7 MiB/s,  1065.528 ms
+[ 2] mtf_cpu_shelwien          :   301 /  104 MiB/s,  316.394 ms
+[ 3] mtf_cpu_shelwien2         :   396 /  136 MiB/s,  240.710 ms
+[ 4] mtf_cpu_shelwien2 (OpenMP):  1365 /  469 MiB/s,  69.842 ms
+
+C:\app_bslab>bslab-clang.exe z:\100m
+[ 1] lzp_cpu_bsc     : 100,000,000 => 79,801,322 (79.80%)  256 MiB/s,  372.157 ms
+[ 2] lzp_cpu_bsc_mod : 100,000,000 => 79,719,157 (79.72%)  318 MiB/s,  300.305 ms
+[ 3] lzp_cpu_rollhash: 100,000,000 => 79,706,174 (79.71%)  356 MiB/s,  267.728 ms
+[ 1] st3-cpu   :   135 /  108 MiB/s,  703.941 ms
+[ 2] st4-cpu   :  98.4 / 78.4 MiB/s,  969.014 ms
+[ 3] st5-cpu   :  37.3 / 29.7 MiB/s,  2556.499 ms
+[ 4] st6-cpu   :  20.6 / 16.4 MiB/s,  4633.835 ms
+[ 5] OpenBWT   :  6.67 / 5.32 MiB/s,  14300.209 ms
+[ 6] divsufsort:  14.3 / 11.4 MiB/s,  6676.934 ms
+rle: 79,706,174 => 34,340,061 (43.08% / 34.34%)   >255: 7,964
+[ 1] mtf_cpu_bsc      :  59.6 / 20.5 MiB/s,  1598.919 ms
+[ 2] mtf_cpu_shelwien :   313 /  108 MiB/s,  304.546 ms
+[ 3] mtf_cpu_shelwien2:   349 /  120 MiB/s,  273.416 ms
+
+C:\app_bslab>bslab-gcc.exe z:\100m
+[ 1] lzp_cpu_bsc              : 100,000,000 => 79,801,322 (79.80%)  330 MiB/s,  289.077 ms
+[ 2] lzp_cpu_bsc_mod          : 100,000,000 => 79,719,157 (79.72%)  345 MiB/s,  276.821 ms
+[ 3] lzp_cpu_rollhash         : 100,000,000 => 79,706,174 (79.71%)  288 MiB/s,  331.250 ms
+[ 4] lzp_cpu_rollhash (OpenMP):   950 MiB/s,  100.392 ms
+[ 1] st3-cpu            :   136 /  108 MiB/s,  700.713 ms
+[ 2] st4-cpu            :   101 / 80.4 MiB/s,  945.965 ms
+[ 3] st5-cpu            :  38.7 / 30.9 MiB/s,  2463.706 ms
+[ 4] st6-cpu            :  20.4 / 16.2 MiB/s,  4680.165 ms
+[ 5] OpenBWT            :  7.38 / 5.88 MiB/s,  12923.230 ms
+[ 6] divsufsort         :  14.8 / 11.8 MiB/s,  6451.357 ms
+[ 7] divsufsort (OpenMP):  21.0 / 16.7 MiB/s,  4550.579 ms
+rle: 79,706,174 => 34,340,061 (43.08% / 34.34%)   >255: 7,964
+[ 1] mtf_cpu_bsc               :  51.2 / 17.6 MiB/s,  1863.173 ms
+[ 2] mtf_cpu_shelwien          :   281 / 96.4 MiB/s,  339.655 ms
+[ 3] mtf_cpu_shelwien2         :   339 /  116 MiB/s,  281.211 ms
+[ 4] mtf_cpu_shelwien2 (OpenMP):  1283 /  440 MiB/s,  74.360 ms
+
+C:\app_bslab>bslab-msvc.exe z:\100m
+[ 1] lzp_cpu_bsc              : 100,000,000 => 79,801,322 (79.80%)  274 MiB/s,  348.100 ms
+[ 2] lzp_cpu_bsc_mod          : 100,000,000 => 79,719,157 (79.72%)  312 MiB/s,  305.354 ms
+[ 3] lzp_cpu_rollhash         : 100,000,000 => 79,706,174 (79.71%)  336 MiB/s,  283.775 ms
+[ 4] lzp_cpu_rollhash (OpenMP):   884 MiB/s,  107.860 ms
+[ 1] st3-cpu            :   130 /  104 MiB/s,  732.975 ms
+[ 2] st4-cpu            :  95.5 / 76.1 MiB/s,  998.846 ms
+[ 3] st5-cpu            :  36.1 / 28.7 MiB/s,  2644.740 ms
+[ 4] st6-cpu            :  19.5 / 15.5 MiB/s,  4896.383 ms
+[ 5] OpenBWT            :  6.99 / 5.57 MiB/s,  13643.534 ms
+[ 6] divsufsort         :  13.9 / 11.1 MiB/s,  6849.152 ms
+[ 7] divsufsort (OpenMP):  19.8 / 15.8 MiB/s,  4821.976 ms
+rle: 79,706,174 => 34,340,061 (43.08% / 34.34%)   >255: 7,964
+[ 1] mtf_cpu_bsc               :  63.9 / 21.9 MiB/s,  1493.084 ms
+[ 2] mtf_cpu_shelwien          :   184 / 63.0 MiB/s,  519.454 ms
+[ 3] mtf_cpu_shelwien2         :   227 / 78.0 MiB/s,  419.920 ms
+[ 4] mtf_cpu_shelwien2 (OpenMP):   828 /  284 MiB/s,  115.149 ms
+
+C:\app_bslab>for %x in (-x64-avx2.exe -x64.exe -avx2.exe .exe) do for %c in (icl clang gcc msvc) do bslab-%c%x z:\1g
+
+C:\app_bslab>for %c in (icl clang gcc msvc) do bslab-%c-x64-avx2.exe z:\1g
+
+C:\app_bslab>bslab-icl-x64-avx2.exe z:\1g
+[ 1] lzp_cpu_bsc              : 1,000,000,000 => 764,663,291 (76.47%)  273 MiB/s,  3488.915 ms
+[ 2] lzp_cpu_bsc_mod          : 1,000,000,000 => 764,424,232 (76.44%)  387 MiB/s,  2462.027 ms
+[ 3] lzp_cpu_rollhash         : 1,000,000,000 => 764,288,047 (76.43%)  544 MiB/s,  1754.229 ms
+[ 4] lzp_cpu_rollhash (OpenMP):  1602 MiB/s,  595.355 ms
+[ 1] st3-cpu            :   149 /  114 MiB/s,  6418.151 ms
+[ 2] st4-cpu            :   106 / 81.0 MiB/s,  9003.125 ms
+[ 3] st5-cpu            :  40.8 / 31.2 MiB/s,  23384.599 ms
+[ 4] st6-cpu            :  22.0 / 16.8 MiB/s,  43375.650 ms
+[ 5] OpenBWT            :  7.64 / 5.84 MiB/s,  124835.925 ms
+[ 6] divsufsort         :  15.3 / 11.7 MiB/s,  62221.358 ms
+[ 7] divsufsort (OpenMP):  21.6 / 16.5 MiB/s,  44097.728 ms
+rle: 764,288,047 => 340,332,956 (44.53% / 34.03%)   >255: 94,536
+[ 1] mtf_cpu_bsc               :  88.0 / 30.0 MiB/s,  10833.505 ms
+[ 2] mtf_cpu_shelwien          :   385 /  131 MiB/s,  2477.883 ms
+[ 3] mtf_cpu_shelwien2         :   605 /  206 MiB/s,  1575.076 ms
+[ 4] mtf_cpu_shelwien2 (OpenMP):  2287 /  778 MiB/s,  417.087 ms
+
+C:\app_bslab>bslab-clang-x64-avx2.exe z:\1g
+[ 1] lzp_cpu_bsc     : 1,000,000,000 => 764,663,291 (76.47%)  332 MiB/s,  2876.818 ms
+[ 2] lzp_cpu_bsc_mod : 1,000,000,000 => 764,424,232 (76.44%)  354 MiB/s,  2693.057 ms
+[ 3] lzp_cpu_rollhash: 1,000,000,000 => 764,288,047 (76.43%)  520 MiB/s,  1833.984 ms
+[ 1] st3-cpu   :   148 /  113 MiB/s,  6460.483 ms
+[ 2] st4-cpu   :   107 / 82.0 MiB/s,  8888.046 ms
+[ 3] st5-cpu   :  41.8 / 31.9 MiB/s,  22832.509 ms
+[ 4] st6-cpu   :  22.7 / 17.3 MiB/s,  42020.510 ms
+[ 5] OpenBWT   :  7.12 / 5.45 MiB/s,  133860.885 ms
+[ 6] divsufsort:  15.6 / 11.9 MiB/s,  61326.808 ms
+rle: 764,288,047 => 340,332,956 (44.53% / 34.03%)   >255: 94,536
+[ 1] mtf_cpu_bsc      :  98.9 / 33.7 MiB/s,  9641.126 ms
+[ 2] mtf_cpu_shelwien :   406 /  138 MiB/s,  2350.064 ms
+[ 3] mtf_cpu_shelwien2:   559 /  190 MiB/s,  1705.111 ms
+
+C:\app_bslab>bslab-gcc-x64-avx2.exe z:\1g
+[ 1] lzp_cpu_bsc              : 1,000,000,000 => 764,663,291 (76.47%)  357 MiB/s,  2673.027 ms
+[ 2] lzp_cpu_bsc_mod          : 1,000,000,000 => 764,424,232 (76.44%)  378 MiB/s,  2524.383 ms
+[ 3] lzp_cpu_rollhash         : 1,000,000,000 => 764,288,047 (76.43%)  449 MiB/s,  2122.056 ms
+[ 4] lzp_cpu_rollhash (OpenMP):  1593 MiB/s,  598.484 ms
+[ 1] st3-cpu            :   144 /  110 MiB/s,  6612.971 ms
+[ 2] st4-cpu            :   105 / 80.5 MiB/s,  9059.758 ms
+[ 3] st5-cpu            :  40.7 / 31.1 MiB/s,  23458.426 ms
+[ 4] st6-cpu            :  22.4 / 17.1 MiB/s,  42543.136 ms
+[ 5] OpenBWT            :  7.75 / 5.92 MiB/s,  123041.990 ms
+[ 6] divsufsort         :  15.6 / 12.0 MiB/s,  60984.591 ms
+[ 7] divsufsort (OpenMP):  21.6 / 16.5 MiB/s,  44081.282 ms
+rle: 764,288,047 => 340,332,956 (44.53% / 34.03%)   >255: 94,536
+[ 1] mtf_cpu_bsc               :  98.9 / 33.7 MiB/s,  9641.232 ms
+[ 2] mtf_cpu_shelwien          :   363 /  123 MiB/s,  2629.143 ms
+[ 3] mtf_cpu_shelwien2         :   535 /  182 MiB/s,  1780.942 ms
+[ 4] mtf_cpu_shelwien2 (OpenMP):   639 /  218 MiB/s,  1492.182 ms
+
+C:\app_bslab>bslab-msvc-x64-avx2.exe z:\1g
+[ 1] lzp_cpu_bsc              : 1,000,000,000 => 764,663,291 (76.47%)  334 MiB/s,  2857.360 ms
+[ 2] lzp_cpu_bsc_mod          : 1,000,000,000 => 764,424,232 (76.44%)  402 MiB/s,  2375.149 ms
+[ 3] lzp_cpu_rollhash         : 1,000,000,000 => 764,288,047 (76.43%)  540 MiB/s,  1766.183 ms
+[ 4] lzp_cpu_rollhash (OpenMP):  1551 MiB/s,  614.862 ms
+[ 1] st3-cpu            :   148 /  113 MiB/s,  6431.621 ms
+[ 2] st4-cpu            :   103 / 79.0 MiB/s,  9231.829 ms
+[ 3] st5-cpu            :  39.4 / 30.1 MiB/s,  24194.407 ms
+[ 4] st6-cpu            :  21.2 / 16.2 MiB/s,  45004.788 ms
+[ 5] OpenBWT            :  7.35 / 5.62 MiB/s,  129771.938 ms
+[ 6] divsufsort         :  15.1 / 11.6 MiB/s,  63089.538 ms
+[ 7] divsufsort (OpenMP):  20.8 / 15.9 MiB/s,  45853.181 ms
+rle: 764,288,047 => 340,332,956 (44.53% / 34.03%)   >255: 94,536
+[ 1] mtf_cpu_bsc               :   107 / 36.4 MiB/s,  8917.786 ms
+[ 2] mtf_cpu_shelwien          :   326 /  111 MiB/s,  2926.818 ms
+[ 3] mtf_cpu_shelwien2         :   426 /  145 MiB/s,  2239.262 ms
+[ 4] mtf_cpu_shelwien2 (OpenMP):  1614 /  549 MiB/s,  590.698 ms
+
+C:\app_bslab>for %c in (icl clang gcc msvc) do bslab-%c-x64.exe z:\1g
+
+C:\app_bslab>bslab-icl-x64.exe z:\1g
+[ 1] lzp_cpu_bsc              : 1,000,000,000 => 764,663,291 (76.47%)  280 MiB/s,  3403.080 ms
+[ 2] lzp_cpu_bsc_mod          : 1,000,000,000 => 764,424,232 (76.44%)  372 MiB/s,  2561.979 ms
+[ 3] lzp_cpu_rollhash         : 1,000,000,000 => 764,288,047 (76.43%)  554 MiB/s,  1722.191 ms
+[ 4] lzp_cpu_rollhash (OpenMP):  1645 MiB/s,  579.690 ms
+[ 1] st3-cpu            :   149 /  114 MiB/s,  6405.051 ms
+[ 2] st4-cpu            :   106 / 80.8 MiB/s,  9023.613 ms
+[ 3] st5-cpu            :  40.9 / 31.3 MiB/s,  23322.287 ms
+[ 4] st6-cpu            :  21.9 / 16.7 MiB/s,  43550.601 ms
+[ 5] OpenBWT            :  7.63 / 5.83 MiB/s,  124924.117 ms
+[ 6] divsufsort         :  15.3 / 11.7 MiB/s,  62502.987 ms
+[ 7] divsufsort (OpenMP):  21.7 / 16.5 MiB/s,  44044.640 ms
+rle: 764,288,047 => 340,332,956 (44.53% / 34.03%)   >255: 94,536
+[ 1] mtf_cpu_bsc               :  81.8 / 27.8 MiB/s,  11658.559 ms
+[ 2] mtf_cpu_shelwien          :   309 /  105 MiB/s,  3082.045 ms
+[ 3] mtf_cpu_shelwien2         :   398 /  135 MiB/s,  2396.457 ms
+[ 4] mtf_cpu_shelwien2 (OpenMP):  1315 /  448 MiB/s,  725.241 ms
+
+C:\app_bslab>bslab-clang-x64.exe z:\1g
+[ 1] lzp_cpu_bsc     : 1,000,000,000 => 764,663,291 (76.47%)  328 MiB/s,  2908.297 ms
+[ 2] lzp_cpu_bsc_mod : 1,000,000,000 => 764,424,232 (76.44%)  342 MiB/s,  2788.423 ms
+[ 3] lzp_cpu_rollhash: 1,000,000,000 => 764,288,047 (76.43%)  484 MiB/s,  1970.532 ms
+[ 1] st3-cpu   :   151 /  115 MiB/s,  6313.228 ms
+[ 2] st4-cpu   :   107 / 82.1 MiB/s,  8876.117 ms
+[ 3] st5-cpu   :  42.2 / 32.2 MiB/s,  22618.457 ms
+[ 4] st6-cpu   :  22.8 / 17.4 MiB/s,  41872.251 ms
+[ 5] OpenBWT   :  7.07 / 5.41 MiB/s,  134846.284 ms
+[ 6] divsufsort:  15.4 / 11.8 MiB/s,  61825.007 ms
+rle: 764,288,047 => 340,332,956 (44.53% / 34.03%)   >255: 94,536
+[ 1] mtf_cpu_bsc      :  65.4 / 22.2 MiB/s,  14593.119 ms
+[ 2] mtf_cpu_shelwien :   320 /  109 MiB/s,  2975.743 ms
+[ 3] mtf_cpu_shelwien2:   376 /  128 MiB/s,  2538.618 ms
+
+C:\app_bslab>bslab-gcc-x64.exe z:\1g
+[ 1] lzp_cpu_bsc              : 1,000,000,000 => 764,663,291 (76.47%)  361 MiB/s,  2644.046 ms
+[ 2] lzp_cpu_bsc_mod          : 1,000,000,000 => 764,424,232 (76.44%)  384 MiB/s,  2483.609 ms
+[ 3] lzp_cpu_rollhash         : 1,000,000,000 => 764,288,047 (76.43%)  448 MiB/s,  2129.949 ms
+[ 4] lzp_cpu_rollhash (OpenMP):  1630 MiB/s,  585.086 ms
+[ 1] st3-cpu            :   144 /  110 MiB/s,  6618.416 ms
+[ 2] st4-cpu            :   105 / 80.3 MiB/s,  9077.080 ms
+[ 3] st5-cpu            :  40.6 / 31.0 MiB/s,  23480.383 ms
+[ 4] st6-cpu            :  22.4 / 17.1 MiB/s,  42535.712 ms
+[ 5] OpenBWT            :  7.78 / 5.95 MiB/s,  122570.848 ms
+[ 6] divsufsort         :  15.5 / 11.9 MiB/s,  61336.702 ms
+[ 7] divsufsort (OpenMP):  21.7 / 16.6 MiB/s,  44035.985 ms
+rle: 764,288,047 => 340,332,956 (44.53% / 34.03%)   >255: 94,536
+[ 1] mtf_cpu_bsc               :  99.2 / 33.7 MiB/s,  9617.775 ms
+[ 2] mtf_cpu_shelwien          :   283 / 96.5 MiB/s,  3364.501 ms
+[ 3] mtf_cpu_shelwien2         :   350 /  119 MiB/s,  2725.661 ms
+[ 4] mtf_cpu_shelwien2 (OpenMP):  1376 /  468 MiB/s,  693.026 ms
+
+C:\app_bslab>bslab-msvc-x64.exe z:\1g
+[ 1] lzp_cpu_bsc              : 1,000,000,000 => 764,663,291 (76.47%)  331 MiB/s,  2878.993 ms
+[ 2] lzp_cpu_bsc_mod          : 1,000,000,000 => 764,424,232 (76.44%)  384 MiB/s,  2480.799 ms
+[ 3] lzp_cpu_rollhash         : 1,000,000,000 => 764,288,047 (76.43%)  488 MiB/s,  1955.292 ms
+[ 4] lzp_cpu_rollhash (OpenMP):  1273 MiB/s,  749.437 ms
+[ 1] st3-cpu            :   148 /  113 MiB/s,  6432.994 ms
+[ 2] st4-cpu            :   103 / 78.7 MiB/s,  9263.335 ms
+[ 3] st5-cpu            :  39.4 / 30.1 MiB/s,  24194.257 ms
+[ 4] st6-cpu            :  21.1 / 16.1 MiB/s,  45266.871 ms
+[ 5] OpenBWT            :  7.35 / 5.62 MiB/s,  129764.219 ms
+[ 6] divsufsort         :  15.2 / 11.6 MiB/s,  62912.776 ms
+[ 7] divsufsort (OpenMP):  20.9 / 16.0 MiB/s,  45568.434 ms
+rle: 764,288,047 => 340,332,956 (44.53% / 34.03%)   >255: 94,536
+[ 1] mtf_cpu_bsc               :   108 / 36.6 MiB/s,  8867.369 ms
+[ 2] mtf_cpu_shelwien          :   197 / 67.0 MiB/s,  4842.559 ms
+[ 3] mtf_cpu_shelwien2         :   236 / 80.2 MiB/s,  4045.697 ms
+[ 4] mtf_cpu_shelwien2 (OpenMP):   834 /  284 MiB/s,  1143.062 ms
+
+C:\app_bslab>for %c in (icl clang gcc msvc) do bslab-%c-avx2.exe z:\1g
+
+C:\app_bslab>bslab-icl-avx2.exe z:\1g
+[ 1] lzp_cpu_bsc              : 1,000,000,000 => 764,663,291 (76.47%)  249 MiB/s,  3833.897 ms
+[ 2] lzp_cpu_bsc_mod          : 1,000,000,000 => 764,424,232 (76.44%)  354 MiB/s,  2691.131 ms
+[ 3] lzp_cpu_rollhash         : 1,000,000,000 => 764,288,047 (76.43%)  407 MiB/s,  2344.498 ms
+[ 4] lzp_cpu_rollhash (OpenMP):  1236 MiB/s,  771.586 ms
+[ 1] st3-cpu            :   135 /  104 MiB/s,  7042.156 ms
+[ 2] st4-cpu            :   104 / 79.7 MiB/s,  9143.355 ms
+[ 3] st5-cpu            :  40.4 / 30.9 MiB/s,  23606.572 ms
+[ 4] st6-cpu            :  21.1 / 16.2 MiB/s,  45092.541 ms
+[ 5] OpenBWT            :  7.30 / 5.58 MiB/s,  130591.951 ms
+[ 6] divsufsort         :  13.9 / 10.6 MiB/s,  68585.186 ms
+[ 7] divsufsort (OpenMP):  20.5 / 15.7 MiB/s,  46542.236 ms
+rle: 764,288,047 => 340,332,956 (44.53% / 34.03%)   >255: 94,536
+[ 1] mtf_cpu_bsc               :  97.6 / 33.2 MiB/s,  9771.958 ms
+[ 2] mtf_cpu_shelwien          :   381 /  130 MiB/s,  2504.376 ms
+[ 3] mtf_cpu_shelwien2         :   625 /  213 MiB/s,  1526.870 ms
+[ 4] mtf_cpu_shelwien2 (OpenMP):  2361 /  803 MiB/s,  403.973 ms
+
+C:\app_bslab>bslab-clang-avx2.exe z:\1g
+[ 1] lzp_cpu_bsc     : 1,000,000,000 => 764,663,291 (76.47%)  269 MiB/s,  3547.140 ms
+[ 2] lzp_cpu_bsc_mod : 1,000,000,000 => 764,424,232 (76.44%)  347 MiB/s,  2751.596 ms
+[ 3] lzp_cpu_rollhash: 1,000,000,000 => 764,288,047 (76.43%)  403 MiB/s,  2366.797 ms
+[ 1] st3-cpu   :   146 /  111 MiB/s,  6546.991 ms
+[ 2] st4-cpu   :  98.9 / 75.6 MiB/s,  9645.798 ms
+[ 3] st5-cpu   :  40.2 / 30.7 MiB/s,  23713.479 ms
+[ 4] st6-cpu   :  22.2 / 16.9 MiB/s,  43036.032 ms
+[ 5] OpenBWT   :  6.97 / 5.33 MiB/s,  136751.306 ms
+[ 6] divsufsort:  14.7 / 11.2 MiB/s,  64825.807 ms
+rle: 764,288,047 => 340,332,956 (44.53% / 34.03%)   >255: 94,536
+[ 1] mtf_cpu_bsc      :  61.0 / 20.8 MiB/s,  15636.833 ms
+[ 2] mtf_cpu_shelwien :   355 /  121 MiB/s,  2685.660 ms
+[ 3] mtf_cpu_shelwien2:   549 /  187 MiB/s,  1736.771 ms
+
+C:\app_bslab>bslab-gcc-avx2.exe z:\1g
+[ 1] lzp_cpu_bsc              : 1,000,000,000 => 764,663,291 (76.47%)  338 MiB/s,  2823.591 ms
+[ 2] lzp_cpu_bsc_mod          : 1,000,000,000 => 764,424,232 (76.44%)  355 MiB/s,  2689.839 ms
+[ 3] lzp_cpu_rollhash         : 1,000,000,000 => 764,288,047 (76.43%)  296 MiB/s,  3223.763 ms
+[ 4] lzp_cpu_rollhash (OpenMP):   975 MiB/s,  978.468 ms
+[ 1] st3-cpu            :   144 /  110 MiB/s,  6637.438 ms
+[ 2] st4-cpu            :   105 / 80.3 MiB/s,  9079.826 ms
+[ 3] st5-cpu            :  40.8 / 31.2 MiB/s,  23368.288 ms
+[ 4] st6-cpu            :  21.8 / 16.7 MiB/s,  43723.173 ms
+[ 5] OpenBWT            :  7.53 / 5.76 MiB/s,  126582.813 ms
+[ 6] divsufsort         :  14.7 / 11.3 MiB/s,  64696.924 ms
+[ 7] divsufsort (OpenMP):  20.9 / 16.0 MiB/s,  45619.418 ms
+rle: 764,288,047 => 340,332,956 (44.53% / 34.03%)   >255: 94,536
+[ 1] mtf_cpu_bsc               :  50.8 / 17.3 MiB/s,  18786.092 ms
+[ 2] mtf_cpu_shelwien          :   374 /  127 MiB/s,  2549.442 ms
+[ 3] mtf_cpu_shelwien2         :   538 /  183 MiB/s,  1773.722 ms
+[ 4] mtf_cpu_shelwien2 (OpenMP):  2082 /  708 MiB/s,  458.111 ms
+
+C:\app_bslab>bslab-msvc-avx2.exe z:\1g
+[ 1] lzp_cpu_bsc              : 1,000,000,000 => 764,663,291 (76.47%)  280 MiB/s,  3403.677 ms
+[ 2] lzp_cpu_bsc_mod          : 1,000,000,000 => 764,424,232 (76.44%)  348 MiB/s,  2741.184 ms
+[ 3] lzp_cpu_rollhash         : 1,000,000,000 => 764,288,047 (76.43%)  364 MiB/s,  2622.277 ms
+[ 4] lzp_cpu_rollhash (OpenMP):  1050 MiB/s,  908.591 ms
+[ 1] st3-cpu            :   137 /  105 MiB/s,  6947.086 ms
+[ 2] st4-cpu            :   100 / 76.7 MiB/s,  9506.456 ms
+[ 3] st5-cpu            :  38.4 / 29.3 MiB/s,  24856.841 ms
+[ 4] st6-cpu            :  20.8 / 15.9 MiB/s,  45817.051 ms
+[ 5] OpenBWT            :  7.26 / 5.55 MiB/s,  131387.827 ms
+[ 6] divsufsort         :  14.0 / 10.7 MiB/s,  68308.562 ms
+[ 7] divsufsort (OpenMP):  20.0 / 15.3 MiB/s,  47670.480 ms
+rle: 764,288,047 => 340,332,956 (44.53% / 34.03%)   >255: 94,536
+[ 1] mtf_cpu_bsc               :  65.5 / 22.3 MiB/s,  14561.516 ms
+[ 2] mtf_cpu_shelwien          :   305 /  104 MiB/s,  3128.410 ms
+[ 3] mtf_cpu_shelwien2         :   388 /  132 MiB/s,  2460.888 ms
+[ 4] mtf_cpu_shelwien2 (OpenMP):  1474 /  502 MiB/s,  646.846 ms
+
+C:\app_bslab>for %c in (icl clang gcc msvc) do bslab-%c.exe z:\1g
+
+C:\app_bslab>bslab-icl.exe z:\1g
+[ 1] lzp_cpu_bsc              : 1,000,000,000 => 764,663,291 (76.47%)  248 MiB/s,  3847.456 ms
+[ 2] lzp_cpu_bsc_mod          : 1,000,000,000 => 764,424,232 (76.44%)  338 MiB/s,  2820.902 ms
+[ 3] lzp_cpu_rollhash         : 1,000,000,000 => 764,288,047 (76.43%)  396 MiB/s,  2405.605 ms
+[ 4] lzp_cpu_rollhash (OpenMP):  1177 MiB/s,  810.361 ms
+[ 1] st3-cpu            :   137 /  105 MiB/s,  6967.792 ms
+[ 2] st4-cpu            :   104 / 79.2 MiB/s,  9201.318 ms
+[ 3] st5-cpu            :  40.2 / 30.8 MiB/s,  23696.521 ms
+[ 4] st6-cpu            :  21.1 / 16.1 MiB/s,  45229.236 ms
+[ 5] OpenBWT            :  7.22 / 5.52 MiB/s,  132089.791 ms
+[ 6] divsufsort         :  13.6 / 10.4 MiB/s,  70161.347 ms
+[ 7] divsufsort (OpenMP):  20.2 / 15.4 MiB/s,  47265.937 ms
+rle: 764,288,047 => 340,332,956 (44.53% / 34.03%)   >255: 94,536
+[ 1] mtf_cpu_bsc               :  92.5 / 31.5 MiB/s,  10309.556 ms
+[ 2] mtf_cpu_shelwien          :   298 /  101 MiB/s,  3202.076 ms
+[ 3] mtf_cpu_shelwien2         :   393 /  134 MiB/s,  2426.124 ms
+[ 4] mtf_cpu_shelwien2 (OpenMP):  1483 /  505 MiB/s,  643.034 ms
+
+C:\app_bslab>bslab-clang.exe z:\1g
+[ 1] lzp_cpu_bsc     : 1,000,000,000 => 764,663,291 (76.47%)  266 MiB/s,  3579.502 ms
+[ 2] lzp_cpu_bsc_mod : 1,000,000,000 => 764,424,232 (76.44%)  327 MiB/s,  2914.035 ms
+[ 3] lzp_cpu_rollhash: 1,000,000,000 => 764,288,047 (76.43%)  370 MiB/s,  2580.353 ms
+[ 1] st3-cpu   :   143 /  109 MiB/s,  6656.520 ms
+[ 2] st4-cpu   :   103 / 78.8 MiB/s,  9248.851 ms
+[ 3] st5-cpu   :  39.2 / 30.0 MiB/s,  24299.162 ms
+[ 4] st6-cpu   :  22.0 / 16.8 MiB/s,  43411.047 ms
+[ 5] OpenBWT   :  6.89 / 5.27 MiB/s,  138383.984 ms
+[ 6] divsufsort:  14.6 / 11.1 MiB/s,  65470.512 ms
+rle: 764,288,047 => 340,332,956 (44.53% / 34.03%)   >255: 94,536
+[ 1] mtf_cpu_bsc      :  61.5 / 20.9 MiB/s,  15508.648 ms
+[ 2] mtf_cpu_shelwien :   308 /  105 MiB/s,  3093.440 ms
+[ 3] mtf_cpu_shelwien2:   348 /  118 MiB/s,  2739.672 ms
+
+C:\app_bslab>bslab-gcc.exe z:\1g
+[ 1] lzp_cpu_bsc              : 1,000,000,000 => 764,663,291 (76.47%)  339 MiB/s,  2815.371 ms
+[ 2] lzp_cpu_bsc_mod          : 1,000,000,000 => 764,424,232 (76.44%)  359 MiB/s,  2657.596 ms
+[ 3] lzp_cpu_rollhash         : 1,000,000,000 => 764,288,047 (76.43%)  300 MiB/s,  3181.073 ms
+[ 4] lzp_cpu_rollhash (OpenMP):  1047 MiB/s,  910.429 ms
+[ 1] st3-cpu            :   144 /  110 MiB/s,  6617.305 ms
+[ 2] st4-cpu            :   105 / 80.2 MiB/s,  9089.334 ms
+[ 3] st5-cpu            :  40.9 / 31.3 MiB/s,  23300.894 ms
+[ 4] st6-cpu            :  21.9 / 16.7 MiB/s,  43641.440 ms
+[ 5] OpenBWT            :  7.61 / 5.82 MiB/s,  125344.064 ms
+[ 6] divsufsort         :  15.0 / 11.5 MiB/s,  63506.991 ms
+[ 7] divsufsort (OpenMP):  21.2 / 16.2 MiB/s,  45054.954 ms
+rle: 764,288,047 => 340,332,956 (44.53% / 34.03%)   >255: 94,536
+[ 1] mtf_cpu_bsc               :  52.9 / 18.0 MiB/s,  18015.092 ms
+[ 2] mtf_cpu_shelwien          :   282 / 96.1 MiB/s,  3375.886 ms
+[ 3] mtf_cpu_shelwien2         :   343 /  117 MiB/s,  2777.341 ms
+[ 4] mtf_cpu_shelwien2 (OpenMP):  1362 /  463 MiB/s,  700.403 ms
+
+C:\app_bslab>bslab-msvc.exe z:\1g
+[ 1] lzp_cpu_bsc              : 1,000,000,000 => 764,663,291 (76.47%)  277 MiB/s,  3439.912 ms
+[ 2] lzp_cpu_bsc_mod          : 1,000,000,000 => 764,424,232 (76.44%)  325 MiB/s,  2930.031 ms
+[ 3] lzp_cpu_rollhash         : 1,000,000,000 => 764,288,047 (76.43%)  347 MiB/s,  2750.504 ms
+[ 4] lzp_cpu_rollhash (OpenMP):  1024 MiB/s,  931.152 ms
+[ 1] st3-cpu            :   137 /  105 MiB/s,  6941.346 ms
+[ 2] st4-cpu            : 100.0 / 76.4 MiB/s,  9536.974 ms
+[ 3] st5-cpu            :  38.5 / 29.4 MiB/s,  24771.503 ms
+[ 4] st6-cpu            :  20.9 / 15.9 MiB/s,  45737.951 ms
+[ 5] OpenBWT            :  7.31 / 5.59 MiB/s,  130506.998 ms
+[ 6] divsufsort         :  14.1 / 10.8 MiB/s,  67430.520 ms
+[ 7] divsufsort (OpenMP):  20.0 / 15.3 MiB/s,  47576.215 ms
+rle: 764,288,047 => 340,332,956 (44.53% / 34.03%)   >255: 94,536
+[ 1] mtf_cpu_bsc               :  65.8 / 22.4 MiB/s,  14491.476 ms
+[ 2] mtf_cpu_shelwien          :   183 / 62.4 MiB/s,  5200.457 ms
+[ 3] mtf_cpu_shelwien2         :   224 / 76.2 MiB/s,  4258.155 ms
+[ 4] mtf_cpu_shelwien2 (OpenMP):   808 /  275 MiB/s,  1179.816 ms
+
+C:\app_bslab>for %x in (-x64-avx2.exe -x64.exe -avx2.exe .exe) do for %c in (icl clang gcc msvc) do bslab-%c%x z:\1g.tor3
+
+C:\app_bslab>for %c in (icl clang gcc msvc) do bslab-%c-x64-avx2.exe z:\1g.tor3
+
+C:\app_bslab>bslab-icl-x64-avx2.exe z:\1g.tor3
+[ 1] lzp_cpu_bsc              :   253 MiB/s,  1502.156 ms
+[ 2] lzp_cpu_bsc_mod          :   372 MiB/s,  1021.867 ms
+[ 3] lzp_cpu_rollhash         :   413 MiB/s,  921.846 ms
+[ 4] lzp_cpu_rollhash (OpenMP):  1192 MiB/s,  319.352 ms
+[ 1] st3-cpu            :  48.5 MiB/s,  7849.700 ms
+[ 2] st4-cpu            :  26.4 MiB/s,  14399.972 ms
+[ 3] st5-cpu            :  9.54 MiB/s,  39899.174 ms
+[ 4] st6-cpu            :  4.36 MiB/s,  87224.392 ms
+[ 5] OpenBWT            :  2.16 MiB/s,  176312.149 ms
+[ 6] divsufsort         :  7.10 MiB/s,  53625.909 ms
+[ 7] divsufsort (OpenMP): 10.00 MiB/s,  38067.452 ms
+rle: 399,026,387 => 397,003,596 (99.49%)   >255: 0
+[ 1] mtf_cpu_bsc               :  14.9 / 14.8 MiB/s,  25539.719 ms
+[ 2] mtf_cpu_shelwien          :   135 /  134 MiB/s,  2828.922 ms
+[ 3] mtf_cpu_shelwien2         :   211 /  210 MiB/s,  1803.802 ms
+[ 4] mtf_cpu_shelwien2 (OpenMP):   852 /  848 MiB/s,  446.518 ms
+
+C:\app_bslab>bslab-clang-x64-avx2.exe z:\1g.tor3
+[ 1] lzp_cpu_bsc     :   297 MiB/s,  1281.946 ms
+[ 2] lzp_cpu_bsc_mod :   331 MiB/s,  1150.721 ms
+[ 3] lzp_cpu_rollhash:   421 MiB/s,  904.086 ms
+[ 1] st3-cpu   :  49.0 MiB/s,  7767.721 ms
+[ 2] st4-cpu   :  27.0 MiB/s,  14108.206 ms
+[ 3] st5-cpu   :  10.5 MiB/s,  36133.680 ms
+[ 4] st6-cpu   :  4.51 MiB/s,  84432.721 ms
+[ 5] OpenBWT   :  2.05 MiB/s,  185766.980 ms
+[ 6] divsufsort:  7.19 MiB/s,  52910.418 ms
+rle: 399,026,387 => 397,003,596 (99.49%)   >255: 0
+[ 1] mtf_cpu_bsc      :  17.4 / 17.3 MiB/s,  21901.235 ms
+[ 2] mtf_cpu_shelwien :   143 /  142 MiB/s,  2663.040 ms
+[ 3] mtf_cpu_shelwien2:   201 /  200 MiB/s,  1892.518 ms
+
+C:\app_bslab>bslab-gcc-x64-avx2.exe z:\1g.tor3
+[ 1] lzp_cpu_bsc              :   321 MiB/s,  1186.041 ms
+[ 2] lzp_cpu_bsc_mod          :   345 MiB/s,  1101.692 ms
+[ 3] lzp_cpu_rollhash         :   361 MiB/s,  1053.567 ms
+[ 4] lzp_cpu_rollhash (OpenMP):  1253 MiB/s,  303.709 ms
+[ 1] st3-cpu            :  48.9 MiB/s,  7783.068 ms
+[ 2] st4-cpu            :  27.2 MiB/s,  14006.818 ms
+[ 3] st5-cpu            :  10.4 MiB/s,  36648.750 ms
+[ 4] st6-cpu            :  4.48 MiB/s,  84922.814 ms
+[ 5] OpenBWT            :  2.16 MiB/s,  176032.243 ms
+[ 6] divsufsort         :  7.15 MiB/s,  53251.269 ms
+[ 7] divsufsort (OpenMP):  9.88 MiB/s,  38501.949 ms
+rle: 399,026,387 => 397,003,596 (99.49%)   >255: 0
+[ 1] mtf_cpu_bsc               :  17.8 / 17.7 MiB/s,  21410.547 ms
+[ 2] mtf_cpu_shelwien          :   129 /  129 MiB/s,  2945.556 ms
+[ 3] mtf_cpu_shelwien2         :   191 /  190 MiB/s,  1997.102 ms
+[ 4] mtf_cpu_shelwien2 (OpenMP):   255 /  254 MiB/s,  1491.422 ms
+
+C:\app_bslab>bslab-msvc-x64-avx2.exe z:\1g.tor3
+[ 1] lzp_cpu_bsc              :   298 MiB/s,  1277.020 ms
+[ 2] lzp_cpu_bsc_mod          :   379 MiB/s,  1003.016 ms
+[ 3] lzp_cpu_rollhash         :   444 MiB/s,  856.355 ms
+[ 4] lzp_cpu_rollhash (OpenMP):  1414 MiB/s,  269.186 ms
+[ 1] st3-cpu            :  49.1 MiB/s,  7755.832 ms
+[ 2] st4-cpu            :  27.0 MiB/s,  14071.810 ms
+[ 3] st5-cpu            :  9.55 MiB/s,  39855.540 ms
+[ 4] st6-cpu            :  4.26 MiB/s,  89258.916 ms
+[ 5] OpenBWT            :  2.10 MiB/s,  181075.983 ms
+[ 6] divsufsort         :  7.07 MiB/s,  53860.827 ms
+[ 7] divsufsort (OpenMP):  9.79 MiB/s,  38871.602 ms
+rle: 399,026,387 => 397,003,596 (99.49%)   >255: 0
+[ 1] mtf_cpu_bsc               :  20.0 / 19.9 MiB/s,  19057.434 ms
+[ 2] mtf_cpu_shelwien          :   117 /  116 MiB/s,  3252.896 ms
+[ 3] mtf_cpu_shelwien2         :   148 /  147 MiB/s,  2572.250 ms
+[ 4] mtf_cpu_shelwien2 (OpenMP):   554 /  551 MiB/s,  686.753 ms
+
+C:\app_bslab>for %c in (icl clang gcc msvc) do bslab-%c-x64.exe z:\1g.tor3
+
+C:\app_bslab>bslab-icl-x64.exe z:\1g.tor3
+[ 1] lzp_cpu_bsc              :   256 MiB/s,  1489.049 ms
+[ 2] lzp_cpu_bsc_mod          :   354 MiB/s,  1074.737 ms
+[ 3] lzp_cpu_rollhash         :   420 MiB/s,  907.046 ms
+[ 4] lzp_cpu_rollhash (OpenMP):  1230 MiB/s,  309.323 ms
+[ 1] st3-cpu            :  49.0 MiB/s,  7773.498 ms
+[ 2] st4-cpu            :  27.0 MiB/s,  14109.215 ms
+[ 3] st5-cpu            :  10.2 MiB/s,  37472.915 ms
+[ 4] st6-cpu            :  4.38 MiB/s,  86924.377 ms
+[ 5] OpenBWT            :  2.16 MiB/s,  175776.844 ms
+[ 6] divsufsort         :  7.12 MiB/s,  53479.492 ms
+[ 7] divsufsort (OpenMP):  10.0 MiB/s,  38036.498 ms
+rle: 399,026,387 => 397,003,596 (99.49%)   >255: 0
+[ 1] mtf_cpu_bsc               :  13.6 / 13.6 MiB/s,  27929.642 ms
+[ 2] mtf_cpu_shelwien          :   113 /  113 MiB/s,  3354.771 ms
+[ 3] mtf_cpu_shelwien2         :   144 /  143 MiB/s,  2639.806 ms
+[ 4] mtf_cpu_shelwien2 (OpenMP):   561 /  558 MiB/s,  678.308 ms
+
+C:\app_bslab>bslab-clang-x64.exe z:\1g.tor3
+[ 1] lzp_cpu_bsc     :   289 MiB/s,  1314.757 ms
+[ 2] lzp_cpu_bsc_mod :   317 MiB/s,  1198.773 ms
+[ 3] lzp_cpu_rollhash:   391 MiB/s,  974.329 ms
+[ 1] st3-cpu   :  49.2 MiB/s,  7730.894 ms
+[ 2] st4-cpu   :  27.1 MiB/s,  14046.849 ms
+[ 3] st5-cpu   :  10.4 MiB/s,  36623.246 ms
+[ 4] st6-cpu   :  4.49 MiB/s,  84688.622 ms
+[ 5] OpenBWT   :  2.04 MiB/s,  186522.721 ms
+[ 6] divsufsort:  7.17 MiB/s,  53067.390 ms
+rle: 399,026,387 => 397,003,596 (99.49%)   >255: 0
+[ 1] mtf_cpu_bsc      :  9.90 / 9.85 MiB/s,  38429.266 ms
+[ 2] mtf_cpu_shelwien :   118 /  117 MiB/s,  3228.118 ms
+[ 3] mtf_cpu_shelwien2:   132 /  132 MiB/s,  2872.642 ms
+
+C:\app_bslab>bslab-gcc-x64.exe z:\1g.tor3
+[ 1] lzp_cpu_bsc              :   323 MiB/s,  1178.376 ms
+[ 2] lzp_cpu_bsc_mod          :   350 MiB/s,  1088.749 ms
+[ 3] lzp_cpu_rollhash         :   358 MiB/s,  1063.616 ms
+[ 4] lzp_cpu_rollhash (OpenMP):  1251 MiB/s,  304.195 ms
+[ 1] st3-cpu            :  48.8 MiB/s,  7798.015 ms
+[ 2] st4-cpu            :  26.9 MiB/s,  14132.313 ms
+[ 3] st5-cpu            :  10.4 MiB/s,  36661.114 ms
+[ 4] st6-cpu            :  4.47 MiB/s,  85142.587 ms
+[ 5] OpenBWT            :  2.16 MiB/s,  176092.908 ms
+[ 6] divsufsort         :  7.13 MiB/s,  53354.562 ms
+[ 7] divsufsort (OpenMP):  9.86 MiB/s,  38585.452 ms
+rle: 399,026,387 => 397,003,596 (99.49%)   >255: 0
+[ 1] mtf_cpu_bsc               :  17.9 / 17.8 MiB/s,  21302.280 ms
+[ 2] mtf_cpu_shelwien          :   103 /  102 MiB/s,  3698.064 ms
+[ 3] mtf_cpu_shelwien2         :   125 /  124 MiB/s,  3048.237 ms
+[ 4] mtf_cpu_shelwien2 (OpenMP):   500 /  497 MiB/s,  761.666 ms
+
+C:\app_bslab>bslab-msvc-x64.exe z:\1g.tor3
+[ 1] lzp_cpu_bsc              :   298 MiB/s,  1274.919 ms
+[ 2] lzp_cpu_bsc_mod          :   354 MiB/s,  1075.086 ms
+[ 3] lzp_cpu_rollhash         :   398 MiB/s,  956.995 ms
+[ 4] lzp_cpu_rollhash (OpenMP):  1312 MiB/s,  289.952 ms
+[ 1] st3-cpu            :  49.0 MiB/s,  7769.705 ms
+[ 2] st4-cpu            :  27.1 MiB/s,  14034.038 ms
+[ 3] st5-cpu            :  10.0 MiB/s,  38047.007 ms
+[ 4] st6-cpu            :  4.27 MiB/s,  89155.486 ms
+[ 5] OpenBWT            :  2.10 MiB/s,  181059.517 ms
+[ 6] divsufsort         :  7.06 MiB/s,  53875.544 ms
+[ 7] divsufsort (OpenMP):  9.82 MiB/s,  38768.149 ms
+rle: 399,026,387 => 397,003,596 (99.49%)   >255: 0
+[ 1] mtf_cpu_bsc               :  20.4 / 20.3 MiB/s,  18678.969 ms
+[ 2] mtf_cpu_shelwien          :  69.7 / 69.4 MiB/s,  5456.579 ms
+[ 3] mtf_cpu_shelwien2         :  82.7 / 82.3 MiB/s,  4602.858 ms
+[ 4] mtf_cpu_shelwien2 (OpenMP):   326 /  324 MiB/s,  1167.887 ms
+
+C:\app_bslab>for %c in (icl clang gcc msvc) do bslab-%c-avx2.exe z:\1g.tor3
+
+C:\app_bslab>bslab-icl-avx2.exe z:\1g.tor3
+[ 1] lzp_cpu_bsc              :   236 MiB/s,  1614.378 ms
+[ 2] lzp_cpu_bsc_mod          :   335 MiB/s,  1134.444 ms
+[ 3] lzp_cpu_rollhash         :   320 MiB/s,  1188.389 ms
+[ 4] lzp_cpu_rollhash (OpenMP):   935 MiB/s,  407.003 ms
+[ 1] st3-cpu            :  48.3 MiB/s,  7886.755 ms
+[ 2] st4-cpu            :  27.1 MiB/s,  14046.187 ms
+[ 3] st5-cpu            :  10.1 MiB/s,  37586.336 ms
+[ 4] st6-cpu            :  4.31 MiB/s,  88388.905 ms
+[ 5] OpenBWT            :  2.13 MiB/s,  178490.720 ms
+[ 6] divsufsort         :  6.71 MiB/s,  56691.032 ms
+[ 7] divsufsort (OpenMP):  9.85 MiB/s,  38623.186 ms
+rle: 399,026,387 => 397,003,596 (99.49%)   >255: 0
+[ 1] mtf_cpu_bsc               :  17.8 / 17.8 MiB/s,  21321.106 ms
+[ 2] mtf_cpu_shelwien          :   136 /  136 MiB/s,  2788.824 ms
+[ 3] mtf_cpu_shelwien2         :   221 /  220 MiB/s,  1719.867 ms
+[ 4] mtf_cpu_shelwien2 (OpenMP):  1010 / 1005 MiB/s,  376.668 ms
+
+C:\app_bslab>bslab-clang-avx2.exe z:\1g.tor3
+[ 1] lzp_cpu_bsc     :   233 MiB/s,  1630.414 ms
+[ 2] lzp_cpu_bsc_mod :   324 MiB/s,  1174.016 ms
+[ 3] lzp_cpu_rollhash:   319 MiB/s,  1193.862 ms
+[ 1] st3-cpu   :  48.6 MiB/s,  7827.381 ms
+[ 2] st4-cpu   :  27.2 MiB/s,  13997.796 ms
+[ 3] st5-cpu   :  10.6 MiB/s,  35994.550 ms
+[ 4] st6-cpu   :  4.47 MiB/s,  85217.120 ms
+[ 5] OpenBWT   :  2.07 MiB/s,  184228.282 ms
+[ 6] divsufsort:  7.06 MiB/s,  53913.226 ms
+rle: 399,026,387 => 397,003,596 (99.49%)   >255: 0
+[ 1] mtf_cpu_bsc      :  9.34 / 9.29 MiB/s,  40756.652 ms
+[ 2] mtf_cpu_shelwien :   129 /  129 MiB/s,  2941.748 ms
+[ 3] mtf_cpu_shelwien2:   197 /  196 MiB/s,  1933.490 ms
+
+C:\app_bslab>bslab-gcc-avx2.exe z:\1g.tor3
+[ 1] lzp_cpu_bsc              :   303 MiB/s,  1257.961 ms
+[ 2] lzp_cpu_bsc_mod          :   324 MiB/s,  1174.339 ms
+[ 3] lzp_cpu_rollhash         :   236 MiB/s,  1613.583 ms
+[ 4] lzp_cpu_rollhash (OpenMP):   765 MiB/s,  497.516 ms
+[ 1] st3-cpu            :  48.8 MiB/s,  7792.266 ms
+[ 2] st4-cpu            :  27.1 MiB/s,  14050.371 ms
+[ 3] st5-cpu            :  10.5 MiB/s,  36208.253 ms
+[ 4] st6-cpu            :  4.41 MiB/s,  86233.237 ms
+[ 5] OpenBWT            :  2.13 MiB/s,  178304.056 ms
+[ 6] divsufsort         :  6.97 MiB/s,  54576.603 ms
+[ 7] divsufsort (OpenMP):  9.80 MiB/s,  38845.038 ms
+rle: 399,026,387 => 397,003,596 (99.49%)   >255: 0
+[ 1] mtf_cpu_bsc               :  7.65 / 7.61 MiB/s,  49745.700 ms
+[ 2] mtf_cpu_shelwien          :   133 /  132 MiB/s,  2868.811 ms
+[ 3] mtf_cpu_shelwien2         :   185 /  184 MiB/s,  2056.992 ms
+[ 4] mtf_cpu_shelwien2 (OpenMP):   797 /  793 MiB/s,  477.487 ms
+
+C:\app_bslab>bslab-msvc-avx2.exe z:\1g.tor3
+[ 1] lzp_cpu_bsc              :   241 MiB/s,  1577.184 ms
+[ 2] lzp_cpu_bsc_mod          :   305 MiB/s,  1248.219 ms
+[ 3] lzp_cpu_rollhash         :   281 MiB/s,  1355.929 ms
+[ 4] lzp_cpu_rollhash (OpenMP):   923 MiB/s,  412.301 ms
+[ 1] st3-cpu            :  48.6 MiB/s,  7830.479 ms
+[ 2] st4-cpu            :  27.1 MiB/s,  14023.505 ms
+[ 3] st5-cpu            :  9.63 MiB/s,  39505.242 ms
+[ 4] st6-cpu            :  4.27 MiB/s,  89144.245 ms
+[ 5] OpenBWT            :  2.09 MiB/s,  181936.470 ms
+[ 6] divsufsort         :  6.85 MiB/s,  55547.830 ms
+[ 7] divsufsort (OpenMP):  9.71 MiB/s,  39195.872 ms
+rle: 399,026,387 => 397,003,596 (99.49%)   >255: 0
+[ 1] mtf_cpu_bsc               :  9.96 / 9.91 MiB/s,  38212.652 ms
+[ 2] mtf_cpu_shelwien          :   110 /  109 MiB/s,  3465.055 ms
+[ 3] mtf_cpu_shelwien2         :   134 /  133 MiB/s,  2845.172 ms
+[ 4] mtf_cpu_shelwien2 (OpenMP):   552 /  550 MiB/s,  688.852 ms
+
+C:\app_bslab>for %c in (icl clang gcc msvc) do bslab-%c.exe z:\1g.tor3
+
+C:\app_bslab>bslab-icl.exe z:\1g.tor3
+[ 1] lzp_cpu_bsc              :   238 MiB/s,  1598.450 ms
+[ 2] lzp_cpu_bsc_mod          :   317 MiB/s,  1199.222 ms
+[ 3] lzp_cpu_rollhash         :   308 MiB/s,  1235.144 ms
+[ 4] lzp_cpu_rollhash (OpenMP):   913 MiB/s,  416.733 ms
+[ 1] st3-cpu            :  48.4 MiB/s,  7867.263 ms
+[ 2] st4-cpu            :  27.1 MiB/s,  14063.952 ms
+[ 3] st5-cpu            :  10.4 MiB/s,  36720.580 ms
+[ 4] st6-cpu            :  4.31 MiB/s,  88279.518 ms
+[ 5] OpenBWT            :  2.12 MiB/s,  179267.061 ms
+[ 6] divsufsort         :  6.67 MiB/s,  57051.648 ms
+[ 7] divsufsort (OpenMP):  9.82 MiB/s,  38742.293 ms
+rle: 399,026,387 => 397,003,596 (99.49%)   >255: 0
+[ 1] mtf_cpu_bsc               :  16.7 / 16.6 MiB/s,  22840.310 ms
+[ 2] mtf_cpu_shelwien          :   110 /  110 MiB/s,  3447.999 ms
+[ 3] mtf_cpu_shelwien2         :   143 /  143 MiB/s,  2653.324 ms
+[ 4] mtf_cpu_shelwien2 (OpenMP):   600 /  597 MiB/s,  634.024 ms
+
+C:\app_bslab>bslab-clang.exe z:\1g.tor3
+[ 1] lzp_cpu_bsc     :   230 MiB/s,  1653.242 ms
+[ 2] lzp_cpu_bsc_mod :   301 MiB/s,  1263.158 ms
+[ 3] lzp_cpu_rollhash:   289 MiB/s,  1315.051 ms
+[ 1] st3-cpu   :  49.0 MiB/s,  7765.883 ms
+[ 2] st4-cpu   :  27.1 MiB/s,  14045.359 ms
+[ 3] st5-cpu   :  10.7 MiB/s,  35665.927 ms
+[ 4] st6-cpu   :  4.50 MiB/s,  84598.015 ms
+[ 5] OpenBWT   :  2.06 MiB/s,  184564.101 ms
+[ 6] divsufsort:  7.01 MiB/s,  54259.599 ms
+rle: 399,026,387 => 397,003,596 (99.49%)   >255: 0
+[ 1] mtf_cpu_bsc      :  9.48 / 9.44 MiB/s,  40127.492 ms
+[ 2] mtf_cpu_shelwien :   114 /  114 MiB/s,  3325.725 ms
+[ 3] mtf_cpu_shelwien2:   122 /  121 MiB/s,  3124.929 ms
+
+C:\app_bslab>bslab-gcc.exe z:\1g.tor3
+[ 1] lzp_cpu_bsc              :   300 MiB/s,  1267.701 ms
+[ 2] lzp_cpu_bsc_mod          :   325 MiB/s,  1171.373 ms
+[ 3] lzp_cpu_rollhash         :   236 MiB/s,  1615.675 ms
+[ 4] lzp_cpu_rollhash (OpenMP):   713 MiB/s,  533.800 ms
+[ 1] st3-cpu            :  48.7 MiB/s,  7814.822 ms
+[ 2] st4-cpu            :  27.1 MiB/s,  14053.776 ms
+[ 3] st5-cpu            :  10.3 MiB/s,  36776.316 ms
+[ 4] st6-cpu            :  4.41 MiB/s,  86272.096 ms
+[ 5] OpenBWT            :  2.14 MiB/s,  178070.868 ms
+[ 6] divsufsort         :  7.05 MiB/s,  54012.729 ms
+[ 7] divsufsort (OpenMP):  9.86 MiB/s,  38597.220 ms
+rle: 399,026,387 => 397,003,596 (99.49%)   >255: 0
+[ 1] mtf_cpu_bsc               :  7.89 / 7.85 MiB/s,  48209.845 ms
+[ 2] mtf_cpu_shelwien          :  99.5 / 99.0 MiB/s,  3825.755 ms
+[ 3] mtf_cpu_shelwien2         :   121 /  120 MiB/s,  3157.548 ms
+[ 4] mtf_cpu_shelwien2 (OpenMP):   492 /  489 MiB/s,  773.898 ms
+
+C:\app_bslab>bslab-msvc.exe z:\1g.tor3
+[ 1] lzp_cpu_bsc              :   251 MiB/s,  1515.602 ms
+[ 2] lzp_cpu_bsc_mod          :   297 MiB/s,  1280.428 ms
+[ 3] lzp_cpu_rollhash         :   262 MiB/s,  1452.959 ms
+[ 4] lzp_cpu_rollhash (OpenMP):   781 MiB/s,  487.494 ms
+[ 1] st3-cpu            :  48.6 MiB/s,  7824.515 ms
+[ 2] st4-cpu            :  27.4 MiB/s,  13910.512 ms
+[ 3] st5-cpu            :  9.87 MiB/s,  38574.567 ms
+[ 4] st6-cpu            :  4.26 MiB/s,  89235.201 ms
+[ 5] OpenBWT            :  2.09 MiB/s,  182121.788 ms
+[ 6] divsufsort         :  6.87 MiB/s,  55388.443 ms
+[ 7] divsufsort (OpenMP):  9.75 MiB/s,  39049.023 ms
+rle: 399,026,387 => 397,003,596 (99.49%)   >255: 0
+[ 1] mtf_cpu_bsc               :  9.99 / 9.94 MiB/s,  38108.526 ms
+[ 2] mtf_cpu_shelwien          :  64.0 / 63.7 MiB/s,  5943.982 ms
+[ 3] mtf_cpu_shelwien2         :  77.6 / 77.2 MiB/s,  4904.330 ms
+[ 4] mtf_cpu_shelwien2 (OpenMP):   301 /  299 MiB/s,  1265.152 ms

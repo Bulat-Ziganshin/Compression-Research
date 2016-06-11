@@ -1,0 +1,497 @@
+GeForce GTX 560 Ti, CC 2.1.  VRAM 1.0 GB, 2004 MHz * 256-bit = 128 GB/s.  8 SM * 48 alu * 1800 MHz * 2 = 1.38 TFLOPS
+Haswell i7-4770
+
+C:\app_bslab>for %e in (bslab-cuda-x64.exe bslab-cuda.exe) do %e -nogpu z:\boost
+
+C:\app_bslab>bslab-cuda-x64.exe -nogpu z:\boost
+[ 1] lzp_cpu_bsc              : 64,704,870 => 26,176,887 (40.46%)  597 MiB/s,  103.414 ms
+[ 2] lzp_cpu_bsc_mod          : 64,704,870 => 26,150,982 (40.42%)  646 MiB/s,  95.546 ms
+[ 3] lzp_cpu_rollhash         : 64,704,870 => 26,139,056 (40.40%)  717 MiB/s,  86.071 ms
+[ 4] lzp_cpu_rollhash (OpenMP):  1298 MiB/s,  47.539 ms
+[ 1] st5-cuda           :   366 /  148 MiB/s,  168.611 ms
+[ 2] st6-cuda           :   379 /  153 MiB/s,  162.615 ms
+[ 3] st7-cuda           :   314 /  127 MiB/s,  196.711 ms
+[ 4] st8-cuda           :   267 /  108 MiB/s,  230.884 ms
+[ 5] st3-cpu            :   342 /  138 MiB/s,  180.692 ms
+[ 6] st4-cpu            :   259 /  105 MiB/s,  238.308 ms
+[ 7] st5-cpu            :   142 / 57.5 MiB/s,  433.785 ms
+[ 8] st6-cpu            :   114 / 45.9 MiB/s,  542.707 ms
+[ 9] OpenBWT            :  21.6 / 8.74 MiB/s,  2853.487 ms
+[10] divsufsort         :  35.1 / 14.2 MiB/s,  1760.102 ms
+[11] divsufsort (OpenMP):  45.9 / 18.5 MiB/s,  1343.991 ms
+rle: 26,139,056 => 6,794,303 (25.99% / 10.50%)   >255: 6,724
+[ 1] mtf_cpu_bsc               :   528 / 55.4 MiB/s,  116.945 ms
+[ 2] mtf_cpu_shelwien          :   647 / 68.0 MiB/s,  95.316 ms
+[ 3] mtf_cpu_shelwien2         :   775 / 81.4 MiB/s,  79.591 ms
+[ 4] mtf_cpu_shelwien2 (OpenMP):  2574 /  270 MiB/s,  23.969 ms
+[ 5] mtf_cuda_scalar           :  4203 /  441 MiB/s,  14.682 ms
+[ 6] mtf_cuda_2symbols         :  3623 /  380 MiB/s,  17.030 ms
+[ 7] mtf_cuda_2buffers         :  3960 /  416 MiB/s,  15.584 ms
+[ 8] mtf_cuda_2buffers<32>     :  6926 /  727 MiB/s,  8.910 ms
+[ 9] mtf_cuda_3buffers<32>     :  6416 /  674 MiB/s,  9.617 ms
+[10] mtf_cuda_4buffers<32>     :  5291 /  556 MiB/s,  11.664 ms
+[11] mtf_cuda_4by8             :  3587 /  377 MiB/s,  17.201 ms
+[12] mtf_cuda_8by4             :  2594 /  272 MiB/s,  23.785 ms
+[13] mtf_cuda_thread           :  1011 /  106 MiB/s,  61.034 ms
+[14] mtf_cuda_thread_by4       :  1766 /  185 MiB/s,  34.945 ms
+[15] mtf_cuda_thread<8>        :  4129 /  434 MiB/s,  14.943 ms
+[16] mtf_cuda_thread<16>       :  3182 /  334 MiB/s,  19.392 ms
+[17] mtf_cuda_thread<32>       :  2395 /  251 MiB/s,  25.765 ms
+[18] mtf_cuda_thread<64>       :  1975 /  207 MiB/s,  31.245 ms
+[19] mtf_cuda_thread_by4<8>    :  4004 /  420 MiB/s,  15.411 ms
+[20] mtf_cuda_thread_by4<16>   :  3565 /  374 MiB/s,  17.311 ms
+[21] mtf_cuda_thread_by4<32>   :  2898 /  304 MiB/s,  21.297 ms
+[22] mtf_cuda_thread_by4<64>   :  2451 /  257 MiB/s,  25.177 ms
+
+C:\app_bslab>bslab-cuda.exe -nogpu z:\boost
+[ 1] lzp_cpu_bsc              : 64,704,870 => 26,176,887 (40.46%)  531 MiB/s,  116.243 ms
+[ 2] lzp_cpu_bsc_mod          : 64,704,870 => 26,150,982 (40.42%)  561 MiB/s,  109.976 ms
+[ 3] lzp_cpu_rollhash         : 64,704,870 => 26,139,056 (40.40%)  549 MiB/s,  112.361 ms
+[ 4] lzp_cpu_rollhash (OpenMP):  1406 MiB/s,  43.883 ms
+[ 1] st5-cuda           :   378 /  153 MiB/s,  163.178 ms
+[ 2] st6-cuda           :   365 /  147 MiB/s,  169.248 ms
+[ 3] st7-cuda           :   317 /  128 MiB/s,  194.380 ms
+[ 4] st8-cuda           :   270 /  109 MiB/s,  228.707 ms
+[ 5] st3-cpu            :   386 /  156 MiB/s,  160.031 ms
+[ 6] st4-cpu            :   323 /  130 MiB/s,  191.323 ms
+[ 7] st5-cpu            :   156 / 62.9 MiB/s,  396.231 ms
+[ 8] st6-cpu            :   114 / 46.2 MiB/s,  539.896 ms
+[ 9] OpenBWT            :  21.7 / 8.76 MiB/s,  2845.949 ms
+[10] divsufsort         :  33.2 / 13.4 MiB/s,  1856.155 ms
+[11] divsufsort (OpenMP):  43.5 / 17.6 MiB/s,  1418.536 ms
+rle: 26,139,056 => 6,794,303 (25.99% / 10.50%)   >255: 6,724
+[ 1] mtf_cpu_bsc               :   438 / 46.0 MiB/s,  140.854 ms
+[ 2] mtf_cpu_shelwien          :   606 / 63.6 MiB/s,  101.855 ms
+[ 3] mtf_cpu_shelwien2         :   765 / 80.4 MiB/s,  80.616 ms
+[ 4] mtf_cpu_shelwien2 (OpenMP):  2533 /  266 MiB/s,  24.360 ms
+[ 5] mtf_cuda_scalar           :  4523 /  475 MiB/s,  13.644 ms
+[ 6] mtf_cuda_2symbols         :  3768 /  396 MiB/s,  16.375 ms
+[ 7] mtf_cuda_2buffers         :  4360 /  458 MiB/s,  14.154 ms
+[ 8] mtf_cuda_2buffers<32>     :  6871 /  721 MiB/s,  8.981 ms
+[ 9] mtf_cuda_3buffers<32>     :  6490 /  681 MiB/s,  9.509 ms
+[10] mtf_cuda_4buffers<32>     :  5346 /  561 MiB/s,  11.542 ms
+[11] mtf_cuda_4by8             :  3619 /  380 MiB/s,  17.051 ms
+[12] mtf_cuda_8by4             :  2697 /  283 MiB/s,  22.880 ms
+[13] mtf_cuda_thread           :  1015 /  107 MiB/s,  60.782 ms
+[14] mtf_cuda_thread_by4       :  1791 /  188 MiB/s,  34.445 ms
+[15] mtf_cuda_thread<8>        :  4125 /  433 MiB/s,  14.959 ms
+[16] mtf_cuda_thread<16>       :  3266 /  343 MiB/s,  18.895 ms
+[17] mtf_cuda_thread<32>       :  2480 /  260 MiB/s,  24.880 ms
+[18] mtf_cuda_thread<64>       :  2045 /  215 MiB/s,  30.172 ms
+[19] mtf_cuda_thread_by4<8>    :  4014 /  421 MiB/s,  15.373 ms
+[20] mtf_cuda_thread_by4<16>   :  3566 /  374 MiB/s,  17.304 ms
+[21] mtf_cuda_thread_by4<32>   :  2934 /  308 MiB/s,  21.034 ms
+[22] mtf_cuda_thread_by4<64>   :  2480 /  260 MiB/s,  24.877 ms
+
+
+C:\app_bslab>for %a in (e8 e9 100m 1g 1g.tor3) do for %e in (bslab-cuda-x64.exe bslab-cuda.exe) do %e -nogpu z:\%a -b34
+
+C:\app_bslab>for %e in (bslab-cuda-x64.exe bslab-cuda.exe) do %e -nogpu z:\e8 -b34
+
+C:\app_bslab>bslab-cuda-x64.exe -nogpu z:\e8 -b34
+[ 1] lzp_cpu_bsc              : 100,000,000 => 95,007,988 (95.01%)  225 MiB/s,  424.105 ms
+[ 2] lzp_cpu_bsc_mod          : 100,000,000 => 95,014,452 (95.01%)  351 MiB/s,  272.089 ms
+[ 3] lzp_cpu_rollhash         : 100,000,000 => 95,026,729 (95.03%)  414 MiB/s,  230.423 ms
+[ 4] lzp_cpu_rollhash (OpenMP):  1017 MiB/s,  93.811 ms
+[ 1] st5-cuda           :   176 /  167 MiB/s,  543.015 ms
+[ 2] st6-cuda           :   160 /  152 MiB/s,  594.737 ms
+[ 3] st7-cuda           :   149 /  141 MiB/s,  640.570 ms
+[ 4] st8-cuda           :   114 /  108 MiB/s,  836.334 ms
+[ 5] st3-cpu            :   190 /  181 MiB/s,  501.367 ms
+[ 6] st4-cpu            :   146 /  139 MiB/s,  653.905 ms
+[ 7] st5-cpu            :  61.5 / 58.5 MiB/s,  1550.264 ms
+[ 8] st6-cpu            :  42.2 / 40.1 MiB/s,  2257.707 ms
+[ 9] OpenBWT            :  6.58 / 6.26 MiB/s,  14486.891 ms
+[10] divsufsort         :  11.4 / 10.9 MiB/s,  8343.620 ms
+[11] divsufsort (OpenMP):  14.9 / 14.2 MiB/s,  6384.142 ms
+rle: 95,026,729 => 38,114,755 (40.11% / 38.11%)   >255: 13,782
+[ 1] mtf_cpu_bsc               :   173 / 66.0 MiB/s,  550.473 ms
+[ 2] mtf_cpu_shelwien          :   185 / 70.4 MiB/s,  515.973 ms
+[ 3] mtf_cpu_shelwien2         :   219 / 83.5 MiB/s,  435.326 ms
+[ 4] mtf_cpu_shelwien2 (OpenMP):   651 /  248 MiB/s,  146.589 ms
+[ 5] mtf_cuda_scalar           :  1294 /  493 MiB/s,  73.679 ms
+[ 6] mtf_cuda_2symbols         :  1185 /  452 MiB/s,  80.493 ms
+[ 7] mtf_cuda_2buffers         :  1420 /  541 MiB/s,  67.146 ms
+[ 8] mtf_cuda_2buffers<32>     :  1957 /  746 MiB/s,  48.734 ms
+[ 9] mtf_cuda_3buffers<32>     :  1913 /  729 MiB/s,  49.850 ms
+[10] mtf_cuda_4buffers<32>     :  1777 /  677 MiB/s,  53.656 ms
+[11] mtf_cuda_4by8             :  1483 /  565 MiB/s,  64.287 ms
+[12] mtf_cuda_8by4             :  1207 /  460 MiB/s,  79.043 ms
+[13] mtf_cuda_thread           :   585 /  223 MiB/s,  163.117 ms
+[14] mtf_cuda_thread_by4       :   810 /  309 MiB/s,  117.710 ms
+[15] mtf_cuda_thread<8>        :  1049 /  400 MiB/s,  90.941 ms
+[16] mtf_cuda_thread<16>       :   960 /  366 MiB/s,  99.350 ms
+[17] mtf_cuda_thread<32>       :   833 /  317 MiB/s,  114.545 ms
+[18] mtf_cuda_thread<64>       :   745 /  284 MiB/s,  128.016 ms
+[19] mtf_cuda_thread_by4<8>    :  1002 /  382 MiB/s,  95.223 ms
+[20] mtf_cuda_thread_by4<16>   :   989 /  377 MiB/s,  96.414 ms
+[21] mtf_cuda_thread_by4<32>   :   928 /  354 MiB/s,  102.763 ms
+[22] mtf_cuda_thread_by4<64>   :   867 /  331 MiB/s,  109.974 ms
+
+C:\app_bslab>bslab-cuda.exe -nogpu z:\e8 -b34
+[ 1] lzp_cpu_bsc              : 100,000,000 => 95,007,988 (95.01%)  247 MiB/s,  386.027 ms
+[ 2] lzp_cpu_bsc_mod          : 100,000,000 => 95,014,452 (95.01%)  301 MiB/s,  316.644 ms
+[ 3] lzp_cpu_rollhash         : 100,000,000 => 95,026,729 (95.03%)  288 MiB/s,  331.163 ms
+[ 4] lzp_cpu_rollhash (OpenMP):   458 MiB/s,  208.054 ms
+[ 1] st5-cuda           :   177 /  168 MiB/s,  539.495 ms
+[ 2] st6-cuda           :   163 /  155 MiB/s,  584.611 ms
+[ 3] st7-cuda           :   150 /  143 MiB/s,  635.231 ms
+[ 4] st8-cuda           :   116 /  111 MiB/s,  818.724 ms
+[ 5] st3-cpu            :   163 /  155 MiB/s,  584.002 ms
+[ 6] st4-cpu            :   137 /  130 MiB/s,  696.905 ms
+[ 7] st5-cpu            :  59.4 / 56.4 MiB/s,  1606.449 ms
+[ 8] st6-cpu            :  43.0 / 40.8 MiB/s,  2218.785 ms
+[ 9] OpenBWT            :  6.61 / 6.28 MiB/s,  14430.593 ms
+[10] divsufsort         :  10.8 / 10.3 MiB/s,  8806.980 ms
+[11] divsufsort (OpenMP):  14.6 / 13.9 MiB/s,  6533.109 ms
+rle: 95,026,729 => 38,114,755 (40.11% / 38.11%)   >255: 13,782
+[ 1] mtf_cpu_bsc               :   156 / 59.4 MiB/s,  612.259 ms
+[ 2] mtf_cpu_shelwien          :   166 / 63.1 MiB/s,  575.745 ms
+[ 3] mtf_cpu_shelwien2         :   211 / 80.4 MiB/s,  452.330 ms
+[ 4] mtf_cpu_shelwien2 (OpenMP):   706 /  269 MiB/s,  135.088 ms
+[ 5] mtf_cuda_scalar           :  1409 /  537 MiB/s,  67.667 ms
+[ 6] mtf_cuda_2symbols         :  1222 /  466 MiB/s,  78.067 ms
+[ 7] mtf_cuda_2buffers         :  1545 /  589 MiB/s,  61.741 ms
+[ 8] mtf_cuda_2buffers<32>     :  1951 /  744 MiB/s,  48.881 ms
+[ 9] mtf_cuda_3buffers<32>     :  1923 /  733 MiB/s,  49.604 ms
+[10] mtf_cuda_4buffers<32>     :  1810 /  690 MiB/s,  52.703 ms
+[11] mtf_cuda_4by8             :  1421 /  542 MiB/s,  67.098 ms
+[12] mtf_cuda_8by4             :  1232 /  469 MiB/s,  77.427 ms
+[13] mtf_cuda_thread           :   595 /  227 MiB/s,  160.276 ms
+[14] mtf_cuda_thread_by4       :   822 /  313 MiB/s,  116.015 ms
+[15] mtf_cuda_thread<8>        :  1053 /  402 MiB/s,  90.527 ms
+[16] mtf_cuda_thread<16>       :   982 /  374 MiB/s,  97.076 ms
+[17] mtf_cuda_thread<32>       :   852 /  325 MiB/s,  111.978 ms
+[18] mtf_cuda_thread<64>       :   766 /  292 MiB/s,  124.535 ms
+[19] mtf_cuda_thread_by4<8>    :   985 /  376 MiB/s,  96.791 ms
+[20] mtf_cuda_thread_by4<16>   :   987 /  376 MiB/s,  96.575 ms
+[21] mtf_cuda_thread_by4<32>   :   923 /  352 MiB/s,  103.308 ms
+[22] mtf_cuda_thread_by4<64>   :   869 /  331 MiB/s,  109.795 ms
+
+C:\app_bslab>for %e in (bslab-cuda-x64.exe bslab-cuda.exe) do %e -nogpu z:\e9 -b34
+
+C:\app_bslab>bslab-cuda-x64.exe -nogpu z:\e9 -b34
+[ 1] lzp_cpu_bsc              : 1,000,000,000 => 855,252,235 (85.53%)  275 MiB/s,  3464.797 ms
+[ 2] lzp_cpu_bsc_mod          : 1,000,000,000 => 855,231,977 (85.52%)  366 MiB/s,  2603.438 ms
+[ 3] lzp_cpu_rollhash         : 1,000,000,000 => 855,435,379 (85.54%)  433 MiB/s,  2204.165 ms
+[ 4] lzp_cpu_rollhash (OpenMP):  1295 MiB/s,  736.536 ms
+[ 1] st5-cuda           :   198 /  169 MiB/s,  4828.331 ms
+[ 2] st6-cuda           :   181 /  154 MiB/s,  5281.056 ms
+[ 3] st7-cuda           :   166 /  142 MiB/s,  5730.117 ms
+[ 4] st8-cuda           :   127 /  109 MiB/s,  7503.673 ms
+[ 5] st3-cpu            :   210 /  179 MiB/s,  4548.743 ms
+[ 6] st4-cpu            :   160 /  137 MiB/s,  5958.020 ms
+[ 7] st5-cpu            :  67.0 / 57.3 MiB/s,  14233.920 ms
+[ 8] st6-cpu            :  46.9 / 40.1 MiB/s,  20352.996 ms
+[ 9] OpenBWT            :  7.64 / 6.53 MiB/s,  124882.666 ms
+[10] divsufsort         :  13.0 / 11.1 MiB/s,  73225.877 ms
+[11] divsufsort (OpenMP):  17.3 / 14.8 MiB/s,  55135.494 ms
+rle: 855,435,379 => 329,950,014 (38.57% / 33.00%)   >255: 130,769
+[ 1] mtf_cpu_bsc               :   198 / 65.3 MiB/s,  4821.351 ms
+[ 2] mtf_cpu_shelwien          :   212 / 69.9 MiB/s,  4502.694 ms
+[ 3] mtf_cpu_shelwien2         :   252 / 83.1 MiB/s,  3788.163 ms
+[ 4] mtf_cpu_shelwien2 (OpenMP):   805 /  266 MiB/s,  1184.861 ms
+[ 5] mtf_cuda_scalar           :  1485 /  490 MiB/s,  642.313 ms
+[ 6] mtf_cuda_2symbols         :  1357 /  448 MiB/s,  702.967 ms
+[ 7] mtf_cuda_2buffers         :  1621 /  535 MiB/s,  588.376 ms
+[ 8] mtf_cuda_2buffers<32>     :  2231 /  736 MiB/s,  427.482 ms
+[ 9] mtf_cuda_3buffers<32>     :  2173 /  717 MiB/s,  438.775 ms
+[10] mtf_cuda_4buffers<32>     :  2007 /  662 MiB/s,  475.079 ms
+[11] mtf_cuda_4by8             :  1668 /  550 MiB/s,  571.844 ms
+[12] mtf_cuda_8by4             :  1330 /  439 MiB/s,  717.125 ms
+[13] mtf_cuda_thread           :   640 /  211 MiB/s,  1489.478 ms
+[14] mtf_cuda_thread_by4       :   902 /  298 MiB/s,  1056.907 ms
+[15] mtf_cuda_thread<8>        :  1172 /  387 MiB/s,  813.592 ms
+[16] mtf_cuda_thread<16>       :  1061 /  350 MiB/s,  899.120 ms
+[17] mtf_cuda_thread<32>       :   910 /  300 MiB/s,  1048.134 ms
+[18] mtf_cuda_thread<64>       :   799 /  264 MiB/s,  1193.687 ms
+[19] mtf_cuda_thread_by4<8>    :  1116 /  368 MiB/s,  854.805 ms
+[20] mtf_cuda_thread_by4<16>   :  1096 /  362 MiB/s,  869.754 ms
+[21] mtf_cuda_thread_by4<32>   :  1017 /  336 MiB/s,  937.602 ms
+[22] mtf_cuda_thread_by4<64>   :   950 /  314 MiB/s,  1003.599 ms
+
+C:\app_bslab>bslab-cuda.exe -nogpu z:\e9 -b34
+[ 1] lzp_cpu_bsc              : 1,000,000,000 => 855,252,235 (85.53%)  232 MiB/s,  4108.759 ms
+[ 2] lzp_cpu_bsc_mod          : 1,000,000,000 => 855,231,977 (85.52%)  319 MiB/s,  2994.102 ms
+[ 3] lzp_cpu_rollhash         : 1,000,000,000 => 855,435,379 (85.54%)  307 MiB/s,  3103.069 ms
+[ 4] lzp_cpu_rollhash (OpenMP):   755 MiB/s,  1262.668 ms
+[ 1] st5-cuda           :   199 /  170 MiB/s,  4803.836 ms
+[ 2] st6-cuda           :   182 /  156 MiB/s,  5242.288 ms
+[ 3] st7-cuda           :   168 /  144 MiB/s,  5668.723 ms
+[ 4] st8-cuda           :   129 /  111 MiB/s,  7376.383 ms
+[ 5] st3-cpu            :   180 /  154 MiB/s,  5309.621 ms
+[ 6] st4-cpu            :   152 /  130 MiB/s,  6259.896 ms
+[ 7] st5-cpu            :  64.4 / 55.1 MiB/s,  14812.519 ms
+[ 8] st6-cpu            :  46.0 / 39.3 MiB/s,  20736.460 ms
+[ 9] OpenBWT            :  7.63 / 6.52 MiB/s,  125036.918 ms
+[10] divsufsort         :  12.4 / 10.6 MiB/s,  76921.960 ms
+[11] divsufsort (OpenMP):  16.9 / 14.4 MiB/s,  56486.211 ms
+rle: 855,435,379 => 329,950,014 (38.57% / 33.00%)   >255: 130,769
+[ 1] mtf_cpu_bsc               :   178 / 58.8 MiB/s,  5351.780 ms
+[ 2] mtf_cpu_shelwien          :   194 / 63.9 MiB/s,  4924.215 ms
+[ 3] mtf_cpu_shelwien2         :   244 / 80.6 MiB/s,  3906.445 ms
+[ 4] mtf_cpu_shelwien2 (OpenMP):   786 /  259 MiB/s,  1213.661 ms
+[ 5] mtf_cuda_scalar           :  1616 /  533 MiB/s,  590.219 ms
+[ 6] mtf_cuda_2symbols         :  1398 /  461 MiB/s,  682.055 ms
+[ 7] mtf_cuda_2buffers         :  1761 /  581 MiB/s,  541.616 ms
+[ 8] mtf_cuda_2buffers<32>     :  2224 /  734 MiB/s,  428.875 ms
+[ 9] mtf_cuda_3buffers<32>     :  2195 /  724 MiB/s,  434.549 ms
+[10] mtf_cuda_4buffers<32>     :  2026 /  668 MiB/s,  470.804 ms
+[11] mtf_cuda_4by8             :  1609 /  531 MiB/s,  592.615 ms
+[12] mtf_cuda_8by4             :  1373 /  453 MiB/s,  694.582 ms
+[13] mtf_cuda_thread           :   654 /  216 MiB/s,  1458.401 ms
+[14] mtf_cuda_thread_by4       :   918 /  303 MiB/s,  1038.465 ms
+[15] mtf_cuda_thread<8>        :  1177 /  388 MiB/s,  810.480 ms
+[16] mtf_cuda_thread<16>       :  1083 /  357 MiB/s,  880.622 ms
+[17] mtf_cuda_thread<32>       :   934 /  308 MiB/s,  1021.423 ms
+[18] mtf_cuda_thread<64>       :   823 /  271 MiB/s,  1159.236 ms
+[19] mtf_cuda_thread_by4<8>    :  1108 /  365 MiB/s,  861.018 ms
+[20] mtf_cuda_thread_by4<16>   :  1105 /  365 MiB/s,  863.133 ms
+[21] mtf_cuda_thread_by4<32>   :  1026 /  339 MiB/s,  929.553 ms
+[22] mtf_cuda_thread_by4<64>   :   960 /  317 MiB/s,  993.297 ms
+
+C:\app_bslab>for %e in (bslab-cuda-x64.exe bslab-cuda.exe) do %e -nogpu z:\100m -b34
+
+C:\app_bslab>bslab-cuda-x64.exe -nogpu z:\100m -b34
+[ 1] lzp_cpu_bsc              : 100,000,000 => 79,811,671 (79.81%)  255 MiB/s,  374.123 ms
+[ 2] lzp_cpu_bsc_mod          : 100,000,000 => 79,729,357 (79.73%)  360 MiB/s,  265.045 ms
+[ 3] lzp_cpu_rollhash         : 100,000,000 => 79,716,379 (79.72%)  476 MiB/s,  200.416 ms
+[ 4] lzp_cpu_rollhash (OpenMP):  1354 MiB/s,  70.420 ms
+[ 1] st5-cuda           :   209 /  167 MiB/s,  455.955 ms
+[ 2] st6-cuda           :   192 /  153 MiB/s,  496.140 ms
+[ 3] st7-cuda           :   176 /  141 MiB/s,  540.816 ms
+[ 4] st8-cuda           :   135 /  107 MiB/s,  708.097 ms
+[ 5] st3-cpu            :   145 /  116 MiB/s,  655.540 ms
+[ 6] st4-cpu            :   104 / 82.6 MiB/s,  920.845 ms
+[ 7] st5-cpu            :  39.8 / 31.7 MiB/s,  2398.967 ms
+[ 8] st6-cpu            :  20.1 / 16.0 MiB/s,  4742.312 ms
+[ 9] OpenBWT            :  8.73 / 6.96 MiB/s,  10926.373 ms
+[10] divsufsort         :  17.6 / 14.0 MiB/s,  5413.128 ms
+[11] divsufsort (OpenMP):  24.3 / 19.4 MiB/s,  3924.847 ms
+rle: 79,716,379 => 35,784,549 (44.89% / 35.78%)   >255: 7,045
+[ 1] mtf_cpu_bsc               :   103 / 36.9 MiB/s,  925.094 ms
+[ 2] mtf_cpu_shelwien          :   190 / 67.8 MiB/s,  503.253 ms
+[ 3] mtf_cpu_shelwien2         :   226 / 80.9 MiB/s,  421.958 ms
+[ 4] mtf_cpu_shelwien2 (OpenMP):   609 /  218 MiB/s,  156.704 ms
+[ 5] mtf_cuda_scalar           :   777 /  278 MiB/s,  122.734 ms
+[ 6] mtf_cuda_2symbols         :   621 /  222 MiB/s,  153.499 ms
+[ 7] mtf_cuda_2buffers         :   664 /  238 MiB/s,  143.567 ms
+[ 8] mtf_cuda_2buffers<32>     :  2059 /  737 MiB/s,  46.327 ms
+[ 9] mtf_cuda_3buffers<32>     :  1999 /  715 MiB/s,  47.702 ms
+[10] mtf_cuda_4buffers<32>     :  1869 /  669 MiB/s,  51.035 ms
+[11] mtf_cuda_4by8             :   506 /  181 MiB/s,  188.496 ms
+[12] mtf_cuda_8by4             :   415 /  149 MiB/s,  229.687 ms
+[13] mtf_cuda_thread           :   190 / 68.1 MiB/s,  501.282 ms
+[14] mtf_cuda_thread_by4       :   327 /  117 MiB/s,  291.242 ms
+[15] mtf_cuda_thread<8>        :   964 /  345 MiB/s,  98.912 ms
+[16] mtf_cuda_thread<16>       :   781 /  279 MiB/s,  122.138 ms
+[17] mtf_cuda_thread<32>       :   552 /  197 MiB/s,  172.831 ms
+[18] mtf_cuda_thread<64>       :   382 /  137 MiB/s,  249.847 ms
+[19] mtf_cuda_thread_by4<8>    :   949 /  339 MiB/s,  100.538 ms
+[20] mtf_cuda_thread_by4<16>   :   899 /  322 MiB/s,  106.113 ms
+[21] mtf_cuda_thread_by4<32>   :   708 /  253 MiB/s,  134.719 ms
+[22] mtf_cuda_thread_by4<64>   :   525 /  188 MiB/s,  181.533 ms
+
+C:\app_bslab>bslab-cuda.exe -nogpu z:\100m -b34
+[ 1] lzp_cpu_bsc              : 100,000,000 => 79,811,671 (79.81%)  241 MiB/s,  395.499 ms
+[ 2] lzp_cpu_bsc_mod          : 100,000,000 => 79,729,357 (79.73%)  318 MiB/s,  299.510 ms
+[ 3] lzp_cpu_rollhash         : 100,000,000 => 79,716,379 (79.72%)  333 MiB/s,  286.265 ms
+[ 4] lzp_cpu_rollhash (OpenMP):   434 MiB/s,  219.524 ms
+[ 1] st5-cuda           :   211 /  168 MiB/s,  452.123 ms
+[ 2] st6-cuda           :   193 /  154 MiB/s,  495.209 ms
+[ 3] st7-cuda           :   179 /  143 MiB/s,  532.288 ms
+[ 4] st8-cuda           :   137 /  109 MiB/s,  698.430 ms
+[ 5] st3-cpu            :   134 /  107 MiB/s,  712.705 ms
+[ 6] st4-cpu            :  99.6 / 79.4 MiB/s,  957.334 ms
+[ 7] st5-cpu            :  38.8 / 30.9 MiB/s,  2460.608 ms
+[ 8] st6-cpu            :  20.3 / 16.2 MiB/s,  4705.360 ms
+[ 9] OpenBWT            :  8.69 / 6.93 MiB/s,  10974.893 ms
+[10] divsufsort         :  16.6 / 13.2 MiB/s,  5743.692 ms
+[11] divsufsort (OpenMP):  23.8 / 19.0 MiB/s,  4010.841 ms
+rle: 79,716,379 => 35,784,549 (44.89% / 35.78%)   >255: 7,045
+[ 1] mtf_cpu_bsc               :  61.8 / 22.1 MiB/s,  1542.718 ms
+[ 2] mtf_cpu_shelwien          :   175 / 62.7 MiB/s,  544.035 ms
+[ 3] mtf_cpu_shelwien2         :   220 / 78.7 MiB/s,  433.360 ms
+[ 4] mtf_cpu_shelwien2 (OpenMP):   652 /  233 MiB/s,  146.335 ms
+[ 5] mtf_cuda_scalar           :   829 /  297 MiB/s,  115.040 ms
+[ 6] mtf_cuda_2symbols         :   654 /  234 MiB/s,  145.835 ms
+[ 7] mtf_cuda_2buffers         :   708 /  254 MiB/s,  134.614 ms
+[ 8] mtf_cuda_2buffers<32>     :  2049 /  733 MiB/s,  46.543 ms
+[ 9] mtf_cuda_3buffers<32>     :  2014 /  721 MiB/s,  47.346 ms
+[10] mtf_cuda_4buffers<32>     :  1877 /  672 MiB/s,  50.795 ms
+[11] mtf_cuda_4by8             :   488 /  175 MiB/s,  195.432 ms
+[12] mtf_cuda_8by4             :   446 /  160 MiB/s,  213.650 ms
+[13] mtf_cuda_thread           :   194 / 69.4 MiB/s,  491.936 ms
+[14] mtf_cuda_thread_by4       :   331 /  118 MiB/s,  288.464 ms
+[15] mtf_cuda_thread<8>        :   953 /  341 MiB/s,  100.065 ms
+[16] mtf_cuda_thread<16>       :   799 /  286 MiB/s,  119.381 ms
+[17] mtf_cuda_thread<32>       :   568 /  203 MiB/s,  167.837 ms
+[18] mtf_cuda_thread<64>       :   390 /  140 MiB/s,  244.376 ms
+[19] mtf_cuda_thread_by4<8>    :   944 /  338 MiB/s,  100.971 ms
+[20] mtf_cuda_thread_by4<16>   :   899 /  322 MiB/s,  106.112 ms
+[21] mtf_cuda_thread_by4<32>   :   715 /  256 MiB/s,  133.401 ms
+[22] mtf_cuda_thread_by4<64>   :   530 /  190 MiB/s,  179.821 ms
+
+C:\app_bslab>for %e in (bslab-cuda-x64.exe bslab-cuda.exe) do %e -nogpu z:\1g -b34
+
+C:\app_bslab>bslab-cuda-x64.exe -nogpu z:\1g -b34
+[ 1] lzp_cpu_bsc              : 1,000,000,000 => 764,923,731 (76.49%)  278 MiB/s,  3429.678 ms
+[ 2] lzp_cpu_bsc_mod          : 1,000,000,000 => 764,701,121 (76.47%)  379 MiB/s,  2513.158 ms
+[ 3] lzp_cpu_rollhash         : 1,000,000,000 => 764,539,176 (76.45%)  491 MiB/s,  1943.171 ms
+[ 4] lzp_cpu_rollhash (OpenMP):  1176 MiB/s,  811.008 ms
+[ 1] st5-cuda           :   218 /  167 MiB/s,  4372.000 ms
+[ 2] st6-cuda           :   200 /  153 MiB/s,  4772.801 ms
+[ 3] st7-cuda           :   185 /  141 MiB/s,  5167.292 ms
+[ 4] st8-cuda           :   140 /  107 MiB/s,  6805.489 ms
+[ 5] st3-cpu            :   155 /  118 MiB/s,  6157.511 ms
+[ 6] st4-cpu            :   109 / 83.1 MiB/s,  8773.751 ms
+[ 7] st5-cpu            :  42.6 / 32.6 MiB/s,  22375.494 ms
+[ 8] st6-cpu            :  22.0 / 16.8 MiB/s,  43342.563 ms
+[ 9] OpenBWT            :  9.27 / 7.09 MiB/s,  102857.560 ms
+[10] divsufsort         :  18.7 / 14.3 MiB/s,  50981.997 ms
+[11] divsufsort (OpenMP):  25.5 / 19.5 MiB/s,  37413.239 ms
+rle: 764,539,176 => 357,989,930 (46.82% / 35.80%)   >255: 85,013
+[ 1] mtf_cpu_bsc               :   106 / 37.8 MiB/s,  9033.413 ms
+[ 2] mtf_cpu_shelwien          :   188 / 67.3 MiB/s,  5071.814 ms
+[ 3] mtf_cpu_shelwien2         :   226 / 80.8 MiB/s,  4227.914 ms
+[ 4] mtf_cpu_shelwien2 (OpenMP):   661 /  236 MiB/s,  1443.748 ms
+[ 5] mtf_cuda_scalar           :   787 /  282 MiB/s,  1211.856 ms
+[ 6] mtf_cuda_2symbols         :   633 /  226 MiB/s,  1507.500 ms
+[ 7] mtf_cuda_2buffers         :   673 /  241 MiB/s,  1417.016 ms
+[ 8] mtf_cuda_2buffers<32>     :  2063 /  739 MiB/s,  462.198 ms
+[ 9] mtf_cuda_3buffers<32>     :  2014 /  721 MiB/s,  473.497 ms
+[10] mtf_cuda_4buffers<32>     :  1881 /  674 MiB/s,  506.902 ms
+[11] mtf_cuda_4by8             :   518 /  185 MiB/s,  1841.951 ms
+[12] mtf_cuda_8by4             :   425 /  152 MiB/s,  2243.450 ms
+[13] mtf_cuda_thread           :   190 / 67.9 MiB/s,  5026.253 ms
+[14] mtf_cuda_thread_by4       :   327 /  117 MiB/s,  2914.221 ms
+[15] mtf_cuda_thread<8>        :  1045 /  374 MiB/s,  912.858 ms
+[16] mtf_cuda_thread<16>       :   839 /  300 MiB/s,  1136.263 ms
+[17] mtf_cuda_thread<32>       :   593 /  212 MiB/s,  1608.942 ms
+[18] mtf_cuda_thread<64>       :   404 /  145 MiB/s,  2360.905 ms
+[19] mtf_cuda_thread_by4<8>    :  1046 /  374 MiB/s,  912.027 ms
+[20] mtf_cuda_thread_by4<16>   :   967 /  346 MiB/s,  985.719 ms
+[21] mtf_cuda_thread_by4<32>   :   761 /  272 MiB/s,  1252.932 ms
+[22] mtf_cuda_thread_by4<64>   :   560 /  200 MiB/s,  1703.981 ms
+
+C:\app_bslab>bslab-cuda.exe -nogpu z:\1g -b34
+[ 1] lzp_cpu_bsc              : 1,000,000,000 => 764,923,731 (76.49%)  242 MiB/s,  3947.687 ms
+[ 2] lzp_cpu_bsc_mod          : 1,000,000,000 => 764,701,121 (76.47%)  325 MiB/s,  2937.504 ms
+[ 3] lzp_cpu_rollhash         : 1,000,000,000 => 764,539,176 (76.45%)  344 MiB/s,  2768.801 ms
+[ 4] lzp_cpu_rollhash (OpenMP):   880 MiB/s,  1083.999 ms
+[ 1] st5-cuda           :   220 /  168 MiB/s,  4339.121 ms
+[ 2] st6-cuda           :   202 /  154 MiB/s,  4723.540 ms
+[ 3] st7-cuda           :   186 /  142 MiB/s,  5132.299 ms
+[ 4] st8-cuda           :   142 /  109 MiB/s,  6708.771 ms
+[ 5] st3-cpu            :   143 /  109 MiB/s,  6672.395 ms
+[ 6] st4-cpu            :   106 / 81.0 MiB/s,  8998.075 ms
+[ 7] st5-cpu            :  41.8 / 31.9 MiB/s,  22821.754 ms
+[ 8] st6-cpu            :  21.8 / 16.7 MiB/s,  43662.137 ms
+[ 9] OpenBWT            :  9.28 / 7.09 MiB/s,  102789.767 ms
+[10] divsufsort         :  17.5 / 13.4 MiB/s,  54494.060 ms
+[11] divsufsort (OpenMP):  24.6 / 18.8 MiB/s,  38822.900 ms
+rle: 764,539,176 => 357,989,930 (46.82% / 35.80%)   >255: 85,013
+[ 1] mtf_cpu_bsc               :  63.4 / 22.7 MiB/s,  15031.008 ms
+[ 2] mtf_cpu_shelwien          :   175 / 62.5 MiB/s,  5460.243 ms
+[ 3] mtf_cpu_shelwien2         :   220 / 78.9 MiB/s,  4326.495 ms
+[ 4] mtf_cpu_shelwien2 (OpenMP):   717 /  257 MiB/s,  1329.476 ms
+[ 5] mtf_cuda_scalar           :   840 /  301 MiB/s,  1135.815 ms
+[ 6] mtf_cuda_2symbols         :   666 /  238 MiB/s,  1432.814 ms
+[ 7] mtf_cuda_2buffers         :   721 /  258 MiB/s,  1323.447 ms
+[ 8] mtf_cuda_2buffers<32>     :  2055 /  736 MiB/s,  464.001 ms
+[ 9] mtf_cuda_3buffers<32>     :  2028 /  726 MiB/s,  470.237 ms
+[10] mtf_cuda_4buffers<32>     :  1895 /  679 MiB/s,  503.158 ms
+[11] mtf_cuda_4by8             :   492 /  176 MiB/s,  1936.409 ms
+[12] mtf_cuda_8by4             :   455 /  163 MiB/s,  2095.829 ms
+[13] mtf_cuda_thread           :   193 / 69.2 MiB/s,  4932.210 ms
+[14] mtf_cuda_thread_by4       :   330 /  118 MiB/s,  2885.623 ms
+[15] mtf_cuda_thread<8>        :  1048 /  375 MiB/s,  909.604 ms
+[16] mtf_cuda_thread<16>       :   858 /  307 MiB/s,  1111.369 ms
+[17] mtf_cuda_thread<32>       :   609 /  218 MiB/s,  1567.053 ms
+[18] mtf_cuda_thread<64>       :   414 /  148 MiB/s,  2302.373 ms
+[19] mtf_cuda_thread_by4<8>    :  1043 /  373 MiB/s,  914.595 ms
+[20] mtf_cuda_thread_by4<16>   :   972 /  348 MiB/s,  980.973 ms
+[21] mtf_cuda_thread_by4<32>   :   765 /  274 MiB/s,  1247.412 ms
+[22] mtf_cuda_thread_by4<64>   :   564 /  202 MiB/s,  1691.150 ms
+
+C:\app_bslab>for %e in (bslab-cuda-x64.exe bslab-cuda.exe) do %e -nogpu z:\1g.tor3 -b34
+
+C:\app_bslab>bslab-cuda-x64.exe -nogpu z:\1g.tor3 -b34
+[ 1] lzp_cpu_bsc              :   282 MiB/s,  1350.391 ms
+[ 2] lzp_cpu_bsc_mod          :   343 MiB/s,  1108.456 ms
+[ 3] lzp_cpu_rollhash         :   390 MiB/s,  976.366 ms
+[ 4] lzp_cpu_rollhash (OpenMP):   593 MiB/s,  642.006 ms
+[ 1] st5-cuda           :   161 MiB/s,  2370.577 ms
+[ 2] st6-cuda           :   152 MiB/s,  2506.740 ms
+[ 3] st7-cuda           :   140 MiB/s,  2710.637 ms
+[ 4] st8-cuda           :   106 MiB/s,  3596.325 ms
+[ 5] st3-cpu            :  58.8 MiB/s,  6474.996 ms
+[ 6] st4-cpu            :  31.3 MiB/s,  12153.637 ms
+[ 7] st5-cpu            :  11.6 MiB/s,  32860.212 ms
+[ 8] st6-cpu            :  4.43 MiB/s,  85889.113 ms
+[ 9] OpenBWT            :  2.50 MiB/s,  152217.194 ms
+[10] divsufsort         :  9.39 MiB/s,  40540.775 ms
+[11] divsufsort (OpenMP):  12.1 MiB/s,  31574.938 ms
+rle: 399,026,387 => 396,969,422 (99.48%)   >255: 0
+[ 1] mtf_cpu_bsc               :  20.7 / 20.6 MiB/s,  18374.315 ms
+[ 2] mtf_cpu_shelwien          :  70.3 / 69.9 MiB/s,  5414.224 ms
+[ 3] mtf_cpu_shelwien2         :  83.0 / 82.5 MiB/s,  4586.377 ms
+[ 4] mtf_cpu_shelwien2 (OpenMP):   286 /  284 MiB/s,  1331.271 ms
+[ 5] mtf_cuda_scalar           :   160 /  159 MiB/s,  2373.735 ms
+[ 6] mtf_cuda_2symbols         :   132 /  132 MiB/s,  2874.228 ms
+[ 7] mtf_cuda_2buffers         :   142 /  141 MiB/s,  2681.592 ms
+[ 8] mtf_cuda_2buffers<32>     :   762 /  758 MiB/s,  499.368 ms
+[ 9] mtf_cuda_3buffers<32>     :   751 /  748 MiB/s,  506.396 ms
+[10] mtf_cuda_4buffers<32>     :   760 /  756 MiB/s,  500.542 ms
+[11] mtf_cuda_4by8             :   115 /  114 MiB/s,  3310.435 ms
+[12] mtf_cuda_8by4             :   106 /  106 MiB/s,  3584.042 ms
+[13] mtf_cuda_thread           :  54.8 / 54.5 MiB/s,  6940.820 ms
+[14] mtf_cuda_thread_by4       :  97.1 / 96.6 MiB/s,  3919.292 ms
+[15] mtf_cuda_thread<8>        :   392 /  390 MiB/s,  970.840 ms
+[16] mtf_cuda_thread<16>       :   288 /  287 MiB/s,  1320.345 ms
+[17] mtf_cuda_thread<32>       :   189 /  188 MiB/s,  2013.298 ms
+[18] mtf_cuda_thread<64>       :   123 /  122 MiB/s,  3092.972 ms
+[19] mtf_cuda_thread_by4<8>    :   448 /  446 MiB/s,  848.829 ms
+[20] mtf_cuda_thread_by4<16>   :   391 /  389 MiB/s,  972.796 ms
+[21] mtf_cuda_thread_by4<32>   :   290 /  289 MiB/s,  1311.736 ms
+[22] mtf_cuda_thread_by4<64>   :   190 /  189 MiB/s,  2006.581 ms
+
+C:\app_bslab>bslab-cuda.exe -nogpu z:\1g.tor3 -b34
+[ 1] lzp_cpu_bsc              :   227 MiB/s,  1678.385 ms
+[ 2] lzp_cpu_bsc_mod          :   296 MiB/s,  1284.518 ms
+[ 3] lzp_cpu_rollhash         :   268 MiB/s,  1420.199 ms
+[ 4] lzp_cpu_rollhash (OpenMP):   664 MiB/s,  573.272 ms
+[ 1] st5-cuda           :   156 MiB/s,  2443.385 ms
+[ 2] st6-cuda           :   153 MiB/s,  2485.245 ms
+[ 3] st7-cuda           :   141 MiB/s,  2693.398 ms
+[ 4] st8-cuda           :   104 MiB/s,  3670.250 ms
+[ 5] st3-cpu            :  58.8 MiB/s,  6468.800 ms
+[ 6] st4-cpu            :  31.3 MiB/s,  12152.531 ms
+[ 7] st5-cpu            :  11.3 MiB/s,  33820.524 ms
+[ 8] st6-cpu            :  4.42 MiB/s,  86052.475 ms
+[ 9] OpenBWT            :  2.48 MiB/s,  153609.336 ms
+[10] divsufsort         :  8.87 MiB/s,  42925.113 ms
+[11] divsufsort (OpenMP):  11.8 MiB/s,  32172.641 ms
+rle: 399,026,387 => 396,969,422 (99.48%)   >255: 0
+[ 1] mtf_cpu_bsc               :  9.98 / 9.93 MiB/s,  38125.129 ms
+[ 2] mtf_cpu_shelwien          :  64.5 / 64.1 MiB/s,  5903.960 ms
+[ 3] mtf_cpu_shelwien2         :  81.5 / 81.1 MiB/s,  4666.856 ms
+[ 4] mtf_cpu_shelwien2 (OpenMP):   277 /  275 MiB/s,  1375.334 ms
+[ 5] mtf_cuda_scalar           :   168 /  167 MiB/s,  2262.799 ms
+[ 6] mtf_cuda_2symbols         :   138 /  137 MiB/s,  2759.615 ms
+[ 7] mtf_cuda_2buffers         :   147 /  146 MiB/s,  2588.110 ms
+[ 8] mtf_cuda_2buffers<32>     :   756 /  752 MiB/s,  503.553 ms
+[ 9] mtf_cuda_3buffers<32>     :   757 /  753 MiB/s,  502.590 ms
+[10] mtf_cuda_4buffers<32>     :   747 /  743 MiB/s,  509.331 ms
+[11] mtf_cuda_4by8             :   110 /  109 MiB/s,  3471.896 ms
+[12] mtf_cuda_8by4             :   116 /  116 MiB/s,  3268.662 ms
+[13] mtf_cuda_thread           :  55.0 / 54.7 MiB/s,  6919.655 ms
+[14] mtf_cuda_thread_by4       :  97.1 / 96.6 MiB/s,  3918.220 ms
+[15] mtf_cuda_thread<8>        :   391 /  389 MiB/s,  972.055 ms
+[16] mtf_cuda_thread<16>       :   291 /  289 MiB/s,  1308.418 ms
+[17] mtf_cuda_thread<32>       :   192 /  191 MiB/s,  1978.447 ms
+[18] mtf_cuda_thread<64>       :   124 /  123 MiB/s,  3067.978 ms
+[19] mtf_cuda_thread_by4<8>    :   447 /  445 MiB/s,  850.398 ms
+[20] mtf_cuda_thread_by4<16>   :   392 /  390 MiB/s,  971.597 ms
+[21] mtf_cuda_thread_by4<32>   :   291 /  289 MiB/s,  1309.502 ms
+[22] mtf_cuda_thread_by4<64>   :   188 /  187 MiB/s,  2020.759 ms
