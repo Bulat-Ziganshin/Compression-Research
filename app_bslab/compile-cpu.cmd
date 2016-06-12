@@ -31,8 +31,8 @@ start /BELOWNORMAL /B g++ %options_gcc% -m32 -msse2 -obslab-gcc.exe %*
 start /BELOWNORMAL /B g++ %options_gcc% -m32 -mavx2 -obslab-gcc-avx2.exe %*
 
 ::clang x64
-start /BELOWNORMAL /B cmd /c C:\Base\Compiler\LLVM-3.8-x64\compile-llvm-cl.cmd %options_clang% -Febslab-clang-x64.exe
-start /BELOWNORMAL /B cmd /c C:\Base\Compiler\LLVM-3.8-x64\compile-llvm-cl.cmd %options_clang% -Febslab-clang-x64-avx2.exe -arch:AVX2
+start /BELOWNORMAL /B cmd /c C:\Base\Compiler\LLVM-3.8\compile-llvm-cl-x64.cmd %options_clang% -Febslab-clang-x64.exe
+start /BELOWNORMAL /B cmd /c C:\Base\Compiler\LLVM-3.8\compile-llvm-cl-x64.cmd %options_clang% -Febslab-clang-x64-avx2.exe -arch:AVX2
 
 ::clang x86
 start /BELOWNORMAL /B cmd /c C:\Base\Compiler\LLVM-3.8\compile-llvm-cl.cmd -O2 %options_clang% -Febslab-clang.exe      -arch:SSE2

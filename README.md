@@ -1,18 +1,30 @@
-This repository contains my experiments with compression-related algorithms.
+[LZP]:   algo_lzp
+[ST]:    algo_st
+[BWT]:   algo_bwt
+[MTF]:   algo_mtf
+[EC]:    algo_ec
 
 ### [BSLab: the block-sorting lab](app_bslab)
-This's the main executable processing input data with various algos and recording speed/outsize of every experiment.
-[results.txt](app_bsl/results.txt) presents the current results on my GPU.
-[profile.txt](app_bsl/profile.txt) is a profiling report of CUDA kernels implemented by BSLab.
+This's the main executable that combines all the stages of typical block-sorting compressor together
+and applies them to user-supplied input data. It allows to examine the impact of alternative algorithms
+on each stage on the overall compression speed/ratio.
 
-### [LZP](algo_lzp)
+### [radix_sort: benchmarking the CUB radix sort](app_radix_sort)
+This application benchmarks the CUB radix sort implementation with all possible combinations
+of key/value lengths and allow user to select size of the array to sort.
+
+
+### [LZP]
 Various algorithms performing LZP preprocessing on CPU.
 
-### [ST](algo_st)
+### [ST]
 BSC implementations of Sort Transform on CPU & GPU.
 
-### [BWT](algo_bwt)
+### [BWT]
 DivSufSort and OpenBWT 2.0 implementations of BWT on CPU.
 
-### [MTF](algo_mtf)
+### [MTF]
 Various algorithms computing MTF transform on CPU & GPU.
+
+### [EC]
+Variants of EC (entropy coding) stage (not yet implemented).
