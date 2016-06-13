@@ -16,7 +16,7 @@ It sequentially applies to input data all algorithms employed in real compressor
 - [BWT] or ST sorts the data
 - RLE squeezes repeating chars
 - [MTF] converts local entropy (similar chars in similar contexts) into global entropy
-- [EC] (not implemented yet) finally encodes data
+- [EC] finally encodes the data (not implemented yet)
 
 On every stage (except for RLE) we have a choice of algorithms, including those implemented in BSC as the baseline.
 Output of the last algorithm completed on every stage (except for OpenMP LZP) goes as the input to the next stage.
@@ -88,7 +88,6 @@ rle: 855,369,315 => 317,196,734 (37.08% / 31.72%)   >255: 142,036
 ### x86: enwik9 results on Haswell i7-4770
 ```
 C:\app_bslab>bslab-icl.exe enwik9
-Haswell i7-4770
 [ 1] lzp_cpu_bsc              : 1,000,000,000 => 855,183,966 (85.52%)  247 MiB/s,  3860.045 ms
 [ 2] lzp_cpu_bsc_mod          : 1,000,000,000 => 855,168,159 (85.52%)  341 MiB/s,  2797.712 ms
 [ 3] lzp_cpu_rollhash         : 1,000,000,000 => 855,369,315 (85.54%)  363 MiB/s,  2629.060 ms
@@ -107,7 +106,7 @@ rle: 855,369,315 => 317,196,734 (37.08% / 31.72%)   >255: 142,036
 [ 4] mtf_cpu_shelwien2 (OpenMP):  1744 /  553 MiB/s,  546.876 ms
 ```
 
-### CUDA: enwik9 results
+### CUDA: enwik9 results on GeForce 560 Ti
 ```
 C:\app_bslab>bslab-cuda-x64.exe enwik9 -b34
 GeForce GTX 560 Ti, CC 2.1.  VRAM 1.0 GB, 2004 MHz * 256-bit = 128 GB/s.  8 SM * 48 alu * 1800 MHz * 2 = 1.38 TFLOPS

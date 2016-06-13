@@ -57,7 +57,10 @@ const int CHUNK = 4*1024;
 #endif // LIBBSC_CUDA_SUPPORT
 
 // In-place RLE transformation (run lengths are dropped!)
-int rle (byte* buf, int size, uint64_t &big_runs)
+// Sum up amount of runs>255 chars into long_runs
+// Sum up amount of chars + non-trivial runs into ranks_plus_lens
+// Sum up amount of chars plus size of 1/2 length encoding into _1_2_codes
+int rle (byte* buf, int size, uint64_t &long_runs, uint64_t &ranks_plus_lens, uint64_t &_1_2_codes)
 {
     int c = -1,  run = 0;
     auto out = buf;
@@ -66,12 +69,20 @@ int rle (byte* buf, int size, uint64_t &big_runs)
         if (buf[i]==c) {
             run++;
         } else {
-            if (run>255)  big_runs++;
+            if (run>255)  long_runs++;
+            if (run>1)    ranks_plus_lens++;
+            while (run>1) {
+                _1_2_codes++;  // alternatively, _1_2_codes += logb(run);
+                run /= 2;
+            }
             run = 1;
             c = *out++ = buf[i];
         }
     }
-    return out-buf;
+    auto len = out-buf;
+    ranks_plus_lens += len;
+    _1_2_codes += len;
+    return len;
 }
 
 int main (int argc, char **argv)
@@ -86,7 +97,7 @@ int main (int argc, char **argv)
     bool enabled[STAGES][MANY];
     int lzpHashSize = 15,  lzpMinLen = 32;
     size_t bufsize = DEFAULT_BUFSIZE;
-    uint64_t big_runs = 0;
+    uint64_t long_runs = 0,  ranks_plus_lens = 0,  _1_2_codes = 0;
     char *comment;
     int error = 0;
     for (int stage=0; stage<STAGES; stage++) 
@@ -268,7 +279,7 @@ int main (int argc, char **argv)
 
         stage = RLE,  insize[stage] += inbytes,  ret_outsize = true,  num = 1;
         if (apply_rle) {
-            cpu_time_run ("rle", [&] {return rle(inbuf,inbytes,big_runs);});
+            cpu_time_run ("rle", [&] {return rle (inbuf, inbytes, long_runs, ranks_plus_lens, _1_2_codes);});
             inbytes = retval;
         }
 
@@ -390,8 +401,8 @@ int main (int argc, char **argv)
         }
         for (int i=0; i<MANY; i++) {
             if (duration[stage][i]) {
-                char extra[99], temp1[99];
-                sprintf (extra, "   >255: %s", show3(big_runs,temp1));
+                char extra[99], temp1[99], temp2[99], temp3[99];
+                sprintf (extra, "   >255: %s,  rank+len: %s,  1/2 encoding: %s", show3(long_runs,temp1), show3(ranks_plus_lens,temp2), show3(_1_2_codes,temp3));
                 print_stage_stats (stage==RLE?-1:i, name_width, name[stage][i], insize[stage], size[stage][i], stage==RLE?0:duration[stage][i], stage==RLE?extra:"");
             }
         }
