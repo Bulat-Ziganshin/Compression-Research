@@ -13,7 +13,7 @@ This's the main executable processing input data with various algos and recordin
 BSLab stands for the block-sorting laboratory.
 It sequentially applies to input data all algorithms employed in real compressors such as BSC:
 - [LZP] removes repeated strings
-- [BWT] or ST sorts the data
+- [BWT] or [ST] sorts the data
 - RLE squeezes repeating chars
 - [MTF] converts local entropy (similar chars in similar contexts) into global entropy
 - [EC] finally encodes the data (not implemented yet)

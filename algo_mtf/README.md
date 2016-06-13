@@ -124,3 +124,24 @@ The MTF queue preceding all blocks is the trivial [0, 1 .. 255] list.
 3. And finally, perform MTF on each block using full outbound MTF queue of the previous block as the initial MTF queue contents.
 
 In order to simplify implementation, the second step may be performed sequentially on CPU.
+
+
+### Further optimizations
+
+For [mtf_cpu_shelwien]:
+- check for first 32 ranks using MTF queue in AVX2 register or two SSE2 registers, going into shelwien cycle only for rare ranks>32
+- in order to provide sufficient ILP to deal with delays of pcmpeqb+pmovmskb+tzcnt+jxx, interleave processing of 2 symbols from each of 2 blocks
+- SRC (sorted MTF) require storing `64*256` intermediate bytes, with full 64-byte lines stored to the memory, like in the radix sort
+
+For `mtf_cuda_*`:
+- increase registers used/ILP by adding call limits
+- maxwell simd instructions
+- global loads through tex1D / `cub::TexRefInputIterator`
+- 2-pass: combine improved `mtf_cuda_thread_by4<32>` with mtf_cuda_shelwien
+
+For [mtf_cuda_thread_by4]:
+- try by8-16-32
+- try `NUM_THREADS = 4*WARP_SIZE` and check profiler info
+- resolve shmem conflicts
+- load 32 bytes/thread into shmem, replace them with mtf ranks and save to memory
+- xor.u32, cmp.u8/u16 without byte_extract, `cub::SHL_ADD/PRMT+st.u32` for `mtf[]` update
