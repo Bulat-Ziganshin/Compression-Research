@@ -1,5 +1,6 @@
 [mtf_cpu_bsc]:         mtf_cpu_bsc.cpp
 [mtf_cpu_shelwien]:    mtf_cpu_shelwien.cpp
+[mtf_cpu_shelwien2]:   mtf_cpu_shelwien2.cpp
 [mtf_cuda_thread]:     mtf_cuda_thread.cu
 [mtf_cuda_thread_by4]: mtf_cuda_thread_by4.cu
 [mtf_cuda_scalar]:     mtf_cuda_scalar.cu
@@ -10,18 +11,25 @@
 
 ### CPU implementations
 
-The first one included is [mtf_cpu_bsc], borrowed from BSC 3.1.
-Another one is [mtf_cpu_shelwien], vectorizable constant-speed algo developed by Eugene Shelwien.
+Current CPU MTF implementations:
+* [mtf_cpu_bsc] - borrowed from BSC 3.1
+* [mtf_cpu_shelwien] - vectorizable constant-speed algo developed by Eugene Shelwien
+* [mtf_cpu_shelwien2] - the same plus checking 2 input symbols simultaneously
 
-Further CPU optimizations:
-* use SSE/AVX to check 16-32 positions simultaneously (PCMPEQB+PMOVMSKB)
-* check multiple symbols/buffers simultaneously in order to increase ILP
-* use PCMPSTR instructions to compare multiple symbols against multiple positions
+Further optimizations:
+- use SSE/AVX to check 16-32 positions simultaneously (PCMPEQB+PMOVMSKB+TZCNT+Jxx)
+- check multiple symbols/buffers simultaneously in order to increase ILP
+- use PCMPSTR instructions to compare multiple symbols against multiple positions
+- SRC (sorted MTF) require storing `64*256` intermediate bytes, with full 64-byte lines stored to the memory, like in the radix sort
+
+Combined algo:
+- check for first 32 ranks using MTF queue in AVX2 register or two SSE2 registers, going into shelwien cycle only for rare ranks>32
+- in order to provide sufficient ILP to deal with delays of PCMPEQB+PMOVMSKB+TZCNT+Jxx, interleave processing of 2 symbols from each of 2 blocks
 
 
-### GPU implementations
+### CUDA implementations
 
-Current GPU MTF implementations:
+Current CUDA MTF implementations:
 * [mtf_cuda_scalar] - processes single buffer per warp, comparing 32 mtf positions in single operation
 * [mtf_cuda_2symbols] - the same, but checks 2 input symbols interleaved, increasing ILP
 * [mtf_cuda_2buffers] - the same, but processes 2 buffers interleaved, increasing ILP
@@ -30,12 +38,23 @@ Current GPU MTF implementations:
 * [mtf_cuda_thread_by4] - the same, but process 4 mtf positions on every step
 * `mtf_cuda_Kbuffers<N>`, `mtf_cuda_thread<N>` and `mtf_cuda_thread_by4<N>` - mtf search depth limited to N, for use in multi-pass algorithm
 
-Further GPU optimizations:
-* global loads/stores (inbuf/outbuf)
-* use 4-8 lanes to find ranks of 4-8 symbols simultaneously, then combine them and shift mtf[] elements by 1-4 positions
-* the same, but combine search with shift
-* the same with r2c[] and c2r[] machinery (see OpenBWT implementation)
-* multi-pass: first pass process only ranks up to 8-32, last pass - only a few remaining chars with rank>32
+Further optimizations:
+- colesced global loads/stores (inbuf/outbuf)
+- use 4-8 lanes to find ranks of 4-8 symbols simultaneously, then combine them and shift mtf[] elements by 1-4 positions
+- the same, but combine search with shift
+- the same with r2c[] and c2r[] machinery (see OpenBWT implementation)
+- multi-pass: first pass process only ranks up to 8-32, last pass - only a few remaining chars with rank>32
+- increase registers used/ILP by adding call limits
+- maxwell simd instructions
+- global loads through tex1D / `cub::TexRefInputIterator`
+- 2-pass: combine improved `mtf_cuda_thread_by4<32>` with mtf_cuda_shelwien
+
+Improving [mtf_cuda_thread_by4]:
+- try by8-16-32
+- try `NUM_THREADS = 4*WARP_SIZE` and check profiler info
+- resolve shmem conflicts
+- load 32 bytes/thread into shmem, replace them with mtf ranks and then save ranks to memory
+- xor.u32, cmp.u8/u16 without byte_extract, `cub::SHL_ADD/PRMT+st.u32` for `mtf[]` update
 
 
 ### How to implement MTF on GPU?
@@ -124,24 +143,3 @@ The MTF queue preceding all blocks is the trivial [0, 1 .. 255] list.
 3. And finally, perform MTF on each block using full outbound MTF queue of the previous block as the initial MTF queue contents.
 
 In order to simplify implementation, the second step may be performed sequentially on CPU.
-
-
-### Further optimizations
-
-For [mtf_cpu_shelwien]:
-- check for first 32 ranks using MTF queue in AVX2 register or two SSE2 registers, going into shelwien cycle only for rare ranks>32
-- in order to provide sufficient ILP to deal with delays of pcmpeqb+pmovmskb+tzcnt+jxx, interleave processing of 2 symbols from each of 2 blocks
-- SRC (sorted MTF) require storing `64*256` intermediate bytes, with full 64-byte lines stored to the memory, like in the radix sort
-
-For `mtf_cuda_*`:
-- increase registers used/ILP by adding call limits
-- maxwell simd instructions
-- global loads through tex1D / `cub::TexRefInputIterator`
-- 2-pass: combine improved `mtf_cuda_thread_by4<32>` with mtf_cuda_shelwien
-
-For [mtf_cuda_thread_by4]:
-- try by8-16-32
-- try `NUM_THREADS = 4*WARP_SIZE` and check profiler info
-- resolve shmem conflicts
-- load 32 bytes/thread into shmem, replace them with mtf ranks and save to memory
-- xor.u32, cmp.u8/u16 without byte_extract, `cub::SHL_ADD/PRMT+st.u32` for `mtf[]` update
