@@ -1,76 +1,144 @@
-ptxas info    : 1808 bytes gmem, 184 bytes cmem[14]
-ptxas info    : Compiling entry function '_Z8mtf_4by8ILi4096ELi128ELi32EhLi256EEvPKhPhii' for 'sm_20'
-ptxas info    : Function properties for _Z8mtf_4by8ILi4096ELi128ELi32EhLi256EEvPKhPhii
+ptxas info    : 2113 bytes gmem, 272 bytes cmem[14]
+ptxas info    : Compiling entry function '_ZN3cub31DeviceRadixSortSingleTileKernelINS_21DeviceRadixSortPolicyIyNS_8NullTypeEiE9Policy520ELb0EyS2_iEEvPT1_S6_PT2_S8_T3_ii' for 'sm_20'
+ptxas info    : Function properties for _ZN3cub31DeviceRadixSortSingleTileKernelINS_21DeviceRadixSortPolicyIyNS_8NullTypeEiE9Policy520ELb0EyS2_iEEvPT1_S6_PT2_S8_T3_ii
     0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
-ptxas info    : Used 23 registers, 8192 bytes smem, 56 bytes cmem[0]
-ptxas info    : Compiling entry function '_Z14mtf_thread_by4ILi4096ELi32ELi16EEvPKhPhii' for 'sm_20'
-ptxas info    : Function properties for _Z14mtf_thread_by4ILi4096ELi32ELi16EEvPKhPhii
-    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
-ptxas info    : Used 16 registers, 512 bytes smem, 56 bytes cmem[0]
-ptxas info    : Compiling entry function '_Z20mtf_2buffers_depth32ILi4096ELi4ELi2EjLi32EEvPKhPhii' for 'sm_20'
-ptxas info    : Function properties for _Z20mtf_2buffers_depth32ILi4096ELi4ELi2EjLi32EEvPKhPhii
+ptxas info    : Used 56 registers, 4752 bytes smem, 76 bytes cmem[0]
+ptxas info    : Compiling entry function '_Z25mtf_cuda_2buffers_depth32ILi4096ELi4ELi2EjLi32EEvPKhPhii' for 'sm_20'
+ptxas info    : Function properties for _Z25mtf_cuda_2buffers_depth32ILi4096ELi4ELi2EjLi32EEvPKhPhii
     0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
 ptxas info    : Used 19 registers, 1056 bytes smem, 56 bytes cmem[0]
-ptxas info    : Compiling entry function '_Z10mtf_threadILi4096ELi32ELi16EEvPKhPhii' for 'sm_20'
-ptxas info    : Function properties for _Z10mtf_threadILi4096ELi32ELi16EEvPKhPhii
+ptxas info    : Compiling entry function '_ZN3cub28DeviceRadixSortUpsweepKernelINS_21DeviceRadixSortPolicyIyhiE9Policy520ELb1ELb0EyiEEvPT2_PT3_S6_iiNS_13GridEvenShareIS6_EE' for 'sm_20'
+ptxas info    : Function properties for _ZN3cub28DeviceRadixSortUpsweepKernelINS_21DeviceRadixSortPolicyIyhiE9Policy520ELb1ELb0EyiEEvPT2_PT3_S6_iiNS_13GridEvenShareIS6_EE
     0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
-ptxas info    : Used 16 registers, 512 bytes smem, 56 bytes cmem[0]
-ptxas info    : Compiling entry function '_Z20mtf_2buffers_depth32ILi4096ELi4ELi4EjLi32EEvPKhPhii' for 'sm_20'
-ptxas info    : Function properties for _Z20mtf_2buffers_depth32ILi4096ELi4ELi4EjLi32EEvPKhPhii
+ptxas info    : Used 33 registers, 2112 bytes smem, 96 bytes cmem[0]
+ptxas info    : Compiling entry function '_Z15mtf_cuda_threadILi4096ELi128ELi16EEvPKhPhii' for 'sm_20'
+ptxas info    : Function properties for _Z15mtf_cuda_threadILi4096ELi128ELi16EEvPKhPhii
     0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
-ptxas info    : Used 20 registers, 2112 bytes smem, 56 bytes cmem[0]
-ptxas info    : Compiling entry function '_Z10mtf_threadILi4096ELi32ELi64EEvPKhPhii' for 'sm_20'
-ptxas info    : Function properties for _Z10mtf_threadILi4096ELi32ELi64EEvPKhPhii
+ptxas info    : Used 15 registers, 2048 bytes smem, 56 bytes cmem[0]
+ptxas info    : Compiling entry function '_Z19mtf_cuda_thread_by4ILi4096ELi128ELi16EEvPKhPhii' for 'sm_20'
+ptxas info    : Function properties for _Z19mtf_cuda_thread_by4ILi4096ELi128ELi16EEvPKhPhii
     0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
-ptxas info    : Used 23 registers, 2048 bytes smem, 56 bytes cmem[0]
-ptxas info    : Compiling entry function '_Z14mtf_thread_by4ILi4096ELi32ELi256EEvPKhPhii' for 'sm_20'
-ptxas info    : Function properties for _Z14mtf_thread_by4ILi4096ELi32ELi256EEvPKhPhii
+ptxas info    : Used 16 registers, 2048 bytes smem, 56 bytes cmem[0]
+ptxas info    : Compiling entry function '_Z28bsc_st8_encode_cuda_postsortPyiyPi' for 'sm_20'
+ptxas info    : Function properties for _Z28bsc_st8_encode_cuda_postsortPyiyPi
     0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
-ptxas info    : Used 22 registers, 8192 bytes smem, 56 bytes cmem[0]
-ptxas info    : Compiling entry function '_Z14mtf_thread_by4ILi4096ELi32ELi64EEvPKhPhii' for 'sm_20'
-ptxas info    : Function properties for _Z14mtf_thread_by4ILi4096ELi32ELi64EEvPKhPhii
+ptxas info    : Used 13 registers, 64 bytes cmem[0]
+ptxas info    : Compiling entry function '_ZN3cub30DeviceRadixSortDownsweepKernelINS_21DeviceRadixSortPolicyIyNS_8NullTypeEiE9Policy520ELb0ELb0EyS2_iEEvPT2_S6_PT3_S8_PT4_S9_iiNS_13GridEvenShareIS9_EE' for 'sm_20'
+ptxas info    : Function properties for _ZN3cub30DeviceRadixSortDownsweepKernelINS_21DeviceRadixSortPolicyIyNS_8NullTypeEiE9Policy520ELb0ELb0EyS2_iEEvPT2_S6_PT3_S8_PT4_S9_iiNS_13GridEvenShareIS9_EE
     0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
-ptxas info    : Used 22 registers, 2048 bytes smem, 56 bytes cmem[0]
-ptxas info    : Compiling entry function '_Z12mtf_2symbolsILi4096ELi4EjEvPKhPhii' for 'sm_20'
-ptxas info    : Function properties for _Z12mtf_2symbolsILi4096ELi4EjEvPKhPhii
+ptxas info    : Used 52 registers, 4888 bytes smem, 120 bytes cmem[0]
+ptxas info    : Compiling entry function '_Z13mtf_cuda_4by8ILi4096ELi128ELi32EhLi256EEvPKhPhii' for 'sm_20'
+ptxas info    : Function properties for _Z13mtf_cuda_4by8ILi4096ELi128ELi32EhLi256EEvPKhPhii
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 23 registers, 8192 bytes smem, 56 bytes cmem[0]
+ptxas info    : Compiling entry function '_Z19mtf_cuda_thread_by4ILi4096ELi128ELi64EEvPKhPhii' for 'sm_20'
+ptxas info    : Function properties for _Z19mtf_cuda_thread_by4ILi4096ELi128ELi64EEvPKhPhii
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 21 registers, 8192 bytes smem, 56 bytes cmem[0]
+ptxas info    : Compiling entry function '_Z17mtf_cuda_2symbolsILi4096ELi4EjEvPKhPhii' for 'sm_20'
+ptxas info    : Function properties for _Z17mtf_cuda_2symbolsILi4096ELi4EjEvPKhPhii
     0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
 ptxas info    : Used 26 registers, 4096 bytes smem, 56 bytes cmem[0]
-ptxas info    : Compiling entry function '_Z8mtf_4by8ILi4096ELi256ELi32EhLi256EEvPKhPhii' for 'sm_20'
-ptxas info    : Function properties for _Z8mtf_4by8ILi4096ELi256ELi32EhLi256EEvPKhPhii
+ptxas info    : Compiling entry function '_ZN3cub31DeviceRadixSortSingleTileKernelINS_21DeviceRadixSortPolicyIyhiE9Policy520ELb0EyhiEEvPT1_S5_PT2_S7_T3_ii' for 'sm_20'
+ptxas info    : Function properties for _ZN3cub31DeviceRadixSortSingleTileKernelINS_21DeviceRadixSortPolicyIyhiE9Policy520ELb0EyhiEEvPT1_S5_PT2_S7_T3_ii
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 53 registers, 9496 bytes smem, 76 bytes cmem[0]
+ptxas info    : Compiling entry function '_Z19mtf_cuda_thread_by4ILi4096ELi32ELi256EEvPKhPhii' for 'sm_20'
+ptxas info    : Function properties for _Z19mtf_cuda_thread_by4ILi4096ELi32ELi256EEvPKhPhii
     0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
 ptxas info    : Used 23 registers, 8192 bytes smem, 56 bytes cmem[0]
-ptxas info    : Compiling entry function '_Z14mtf_thread_by4ILi4096ELi32ELi8EEvPKhPhii' for 'sm_20'
-ptxas info    : Function properties for _Z14mtf_thread_by4ILi4096ELi32ELi8EEvPKhPhii
+ptxas info    : Compiling entry function '_ZN3cub28DeviceRadixSortUpsweepKernelINS_21DeviceRadixSortPolicyIyNS_8NullTypeEiE9Policy520ELb1ELb0EyiEEvPT2_PT3_S7_iiNS_13GridEvenShareIS7_EE' for 'sm_20'
+ptxas info    : Function properties for _ZN3cub28DeviceRadixSortUpsweepKernelINS_21DeviceRadixSortPolicyIyNS_8NullTypeEiE9Policy520ELb1ELb0EyiEEvPT2_PT3_S7_iiNS_13GridEvenShareIS7_EE
     0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
-ptxas info    : Used 16 registers, 256 bytes smem, 56 bytes cmem[0]
-ptxas info    : Compiling entry function '_Z12mtf_2buffersILi4096ELi4EjEvPKhPhii' for 'sm_20'
-ptxas info    : Function properties for _Z12mtf_2buffersILi4096ELi4EjEvPKhPhii
+ptxas info    : Used 45 registers, 2112 bytes smem, 96 bytes cmem[0]
+ptxas info    : Compiling entry function '_Z25mtf_cuda_2buffers_depth32ILi4096ELi4ELi4EjLi32EEvPKhPhii' for 'sm_20'
+ptxas info    : Function properties for _Z25mtf_cuda_2buffers_depth32ILi4096ELi4ELi4EjLi32EEvPKhPhii
     0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
-ptxas info    : Used 27 registers, 8192 bytes smem, 56 bytes cmem[0]
-ptxas info    : Compiling entry function '_Z10mtf_threadILi4096ELi32ELi8EEvPKhPhii' for 'sm_20'
-ptxas info    : Function properties for _Z10mtf_threadILi4096ELi32ELi8EEvPKhPhii
+ptxas info    : Used 20 registers, 2112 bytes smem, 56 bytes cmem[0]
+ptxas info    : Compiling entry function '_Z15mtf_cuda_threadILi4096ELi128ELi64EEvPKhPhii' for 'sm_20'
+ptxas info    : Function properties for _Z15mtf_cuda_threadILi4096ELi128ELi64EEvPKhPhii
     0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
-ptxas info    : Used 14 registers, 256 bytes smem, 56 bytes cmem[0]
-ptxas info    : Compiling entry function '_Z20mtf_2buffers_depth32ILi4096ELi4ELi3EjLi32EEvPKhPhii' for 'sm_20'
-ptxas info    : Function properties for _Z20mtf_2buffers_depth32ILi4096ELi4ELi3EjLi32EEvPKhPhii
+ptxas info    : Used 21 registers, 8192 bytes smem, 56 bytes cmem[0]
+ptxas info    : Compiling entry function '_Z27bsc_st8_encode_cuda_presortPhPyS_i' for 'sm_20'
+ptxas info    : Function properties for _Z27bsc_st8_encode_cuda_presortPhPyS_i
     0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
-ptxas info    : Used 19 registers, 1584 bytes smem, 56 bytes cmem[0]
-ptxas info    : Compiling entry function '_Z10mtf_threadILi4096ELi32ELi32EEvPKhPhii' for 'sm_20'
-ptxas info    : Function properties for _Z10mtf_threadILi4096ELi32ELi32EEvPKhPhii
+ptxas info    : Used 18 registers, 804 bytes smem, 60 bytes cmem[0]
+ptxas info    : Compiling entry function '_ZN3cub30DeviceRadixSortDownsweepKernelINS_21DeviceRadixSortPolicyIyhiE9Policy520ELb0ELb0EyhiEEvPT2_S5_PT3_S7_PT4_S8_iiNS_13GridEvenShareIS8_EE' for 'sm_20'
+ptxas info    : Function properties for _ZN3cub30DeviceRadixSortDownsweepKernelINS_21DeviceRadixSortPolicyIyhiE9Policy520ELb0ELb0EyhiEEvPT2_S5_PT3_S7_PT4_S8_iiNS_13GridEvenShareIS8_EE
     0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
-ptxas info    : Used 18 registers, 1024 bytes smem, 56 bytes cmem[0]
-ptxas info    : Compiling entry function '_Z10mtf_threadILi4096ELi32ELi256EEvPKhPhii' for 'sm_20'
-ptxas info    : Function properties for _Z10mtf_threadILi4096ELi32ELi256EEvPKhPhii
+ptxas info    : Used 46 registers, 9632 bytes smem, 120 bytes cmem[0]
+ptxas info    : Compiling entry function '_Z19mtf_cuda_thread_by4ILi4096ELi128ELi32EEvPKhPhii' for 'sm_20'
+ptxas info    : Function properties for _Z19mtf_cuda_thread_by4ILi4096ELi128ELi32EEvPKhPhii
     0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
-ptxas info    : Used 23 registers, 8192 bytes smem, 56 bytes cmem[0]
-ptxas info    : Compiling entry function '_Z14mtf_thread_by4ILi4096ELi32ELi32EEvPKhPhii' for 'sm_20'
-ptxas info    : Function properties for _Z14mtf_thread_by4ILi4096ELi32ELi32EEvPKhPhii
-    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
-ptxas info    : Used 18 registers, 1024 bytes smem, 56 bytes cmem[0]
-ptxas info    : Compiling entry function '_Z10mtf_scalarILi4096ELi4EjEvPKhPhii' for 'sm_20'
-ptxas info    : Function properties for _Z10mtf_scalarILi4096ELi4EjEvPKhPhii
+ptxas info    : Used 19 registers, 4096 bytes smem, 56 bytes cmem[0]
+ptxas info    : Compiling entry function '_Z15mtf_cuda_scalarILi4096ELi4EjEvPKhPhii' for 'sm_20'
+ptxas info    : Function properties for _Z15mtf_cuda_scalarILi4096ELi4EjEvPKhPhii
     0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
 ptxas info    : Used 21 registers, 4096 bytes smem, 56 bytes cmem[0]
+ptxas info    : Compiling entry function '_ZN3cub30DeviceRadixSortDownsweepKernelINS_21DeviceRadixSortPolicyIyNS_8NullTypeEiE9Policy520ELb1ELb0EyS2_iEEvPT2_S6_PT3_S8_PT4_S9_iiNS_13GridEvenShareIS9_EE' for 'sm_20'
+ptxas info    : Function properties for _ZN3cub30DeviceRadixSortDownsweepKernelINS_21DeviceRadixSortPolicyIyNS_8NullTypeEiE9Policy520ELb1ELb0EyS2_iEEvPT2_S6_PT3_S8_PT4_S9_iiNS_13GridEvenShareIS9_EE
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 52 registers, 4680 bytes smem, 120 bytes cmem[0]
+ptxas info    : Compiling entry function '_Z15mtf_cuda_threadILi4096ELi32ELi256EEvPKhPhii' for 'sm_20'
+ptxas info    : Function properties for _Z15mtf_cuda_threadILi4096ELi32ELi256EEvPKhPhii
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 22 registers, 8192 bytes smem, 56 bytes cmem[0]
+ptxas info    : Compiling entry function '_ZN3cub28DeviceRadixSortUpsweepKernelINS_21DeviceRadixSortPolicyIyNS_8NullTypeEiE9Policy520ELb0ELb0EyiEEvPT2_PT3_S7_iiNS_13GridEvenShareIS7_EE' for 'sm_20'
+ptxas info    : Function properties for _ZN3cub28DeviceRadixSortUpsweepKernelINS_21DeviceRadixSortPolicyIyNS_8NullTypeEiE9Policy520ELb0ELb0EyiEEvPT2_PT3_S7_iiNS_13GridEvenShareIS7_EE
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 53 registers, 4224 bytes smem, 96 bytes cmem[0]
+ptxas info    : Compiling entry function '_Z25mtf_cuda_2buffers_depth32ILi4096ELi4ELi3EjLi32EEvPKhPhii' for 'sm_20'
+ptxas info    : Function properties for _Z25mtf_cuda_2buffers_depth32ILi4096ELi4ELi3EjLi32EEvPKhPhii
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 19 registers, 1584 bytes smem, 56 bytes cmem[0]
+ptxas info    : Compiling entry function '_Z15mtf_cuda_threadILi4096ELi128ELi32EEvPKhPhii' for 'sm_20'
+ptxas info    : Function properties for _Z15mtf_cuda_threadILi4096ELi128ELi32EEvPKhPhii
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 18 registers, 4096 bytes smem, 56 bytes cmem[0]
+ptxas info    : Compiling entry function '_Z29bsc_st567_encode_cuda_presortPhPyi' for 'sm_20'
+ptxas info    : Function properties for _Z29bsc_st567_encode_cuda_presortPhPyi
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 16 registers, 800 bytes smem, 52 bytes cmem[0]
+ptxas info    : Compiling entry function '_ZN3cub23RadixSortScanBinsKernelINS_21DeviceRadixSortPolicyIyhiE9Policy520EiEEvPT0_i' for 'sm_20'
+ptxas info    : Function properties for _ZN3cub23RadixSortScanBinsKernelINS_21DeviceRadixSortPolicyIyhiE9Policy520EiEEvPT0_i
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 31 registers, 2620 bytes smem, 44 bytes cmem[0], 4 bytes cmem[16]
+ptxas info    : Compiling entry function '_ZN3cub11EmptyKernelIvEEvv' for 'sm_20'
+ptxas info    : Function properties for _ZN3cub11EmptyKernelIvEEvv
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 2 registers, 32 bytes cmem[0]
+ptxas info    : Compiling entry function '_Z17mtf_cuda_2buffersILi4096ELi4EjEvPKhPhii' for 'sm_20'
+ptxas info    : Function properties for _Z17mtf_cuda_2buffersILi4096ELi4EjEvPKhPhii
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 27 registers, 8192 bytes smem, 56 bytes cmem[0]
+ptxas info    : Compiling entry function '_ZN3cub28DeviceRadixSortUpsweepKernelINS_21DeviceRadixSortPolicyIyhiE9Policy520ELb0ELb0EyiEEvPT2_PT3_S6_iiNS_13GridEvenShareIS6_EE' for 'sm_20'
+ptxas info    : Function properties for _ZN3cub28DeviceRadixSortUpsweepKernelINS_21DeviceRadixSortPolicyIyhiE9Policy520ELb0ELb0EyiEEvPT2_PT3_S6_iiNS_13GridEvenShareIS6_EE
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 38 registers, 4224 bytes smem, 96 bytes cmem[0]
+ptxas info    : Compiling entry function '_Z15mtf_cuda_threadILi4096ELi128ELi8EEvPKhPhii' for 'sm_20'
+ptxas info    : Function properties for _Z15mtf_cuda_threadILi4096ELi128ELi8EEvPKhPhii
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 14 registers, 1024 bytes smem, 56 bytes cmem[0]
+ptxas info    : Compiling entry function '_ZN3cub23RadixSortScanBinsKernelINS_21DeviceRadixSortPolicyIyNS_8NullTypeEiE9Policy520EiEEvPT0_i' for 'sm_20'
+ptxas info    : Function properties for _ZN3cub23RadixSortScanBinsKernelINS_21DeviceRadixSortPolicyIyNS_8NullTypeEiE9Policy520EiEEvPT0_i
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 31 registers, 2620 bytes smem, 44 bytes cmem[0], 4 bytes cmem[16]
+ptxas info    : Compiling entry function '_Z13mtf_cuda_4by8ILi4096ELi256ELi32EhLi256EEvPKhPhii' for 'sm_20'
+ptxas info    : Function properties for _Z13mtf_cuda_4by8ILi4096ELi256ELi32EhLi256EEvPKhPhii
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 23 registers, 8192 bytes smem, 56 bytes cmem[0]
+ptxas info    : Compiling entry function '_Z19mtf_cuda_thread_by4ILi4096ELi128ELi8EEvPKhPhii' for 'sm_20'
+ptxas info    : Function properties for _Z19mtf_cuda_thread_by4ILi4096ELi128ELi8EEvPKhPhii
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 16 registers, 1024 bytes smem, 56 bytes cmem[0]
+ptxas info    : Compiling entry function '_Z30bsc_st567_encode_cuda_postsortPhPyiyPi' for 'sm_20'
+ptxas info    : Function properties for _Z30bsc_st567_encode_cuda_postsortPhPyiyPi
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 17 registers, 72 bytes cmem[0]
+ptxas info    : Compiling entry function '_ZN3cub30DeviceRadixSortDownsweepKernelINS_21DeviceRadixSortPolicyIyhiE9Policy520ELb1ELb0EyhiEEvPT2_S5_PT3_S7_PT4_S8_iiNS_13GridEvenShareIS8_EE' for 'sm_20'
+ptxas info    : Function properties for _ZN3cub30DeviceRadixSortDownsweepKernelINS_21DeviceRadixSortPolicyIyhiE9Policy520ELb1ELb0EyhiEEvPT2_S5_PT3_S7_PT4_S8_iiNS_13GridEvenShareIS8_EE
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 45 registers, 6216 bytes smem, 120 bytes cmem[0]
+bslab.cu
 cuda.lib
-mtf.cu
-   Creating library mtf.lib and object mtf.exp
+   Creating library bslab-cuda-x64.lib and object bslab-cuda-x64.exp

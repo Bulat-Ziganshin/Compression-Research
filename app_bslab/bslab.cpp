@@ -350,7 +350,7 @@ int main (int argc, char **argv)
             time_run ("mtf_cuda_thread        ", [&] {mtf_cuda_thread    <CHUNK>                 <<<(inbytes-1)/(CHUNK*WARP_SIZE)+1,             WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
             time_run ("mtf_cuda_thread_by4    ", [&] {mtf_cuda_thread_by4<CHUNK>                 <<<(inbytes-1)/(CHUNK*WARP_SIZE)+1,             WARP_SIZE>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
 
-            const int NUM_THREADS = 1*WARP_SIZE;
+            const int NUM_THREADS = 4*WARP_SIZE;
             time_run ("mtf_cuda_thread<8>     ", [&] {mtf_cuda_thread    <CHUNK,NUM_THREADS,8>   <<<(inbytes-1)/(CHUNK*NUM_THREADS)+1,         NUM_THREADS>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
             time_run ("mtf_cuda_thread<16>    ", [&] {mtf_cuda_thread    <CHUNK,NUM_THREADS,16>  <<<(inbytes-1)/(CHUNK*NUM_THREADS)+1,         NUM_THREADS>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
             time_run ("mtf_cuda_thread<32>    ", [&] {mtf_cuda_thread    <CHUNK,NUM_THREADS,32>  <<<(inbytes-1)/(CHUNK*NUM_THREADS)+1,         NUM_THREADS>>> (d_inbuf, d_outbuf, inbytes, CHUNK);});
