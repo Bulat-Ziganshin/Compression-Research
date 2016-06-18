@@ -3,12 +3,10 @@
 [BWT]:   ../algo_bwt
 [MTF]:   ../algo_mtf
 [EC]:    ../algo_ec
+[results-cpu.txt]:   (results-cpu.txt)
+[results-cuda.txt]:  (results-cuda.txt)
+[profile.txt]:       (profile.txt)
 
-### BSLab: the block-sorting lab
-
-This's the main executable processing input data with various algos and recording speed/outsize of every experiment.
-[results.txt](results.txt) presents the current results on my GPU.
-[profile.txt](profile.txt) is a profiling report of CUDA kernels implemented by BSLab.
 
 BSLab stands for the block-sorting laboratory.
 It sequentially applies to input data all algorithms employed in real compressors such as BSC:
@@ -20,7 +18,8 @@ It sequentially applies to input data all algorithms employed in real compressor
 
 On every stage (except for RLE) we have a choice of algorithms, including those implemented in BSC as the baseline.
 Output of the last algorithm completed on every stage (except for OpenMP LZP) goes as the input to the next stage.
-Individual algorithms can be selected with options like -mtf1,3-4.
+Individual algorithms can be selected with options like -mtf1,3-4, or you may disable some algos with option like -mtf-1,3-4.
+You can also completely disable some stages by optiions like -nolzp, and control LZP stage parameters with options -h and -l.
 Blocksize is controlled by -b option, you may need to reduce it if program exits with memory allocation error.
 
 We have tested the following compilers:
@@ -45,15 +44,17 @@ For example, command `bslab-clang-x64-avx2.exe -lzp1 -bwt6 -mtf1,2 enwik8` produ
 ```
 [ 1] lzp_cpu_bsc: 100,000,000 => 95,006,102 (95.01%)  307 MiB/s,  311.107 ms
 [ 6] divsufsort:  10.3 / 9.76 MiB/s,  9286.634 ms
-rle: 95,025,330 => 36,703,797 (38.63% / 36.70%)   >255: 15,164
+rle: 95,006,102 => 36,703,518 (38.63% / 36.70%)   >255: 15,171,  rank+len: 46,604,415,  1/2 encoding: 52,271,085
 [ 1] mtf_cpu_bsc     :   181 / 66.5 MiB/s,  526.415 ms
 [ 2] mtf_cpu_shelwien:   380 /  140 MiB/s,  250.876 ms
 ```
 This means that data were compressed from 100,000,000 to 95,006,102 bytes at LZP stage, 
 and then to 36,703,797 bytes at RLE stage, while BWT and MTF stages are 1:1 mappings.
 36,703,797 bytes is 38.63% of RLE stage input (95,025,330 bytes) and 
-36.70% of original data (100,000,000 bytes). Also, we see that 15,164 run-length counts
-(out of total 36,703,797) produced by RLE stage were higher than 255.
+36.70% of original data (100,000,000 bytes). Also, we see that 
+- 15,164 run-length counts (out of total 36,703,797) produced by RLE stage were higher than 255
+- 46,604,415 values represent ranks and lengths>1
+- 52,271,085 values represent ranks and lengths in 1/2 encoding
 
 In the speed department, we see that mtf_cpu_bsc algo was finished in 526.415 ms, that's 
 66.5 MiB/s compared to its input (36,703,797 bytes) and
@@ -62,6 +63,10 @@ The alternative MTF algorithm, namely mtf_cpu_shelwien, was finished in just 250
 
 
 ### Full results
+
+- [results-cpu.txt] are my CPU results
+- [results-cuda.txt] are my CUDA GPU results
+- [profile.txt] are my CUDA GPU profiling report (only MTF kernels are included)
 
 
 ### x64: enwik9 results on Haswell i7-4770
