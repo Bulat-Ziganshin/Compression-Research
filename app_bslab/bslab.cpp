@@ -127,7 +127,7 @@ int main (int argc, char **argv)
         bufsize <<= 20;  // if value is small enough, consider it as mebibytes
 
     if (!(argc==2 || argc==3) || error) {
-        printf ("BSL: the block-sorting lab.  Part of https://github.com/Bulat-Ziganshin/Compression-Research\n"
+        printf ("BSL: the block-sorting lab 1.0 (June 18 2016).  Part of https://github.com/Bulat-Ziganshin/Compression-Research\n"
                 "Usage: bsl [options] infile [outfile]\n"
                 "  -bN      buffer N (mebi)bytes (default %d MiB - reduce if program fails)\n"
                 "  -nogpu   skip GPU name output\n"

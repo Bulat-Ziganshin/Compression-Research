@@ -9,8 +9,8 @@ Further optimizations:
 
 Use some combination of the following ideas to shave off remaining times over 65 ms
 - overload pre/post-sorting procedures and RLE compression with memcpy
-- process only 4-byte elements at last sorting stages, and simultaneously copy-in next block to process - 
-4-byte sorting should also be faster than sorting of 4+4 (key+value) bytes (43 ms)
+- process only 4-byte elements at last sorting stages, and simultaneously copy-in next block to process -
+4-byte sorting should also be faster than sorting of 4+4 (key+value) bytes (43 ms total instead of 65 ms)
 - use zero-copy memory instead of copy in/out
 
 So, after all optimizations, ST4 should become more than 3x faster!

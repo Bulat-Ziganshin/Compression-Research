@@ -6,6 +6,7 @@
 [results-cpu.txt]:   results-cpu.txt
 [results-cuda.txt]:  results-cuda.txt
 [profile.txt]:       profile.txt
+[bench.cmd]:         bench.cmd
 
 
 BSLab stands for the block-sorting laboratory.
@@ -69,6 +70,8 @@ Also, we see that
 - [results-cpu.txt] are my CPU results
 - [results-cuda.txt] are my CUDA GPU results
 - [profile.txt] are my CUDA GPU profiling report (only MTF kernels are included)
+
+See [bench.cmd] for benchmarking/profiling cmdlines.
 
 
 ### x64: enwik9 results on Haswell i7-4770
