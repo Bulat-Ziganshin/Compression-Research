@@ -24,7 +24,7 @@ Further optimizations:
 
 Combined algo:
 - check for first 32 ranks using MTF queue in AVX2 register or two SSE2 registers, going into shelwien cycle only for rare ranks>32
-- in order to provide sufficient ILP to deal with delays of PCMPEQB+PMOVMSKB+TZCNT+Jxx, interleave processing of 2 symbols from each of 2 blocks
+- in order to provide sufficient ILP to deal with latency of PCMPEQB+PMOVMSKB+TZCNT+Jxx, interleave processing of 2 symbols from each of 2 blocks
 
 
 ### CUDA implementations
